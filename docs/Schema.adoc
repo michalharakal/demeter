@@ -1,0 +1,15 @@
+actor Honza
+node "Zahrada" as zahrada
+node "Cisterna" as cisterna
+node "Studna" as studna {
+  Cerpadlo
+}
+node "Centralni mozek lidstva"as cml {
+  [Rele cerpadlo]
+  [Ventil sud]
+  
+}
+studna -> cisterna
+cisterna -> zahrada
+Honza .. cml
+cml --> pump 

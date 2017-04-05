@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="120dp"
+    tools:context="com.fiwo.iot.demeter.smart.MainActivity"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_main">
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Napusteni"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="37dp"/>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vypusteni"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="103dp"/>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kitky"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="174dp"/>
+</LinearLayout>
