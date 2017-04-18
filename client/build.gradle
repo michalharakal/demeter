@@ -21,3 +21,10 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    daggerVersion = "2.10"
+    retrofit_version = "2.1.0"
+    junit_version = "4.12"
+    jodatime_version = "2.9.3"
+}
