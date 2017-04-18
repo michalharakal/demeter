@@ -1,0 +1,7 @@
+{
+    "library": "retrofit2",
+    "artifactId": "demeter",
+    "groupId":"com.fiwo.iot.demeter.api",
+    "artifactVersion":"2.0",
+    "packageName":"com.fiwo.iot.demeter.api"
+}

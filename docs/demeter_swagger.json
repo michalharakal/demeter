@@ -1,0 +1,80 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "Demeter API",
+    "description": "The first version of the Demeter API.\n"
+  },
+  "host": "demeter.com",
+  "basePath": "/demeter",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "paths": {
+    "/demeter": {
+      "get": {
+        "description": "Get basic information about a user.",
+        "responses": {
+          "200": {
+            "description": "The user object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Demeter"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Demeter": {
+      "type": "object",
+      "properties": {
+        "relays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Relay"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Input"
+          }
+        }
+      }
+    },
+    "Relay": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Input": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
