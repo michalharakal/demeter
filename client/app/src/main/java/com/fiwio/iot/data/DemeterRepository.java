@@ -4,49 +4,34 @@ import com.fiwio.iot.demeter.api.DemeterApi;
 import com.fiwio.iot.demeter.api.NetworkError;
 import com.fiwio.iot.demeter.api.model.Demeter;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import javax.inject.Inject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DemeterRepository implements CmlRepository {
     private final DemeterApi networkService;
 
+    @Inject
     public DemeterRepository(DemeterApi networkService) {
         this.networkService = networkService;
     }
 
     @Override
-    public Subscription getDemeter(final GetDemeterCallback callback) {
+    public void getDemeter(final GetDemeterCallback callback) {
 
-        return networkService.get()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Demeter>>() {
-                    @Override
-                    public Observable<? extends Demeter> call(Throwable throwable) {
-                        return Observable.error(throwable);
-                    }
-                })
-                .subscribe(new Subscriber<Demeter>() {
-                    @Override
-                    public void onCompleted() {
+        Call<Demeter> call = networkService.get();
+        call.enqueue(new Callback<Demeter>() {
+            @Override
+            public void onResponse(Call<Demeter> call, Response<Demeter> response) {
+                callback.onSuccess(response.body());
+            }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onError(new NetworkError(e));
-
-                    }
-
-                    @Override
-                    public void onNext(Demeter cityListResponse) {
-                        callback.onSuccess(cityListResponse);
-
-                    }
-                });
+            @Override
+            public void onFailure(Call<Demeter> call, Throwable t) {
+                callback.onError(new NetworkError(t));
+            }
+        });
     }
 }

@@ -37,8 +37,8 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.click(data.getRelays().get(position), listener);
-        holder.tvCity.setText(data.getRelays().get(position).getName());
-        holder.tvDesc.setText(data.getRelays().get(position).getValue());
+        holder.name.setText(data.getRelays().get(position).getName());
+        holder.value.setText(data.getRelays().get(position).getValue());
     }
 
 
@@ -53,13 +53,13 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCity, tvDesc;
+        TextView name, value;
         ImageView background;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvCity = (TextView) itemView.findViewById(R.id.city);
-            tvDesc = (TextView) itemView.findViewById(R.id.hotel);
+            name = (TextView) itemView.findViewById(R.id.releay_name);
+            value = (TextView) itemView.findViewById(R.id.relay_value);
             background = (ImageView) itemView.findViewById(R.id.image);
 
         }
