@@ -5,10 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:2.3.1'
     }
 }
 
@@ -24,7 +21,9 @@ task clean(type: Delete) {
 
 ext {
     daggerVersion = "2.10"
-    retrofit_version = "2.1.0"
+    retrofit_version = "2.2.0"
     junit_version = "4.12"
     jodatime_version = "2.9.3"
+    rxandroid_version = "2.0.1";
+    rxjava_version = "2.0.1";
 }

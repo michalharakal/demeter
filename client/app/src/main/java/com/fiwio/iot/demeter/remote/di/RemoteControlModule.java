@@ -1,9 +1,9 @@
 package com.fiwio.iot.demeter.remote.di;
 
-import com.fiwio.iot.demeter.api.DemeterService;
+import com.fiwio.iot.data.DemeterRepository;
 import com.fiwio.iot.demeter.di.ActivityScope;
-import com.fiwio.iot.demeter.remote.HomePresenter;
 import com.fiwio.iot.demeter.remote.RemoteControlContract;
+import com.fiwio.iot.demeter.remote.RemoteControlPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,8 +19,8 @@ public class RemoteControlModule {
 
     @Provides
     @ActivityScope
-    HomePresenter provideHomePresenter(DemeterService demeterService) {
-        return new HomePresenter(demeterService, view);
+    RemoteControlPresenter provideHomePresenter(DemeterRepository repository) {
+        return new RemoteControlPresenter(repository, view);
     }
 
 }

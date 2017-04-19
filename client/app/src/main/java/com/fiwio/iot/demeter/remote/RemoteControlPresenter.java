@@ -1,32 +1,30 @@
 package com.fiwio.iot.demeter.remote;
 
 
-import com.fiwio.iot.demeter.api.DemeterService;
+import com.fiwio.iot.data.CmlRepository;
+import com.fiwio.iot.data.DemeterRepository;
 import com.fiwio.iot.demeter.api.NetworkError;
 import com.fiwio.iot.demeter.api.model.Demeter;
 import com.fiwio.iot.demeter.di.ActivityScope;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
 
 @ActivityScope
 public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     private final RemoteControlContract.View view;
-    private final DemeterService service;
-    private CompositeSubscription subscriptions;
+    private final DemeterRepository repository;
 
-    public RemoteControlPresenter(DemeterService service, RemoteControlContract.View view) {
-        this.service = service;
+    @Inject
+    public RemoteControlPresenter(DemeterRepository repository, RemoteControlContract.View view) {
+        this.repository = repository;
         this.view = view;
-        this.subscriptions = new CompositeSubscription();
     }
 
     public void getDemeter() {
         view.showWait();
 
-        Subscription subscription = service.get(new DemeterService.GetCityListCallback() {
+        repository.getDemeter(new CmlRepository.GetDemeterCallback() {
             @Override
             public void onSuccess(Demeter demeter) {
                 view.removeWait();
@@ -38,10 +36,7 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
                 view.removeWait();
                 view.onFailure(networkError.getAppErrorMessage());
             }
-
         });
-
-        subscriptions.add(subscription);
     }
 
     @Override
@@ -50,7 +45,7 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     }
 
     public void onStop() {
-        subscriptions.unsubscribe();
+
     }
 
     @Override
