@@ -39,6 +39,8 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
         holder.click(data.getRelays().get(position), listener);
         holder.name.setText(data.getRelays().get(position).getName());
         holder.value.setText(data.getRelays().get(position).getValue());
+        holder.background.setBackgroundResource(data.getRelays().get(position).getValue().equals
+                ("ON") ? R.drawable.led_circle_green : R.drawable.led_circle_grey);
     }
 
 
@@ -60,7 +62,7 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.releay_name);
             value = (TextView) itemView.findViewById(R.id.relay_value);
-            background = (ImageView) itemView.findViewById(R.id.image);
+            background = (ImageView) itemView.findViewById(R.id.led);
 
         }
 
