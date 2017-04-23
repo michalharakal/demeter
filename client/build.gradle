@@ -20,6 +20,7 @@ task clean(type: Delete) {
 }
 
 ext {
+    okhttp_version = "3.6.0"
     daggerVersion = "2.10"
     retrofit_version = "2.2.0"
     junit_version = "4.12"

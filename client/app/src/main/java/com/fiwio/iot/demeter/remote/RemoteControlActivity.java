@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
 
         renderView();
         init();
-        presenter.getDemeter();
+        presenter.onStart();
     }
 
     private void inject() {
@@ -80,12 +81,12 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
 
     @Override
     public void showWait() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void removeWait() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
