@@ -1,6 +1,5 @@
 package com.fiwio.iot.demeter.app;
 
-import com.fiwio.iot.demeter.EndpoitUrlProvider;
 
 /**
  * Created by mharakal on 17.04.17.

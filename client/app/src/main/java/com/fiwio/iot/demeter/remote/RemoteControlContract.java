@@ -18,6 +18,6 @@ public class RemoteControlContract {
 
     interface Presenter extends BasePresenter {
 
-        void setRelay(String name, boolean on);
+        void switchRelay(String name, boolean on);
     }
 }
