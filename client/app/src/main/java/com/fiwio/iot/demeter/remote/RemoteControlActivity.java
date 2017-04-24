@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.fiwio.iot.demeter.api.model.Demeter;
 import com.fiwio.iot.demeter.api.model.Relay;
@@ -101,8 +100,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
                 new RemoteControlListAdapter.OnItemClickListener() {
                     @Override
                     public void onClick(Relay item) {
-                        Toast.makeText(getApplicationContext(), item.getName(),
-                                Toast.LENGTH_LONG).show();
+                        presenter.switchRelay(item.getName(), "OFF".equals(item.getValue()) ? true : false);
                     }
                 });
 

@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter;
+package com.fiwio.iot.demeter.app;
 
 /**
  * Created by mharakal on 17.04.17.

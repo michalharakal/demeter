@@ -8,6 +8,8 @@ public interface CmlRepository {
 
     void getDemeter(final GetDemeterCallback callback);
 
+    void switchRelay(final String name, final boolean on, final GetDemeterCallback callback);
+
     interface GetDemeterCallback {
         void onSuccess(Demeter demeter);
 

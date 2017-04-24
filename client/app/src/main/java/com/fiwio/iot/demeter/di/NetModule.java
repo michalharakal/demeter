@@ -1,12 +1,10 @@
 package com.fiwio.iot.demeter.di;
 
-import com.fiwio.iot.demeter.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.api.DemeterApi;
+import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 

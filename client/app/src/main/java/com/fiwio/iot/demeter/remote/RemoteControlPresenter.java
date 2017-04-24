@@ -20,11 +20,13 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
 
     // Define the code block to be executed
     private Runnable runnableCode = new Runnable() {
+        public static final long DELAY_TIME = 10000;
+
         @Override
         public void run() {
             getDemeter(false);
             // Repeat this the same runnable code block again another 2 seconds
-            handler.postDelayed(runnableCode, 500);
+            handler.postDelayed(runnableCode, DELAY_TIME);
         }
     };
 
@@ -56,8 +58,9 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
             public void onError(NetworkError networkError) {
                 if (forceUpdate) {
                     view.removeWait();
-                    view.onFailure(networkError.getAppErrorMessage());
                 }
+                view.onFailure(networkError.getAppErrorMessage());
+
             }
         });
     }
@@ -74,7 +77,22 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
         handler.removeCallbacks(runnableCode);
     }
 
+
     @Override
-    public void setRelay(String name, boolean on) {
+    public void switchRelay(String name, boolean on) {
+        view.showWait();
+        repository.switchRelay(name, on, new CmlRepository.GetDemeterCallback() {
+            @Override
+            public void onSuccess(Demeter demeter) {
+                view.setList(demeter);
+                view.removeWait();
+            }
+
+            @Override
+            public void onError(NetworkError networkError) {
+                view.onFailure(networkError.getAppErrorMessage());
+                view.removeWait();
+            }
+        });
     }
 }
