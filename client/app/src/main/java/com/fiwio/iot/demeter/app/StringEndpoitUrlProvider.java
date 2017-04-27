@@ -8,6 +8,6 @@ package com.fiwio.iot.demeter.app;
 public class StringEndpoitUrlProvider implements EndpoitUrlProvider {
     @Override
     public String getUrl() {
-        return "http://192.168.3.69:8080";
+        return "http://192.168.2.15:8080";
     }
 }
