@@ -7,6 +7,7 @@ import com.fiwio.iot.data.CmlRepository;
 import com.fiwio.iot.data.DemeterRepository;
 import com.fiwio.iot.demeter.api.NetworkError;
 import com.fiwio.iot.demeter.api.model.Demeter;
+import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.di.ActivityScope;
 
 import javax.inject.Inject;
@@ -17,6 +18,7 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     private final RemoteControlContract.View view;
     private final DemeterRepository repository;
     private final Handler handler;
+    private final EndpoitUrlProvider endpoitUrlProvider;
 
     // Define the code block to be executed
     private Runnable runnableCode = new Runnable() {
@@ -32,9 +34,11 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
 
 
     @Inject
-    public RemoteControlPresenter(DemeterRepository repository, RemoteControlContract.View view) {
+    public RemoteControlPresenter(DemeterRepository repository, RemoteControlContract.View view,
+                                  EndpoitUrlProvider endpoitUrlProvider) {
         this.repository = repository;
         this.view = view;
+        this.endpoitUrlProvider = endpoitUrlProvider;
 
         handler = new Handler();
 
@@ -70,6 +74,7 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
         getDemeter(true);
         // Start the initial runnable task by posting through the handler
         handler.post(runnableCode);
+        view.showEndpoint(endpoitUrlProvider.getUrl());
     }
 
     public void onStop() {

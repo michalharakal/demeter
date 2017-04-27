@@ -14,6 +14,8 @@ public class RemoteControlContract {
         void onFailure(String appErrorMessage);
 
         void setList(Demeter demeter);
+
+        void showEndpoint(String url);
     }
 
     interface Presenter extends BasePresenter {

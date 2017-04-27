@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.fiwio.iot.demeter.api.model.Demeter;
 import com.fiwio.iot.demeter.api.model.Relay;
@@ -25,6 +26,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
 
     private ProgressBar progressBar;
     private RecyclerView list;
+    private TextView url;
 
 
     @Override
@@ -32,6 +34,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
 
         inject();
@@ -49,6 +52,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
     public void renderView() {
         list = (RecyclerView) findViewById(R.id.control_list);
         progressBar = (ProgressBar) findViewById(R.id.progress);
+        url = (TextView) findViewById(R.id.url);
     }
 
     public void init() {
@@ -105,6 +109,11 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
                 });
 
         list.setAdapter(adapter);
+    }
+
+    @Override
+    public void showEndpoint(String url) {
+        this.url.setText(url);
     }
 
 
