@@ -22,7 +22,7 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
 
     // Define the code block to be executed
     private Runnable runnableCode = new Runnable() {
-        public static final long DELAY_TIME = 10000;
+        public static final long DELAY_TIME = 300;
 
         @Override
         public void run() {

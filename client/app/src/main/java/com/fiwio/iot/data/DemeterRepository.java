@@ -9,22 +9,23 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DemeterRepository implements CmlRepository {
-    private final DemeterApi networkService;
+    private final Lazy<DemeterApi> networkService;
 
     @Inject
-    public DemeterRepository(DemeterApi networkService) {
+    public DemeterRepository(Lazy<DemeterApi> networkService) {
         this.networkService = networkService;
     }
 
     @Override
     public void getDemeter(final GetDemeterCallback callback) {
 
-        Call<Demeter> call = networkService.get();
+        Call<Demeter> call = networkService.get().get();
         call.enqueue(new Callback<Demeter>() {
             @Override
             public void onResponse(Call<Demeter> call, Response<Demeter> response) {
@@ -40,7 +41,7 @@ public class DemeterRepository implements CmlRepository {
 
     @Override
     public void switchRelay(final String name, final boolean on, final GetDemeterCallback callback) {
-        Call<Demeter> call = networkService.get();
+        Call<Demeter> call = networkService.get().get();
         call.enqueue(new Callback<Demeter>() {
             @Override
             public void onResponse(Call<Demeter> call, Response<Demeter> response) {
@@ -54,7 +55,7 @@ public class DemeterRepository implements CmlRepository {
                     }
                 }
 
-                Call<Demeter> post = networkService.set(answer);
+                Call<Demeter> post = networkService.get().set(answer);
                 post.enqueue(new Callback<Demeter>() {
                     @Override
                     public void onResponse(Call<Demeter> call, Response<Demeter> response) {

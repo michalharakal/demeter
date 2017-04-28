@@ -1,13 +1,20 @@
 package com.fiwio.iot.demeter.app;
 
 
-/**
- * Created by mharakal on 17.04.17.
- */
+import android.text.TextUtils;
 
 public class StringEndpoitUrlProvider implements EndpoitUrlProvider {
+
+    private String url = null;
+
     @Override
     public String getUrl() {
-        return "http://192.168.2.15:8080";
+        return TextUtils.isEmpty(url) ? "http://192.168.2.15:8080" : url;
+    }
+
+    @Override
+    public void setUrl(String url) {
+        this.url = url;
+
     }
 }
