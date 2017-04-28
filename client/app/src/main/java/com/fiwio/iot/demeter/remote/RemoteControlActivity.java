@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.fiwio.iot.demeter.api.model.Demeter;
 import com.fiwio.iot.demeter.api.model.Relay;
 import com.fiwio.iot.demeter.app.DemeterApplication;
+import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.remote.di.RemoteControlModule;
 import com.fiwo.iot.demeter.smart.R;
 
@@ -23,6 +24,9 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
 
     @Inject
     public RemoteControlPresenter presenter;
+
+    @Inject
+    protected EndpoitUrlProvider endpoitUrlProvider;
 
     private ProgressBar progressBar;
     private RecyclerView list;
@@ -38,6 +42,11 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
         setSupportActionBar(toolbar);
 
         inject();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            endpoitUrlProvider.setUrl(bundle.getString("host"));
+        }
 
         renderView();
         init();
@@ -121,4 +130,6 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
     public void setPresenter(RemoteControlContract.Presenter presenter) {
 
     }
+
+
 }

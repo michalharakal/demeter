@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 import com.fiwio.iot.demeter.api.DemeterApi;
+import com.fiwio.iot.demeter.discovery.NdsService;
 import com.google.android.things.pio.PeripheralManagerService;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class MainActivity extends Activity {
     private Handler handler;
     private Relays relays;
     private DemeterApi api;
+    private NdsService service;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,10 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        service = new NdsService(this);
+
+        service.startServer("demeter", null);
 
         PeripheralManagerService service = new PeripheralManagerService();
         Log.d(TAG, "Available GPIO: " + service.getGpioList());
@@ -60,6 +66,7 @@ public class MainActivity extends Activity {
         super.onDestroy();
         pioThread.quitSafely();
         api.stop();
+        service.stopServer();
     }
 
     private Runnable mBlinkRunnable = new Runnable() {

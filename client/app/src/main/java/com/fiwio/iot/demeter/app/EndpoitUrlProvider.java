@@ -6,4 +6,5 @@ package com.fiwio.iot.demeter.app;
 
 public interface EndpoitUrlProvider {
     String getUrl();
+    void setUrl(String url);
 }
