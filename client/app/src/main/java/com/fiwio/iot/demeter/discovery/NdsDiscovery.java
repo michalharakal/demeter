@@ -10,31 +10,31 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class NdsDiscovery implements NsdManager.DiscoveryListener {
+public class NdsDiscovery implements NsdManager.DiscoveryListener, MulticastDns {
     private static final String LOG_TAG = NdsDiscovery.class.getSimpleName();
     private static final String SERVICE_PREFIX = "cml";
     private static final String SERVICE_TYPE = "_socket._tcp.";
 
-    private final Handler handler;
 
     private final NsdManager nsdManager;
     private NsdManager.DiscoveryListener discoveryListener;
-    private NsdManager.RegistrationListener registrationListener;
 
-    private final DemerServiceFound demerServiceFound;
+    private DemerServiceFound demerServiceFound;
+    private Handler handler;
 
-    public NdsDiscovery(Context context, Handler handler, DemerServiceFound demerServiceFound) {
+    public NdsDiscovery(Context context) {
         nsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        this.handler = handler;
+    }
+
+    @Override
+    public void discoverServices(DemerServiceFound demerServiceFound, Handler handler) {
         this.demerServiceFound = demerServiceFound;
-    }
-
-    public void discoverServices() {
+        this.handler = handler;
         stopDiscovery();
-        nsdManager.discoverServices(
-                SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, this);
+        nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, this);
     }
 
+    @Override
     public void stopDiscovery() {
         if (discoveryListener != null) {
             try {
@@ -45,33 +45,21 @@ public class NdsDiscovery implements NsdManager.DiscoveryListener {
         }
     }
 
-    public void tearDown() {
-        if (registrationListener != null) {
-            try {
-                nsdManager.unregisterService(registrationListener);
-            } finally {
-            }
-            registrationListener = null;
-        }
-    }
-
-
     @Override
     public void onStartDiscoveryFailed(String serviceType, int errorCode) {
         Log.d(LOG_TAG, "failed" + serviceType);
-
+        demerServiceFound.onServiceSearchFailed();
     }
 
     @Override
     public void onStopDiscoveryFailed(String serviceType, int errorCode) {
         Log.d(LOG_TAG, "failed" + serviceType);
-
+        demerServiceFound.onServiceSearchFailed();
     }
 
     @Override
     public void onDiscoveryStarted(String serviceType) {
         Log.d(LOG_TAG, "Started" + serviceType);
-
 
     }
 
@@ -91,7 +79,6 @@ public class NdsDiscovery implements NsdManager.DiscoveryListener {
             @Override
             public void onServiceDiscoveryError() {
                 demerServiceFound.onServiceSearchFailed();
-
             }
 
             @Override
@@ -104,7 +91,7 @@ public class NdsDiscovery implements NsdManager.DiscoveryListener {
 
     @Override
     public void onServiceLost(NsdServiceInfo serviceInfo) {
-
+        demerServiceFound.onServiceSearchFailed();
     }
 }
 

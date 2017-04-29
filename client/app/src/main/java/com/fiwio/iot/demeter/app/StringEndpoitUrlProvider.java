@@ -9,7 +9,7 @@ public class StringEndpoitUrlProvider implements EndpoitUrlProvider {
 
     @Override
     public String getUrl() {
-        return TextUtils.isEmpty(url) ? "http://192.168.2.15:8080" : url;
+        return TextUtils.isEmpty(url) ? "http://192.168.1.5:8080" : url;
     }
 
     @Override
