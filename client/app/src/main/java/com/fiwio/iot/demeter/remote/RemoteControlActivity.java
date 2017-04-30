@@ -103,11 +103,12 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
 
     @Override
     public void onFailure(String appErrorMessage) {
-
+        url.setText(appErrorMessage);
     }
 
     @Override
     public void setList(Demeter demeter) {
+        url.setVisibility(View.GONE);
         RemoteControlListAdapter adapter = new RemoteControlListAdapter(getApplicationContext(),
                 demeter,
                 new RemoteControlListAdapter.OnItemClickListener() {
