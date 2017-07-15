@@ -14,6 +14,7 @@ import java.io.IOException;
 public class DemeterRelay implements DigitalIO {
 
     private static final String TAG = DemeterRelay.class.getSimpleName();
+
     private Gpio mLedGpio;
     private final String name;
 
@@ -31,6 +32,7 @@ public class DemeterRelay implements DigitalIO {
     public void setValue(DigitalValue value) {
         try {
             mLedGpio.setValue(value == DigitalValue.ON ? true : false);
+            Log.d(TAG, getName() + ((value == DigitalValue.ON) ? "ON" : "OFF"));
         } catch (IOException e) {
             Log.e(TAG, "error setting Relay " + name);
         }

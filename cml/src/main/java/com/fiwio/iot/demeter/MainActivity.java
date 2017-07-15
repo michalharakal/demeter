@@ -1,15 +1,15 @@
 package com.fiwio.iot.demeter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.fiwio.iot.demeter.device.mock.MockRelays;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
-import com.fiwio.iot.demeter.device.rpi3.DemeterDigitalPins;
 import com.fiwio.iot.demeter.discovery.NdsService;
+import com.fiwio.iot.demeter.fsm.FsmBackgroundService;
 import com.fiwio.iot.demeter.http.DemeterHttpServer;
 import com.google.android.things.pio.PeripheralManagerService;
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         pioThread.start();
         handler = new Handler(pioThread.getLooper());
         // instantiate a connection to our peripheral
-        relays = getLedStrip();
+        relays = ((DemeterApplication) getApplication()).getDemeter();
 
         try {
             api = new DemeterHttpServer(relays);
@@ -49,20 +49,12 @@ public class MainActivity extends Activity {
 
         PeripheralManagerService service = new PeripheralManagerService();
         Log.d(TAG, "Available GPIO: " + service.getGpioList());
-    }
 
-    /**
-     * As an example in this tutorial, you can toggle peripheral implementations with flavors,
-     * could also be done at runtime with shared preferences as an example
-     */
-    private DigitalPins getLedStrip() {
-        if (BuildConfig.MOCK_MODE) {
-            return new MockRelays();
-        } else {
-            return new DemeterDigitalPins();
-        }
-    }
 
+        final Intent intent = new Intent(Intent.ACTION_SYNC, null, this, FsmBackgroundService.class);
+        startService(intent);
+
+    }
 
     @Override
     public void onDestroy() {

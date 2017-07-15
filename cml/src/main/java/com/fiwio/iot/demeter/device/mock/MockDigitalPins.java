@@ -1,29 +1,25 @@
-package com.fiwio.iot.demeter.device.rpi3;
+package com.fiwio.iot.demeter.device.mock;
 
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
-import com.google.android.things.pio.PeripheralManagerService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+public class MockDigitalPins implements DigitalPins {
 
-public class DemeterDigitalPins implements DigitalPins {
+    private static final String TAG = MockDigitalPins.class.getSimpleName();
 
     private List<DigitalIO> inputs = new ArrayList<>();
     private List<DigitalIO> relays = new ArrayList<>();
 
-    public DemeterDigitalPins() {
+    public MockDigitalPins() {
+        relays.add(new MockDigitalIO("BCM23"));
+        relays.add(new MockDigitalIO("BCM24"));
+        relays.add(new MockDigitalIO("BCM22"));
 
-        PeripheralManagerService service = new PeripheralManagerService();
-
-        relays.add(new DemeterRelay(service, "BCM23")); // X3.8 barrel filling
-        relays.add(new DemeterRelay(service, "BCM24")); // X3.7 irrigating
-        relays.add(new DemeterRelay(service, "BCM22")); // X3.6
-
-        inputs.add(new DemeterInput(service, "BCM26")); // X4.5
-        inputs.add(new DemeterInput(service, "BCM16"));  // X4.6
-
+        inputs.add(new MockDigitalIO("BCM26"));
+        inputs.add(new MockDigitalIO("BCM16"));
     }
 
     @Override
