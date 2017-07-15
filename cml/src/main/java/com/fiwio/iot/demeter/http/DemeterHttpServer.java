@@ -7,6 +7,7 @@ import com.fiwio.iot.demeter.api.Relay;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
+import com.fiwio.iot.demeter.fsm.FlowersFsm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,6 +27,8 @@ public class DemeterHttpServer extends NanoHTTPD {
     private static final String TAG = DemeterHttpServer.class.getSimpleName();
 
     private final DigitalPins demeterRelays;
+    private final FlowersFsm fsm;
+
     private final Gson gson;
 
 
@@ -33,10 +36,12 @@ public class DemeterHttpServer extends NanoHTTPD {
      * Constructs an HTTP server on given port.
      *
      * @param demeterRelays
+     * @param fsm
      */
-    public DemeterHttpServer(DigitalPins demeterRelays) throws IOException {
+    public DemeterHttpServer(DigitalPins demeterRelays, FlowersFsm fsm) throws IOException {
         super(8080);
         this.demeterRelays = demeterRelays;
+        this.fsm = fsm;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
@@ -52,6 +57,9 @@ public class DemeterHttpServer extends NanoHTTPD {
         if (method == Method.GET) {
             if (path.contains("demeter")) {
                 return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
+            }
+            if (path.contains("fsm")) {
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", getFsmStatus());
             }
         }
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
@@ -75,6 +83,20 @@ public class DemeterHttpServer extends NanoHTTPD {
         }
 
         return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
+    }
+
+    private String getFsmStatus() {
+        JSONObject result = new JSONObject();
+        JSONObject fsmJson = new JSONObject();
+        try {
+            result.put("fsm", fsmJson);
+            fsmJson.put("state", fsm.getState().getText());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
     }
 
     private void processRequest(Demeter demeter) {

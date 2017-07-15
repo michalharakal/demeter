@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.discovery.NdsService;
+import com.fiwio.iot.demeter.fsm.FlowersFsm;
 import com.fiwio.iot.demeter.fsm.FsmBackgroundService;
 import com.fiwio.iot.demeter.http.DemeterHttpServer;
 import com.google.android.things.pio.PeripheralManagerService;
@@ -35,9 +36,10 @@ public class MainActivity extends Activity {
         handler = new Handler(pioThread.getLooper());
         // instantiate a connection to our peripheral
         relays = ((DemeterApplication) getApplication()).getDemeter();
+        FlowersFsm fsm = ((DemeterApplication) getApplication()).getFsm();
 
         try {
-            api = new DemeterHttpServer(relays);
+            api = new DemeterHttpServer(relays, fsm);
             api.start();
         } catch (IOException e) {
             e.printStackTrace();
