@@ -1,0 +1,57 @@
+ext {
+    minSdkVersion = 19
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.2'
+    renderscriptTargetApi = 19
+
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_7
+    targetCompatibilityVersion = JavaVersion.VERSION_1_7
+
+    supportLibVersion = "24.1.1"
+
+    playServicesVersion = "9.4.0"
+    runnerVersion = "0.5"
+    rulesVersion = "0.5"
+    espressoVersion = "2.2.2"
+
+    okhttp3Version = "3.6.0"
+    daggerVersion = "2.5"
+	ottoVersion = "1.3.8"
+    picassoVersion = "2.5.2"
+    butterKnifeVersion = "8.1.0"
+
+    fragmentsAnnotationVersion = "3.0.2"
+
+    gsonVersion = "2.4"
+    codecsVersion = "1.6"
+    commonsIoVersion = "1.3.2"
+    jackrabitVersion = "2.11.1"
+    atinternetVersion = "2.1.2"
+    hockeyAppVersion = "4.0.1"
+    simplexmlVersion = "2.1.0"
+    okhttpDigestVersion = "1.0"
+
+
+    cglibNodepVersion = "3.2.4"
+    javassistVersion = "3.20.0-GA"
+    objenesisVersion = "2.4"
+
+
+    vlcLibVersion = "1.9.8"
+    slf4jVersion = "1.7.25"
+    logbackSlf4jVersion = "1.1.1-6"
+
+
+    junitVersion = "4.12"
+    festassertVersion = "2.0M10"
+    festandroidVersion = "1.0.7"
+    mockitocoreVersion = "1.9.5"
+    powerMockVersion = "1.6.5"
+    powerMock = "1.6.5"
+    robolectricVersion = "3.1.4"
+    robolectricShadowsVersion = "3.0"
+    hamcrestVersion = "1.3"
+    meanbeanVersion = "2.0.3"
+}
+

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/com.squareup.retrofit/retrofit/**" />
+        <ignore path="**/com.squareup.retrofit2/retrofit/**" />
+        <ignore path="**/com.squareup.okio/okio/**" />
+        <ignore path="**/org.simpleframework/simple-xml/**" />
+    </issue>
+</lint>
