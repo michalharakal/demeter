@@ -3,7 +3,6 @@ package com.fiwio.iot.demeter.fsm;
 
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
-import com.google.common.annotations.VisibleForTesting;
 
 import org.joda.time.DateTime;
 
@@ -37,9 +36,7 @@ public class FlowersFsm {
     private final long irrigatingDuration;
     private final long barrelFillingDuration;
 
-
-    @VisibleForTesting
-    protected States getState() {
+    public States getState() {
         return (States) ctx.getState();
     }
 
@@ -51,13 +48,23 @@ public class FlowersFsm {
         flower_flow.safeTrigger(Events.fillingStart, ctx);
     }
 
-    enum States implements StateEnum {
-        CLOSED,
-        IRRIGATION_OPENING,
-        IRRIGATING,
-        BARREL_FILLING_OPENING,
-        BARREL_FILLING,
-        CLOSING
+    public enum States implements StateEnum {
+        CLOSED("CLOSED"),
+        IRRIGATION_OPENING("IRRIGATION_OPENING"),
+        IRRIGATING("IRRIGATING"),
+        BARREL_FILLING_OPENING("BARREL_FILLING_OPENING"),
+        BARREL_FILLING("BARREL_FILLING"),
+        CLOSING("CLOSING");
+
+        private final String fieldDescription;
+
+        States(String value) {
+            fieldDescription = value;
+        }
+
+        public String getText() {
+            return fieldDescription;
+        }
     }
 
     enum Events implements EventEnum {
@@ -106,7 +113,9 @@ public class FlowersFsm {
                         on(Events.fillingStart).to(States.BARREL_FILLING_OPENING).transit(
                                 on(Events.openingFillingDurationLapsed).to(States.BARREL_FILLING).transit(
                                         on(Events.stop).to(States.CLOSING),
-                                        on(Events.barrelFull).to(States.CLOSING)
+                                        on(Events.barrelFull).to(States.CLOSING).transit(
+                                                on(Events.closingDurationLapsed).to(States.CLOSED)
+                                        )
                                 )
                         )
                 );
@@ -167,12 +176,13 @@ public class FlowersFsm {
 
 
         flower_flow
-                .whenEnter(States.CLOSING, new ContextHandler<FlowContext>()
-
-                {
+                .whenEnter(States.CLOSING, new ContextHandler<FlowContext>() {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
+                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
+                        FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
+
                     }
                 });
     }
