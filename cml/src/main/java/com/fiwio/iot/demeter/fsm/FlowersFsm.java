@@ -13,13 +13,15 @@ import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
 import au.com.ds.ef.SyncExecutor;
 import au.com.ds.ef.call.ContextHandler;
-import au.com.ds.ef.err.LogicViolationError;
 
 import static au.com.ds.ef.FlowBuilder.from;
 import static au.com.ds.ef.FlowBuilder.on;
 
 
 public class FlowersFsm {
+
+    private static final String TAG = FlowersFsm.class.getSimpleName();
+
 
     private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
     private static final long TWENTY_MINUTES_IN_MS = 2 * TEN_MINUTES_IN_MS;
@@ -73,6 +75,10 @@ public class FlowersFsm {
         this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, TEN_MINUTES_IN_MS, TWENTY_MINUTES_IN_MS);
     }
 
+    public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve, long irrigatingDuration) {
+        this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, irrigatingDuration, TWENTY_MINUTES_IN_MS);
+    }
+
     // TODO replace with builder
     public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve, final long
             valveOpeningDuration, long irrigatingDuration, long barrelFillingDuration) {
@@ -119,85 +125,51 @@ public class FlowersFsm {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         FlowersFsm.this.barrel_pump.setValue(DigitalValue.ON);
-
-                        SimpleCountDownTimer timer = new SimpleCountDownTimer() {
-                            @Override
-                            public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
-                            }
-                        };
-                        timer.start(FlowersFsm.this.valveOpeningDuration);
+                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
+                        FlowersFsm.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
                     }
                 });
 
         flower_flow
-                .whenEnter(States.IRRIGATION_OPENING, new ContextHandler<FlowContext>() {
+                .whenEnter(States.IRRIGATION_OPENING, new ContextHandler<FlowContext>()
+
+                {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         FlowersFsm.this.barrel_valve.setValue(DigitalValue.ON);
-
-                        SimpleCountDownTimer timer = new SimpleCountDownTimer() {
-                            @Override
-                            public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
-                            }
-                        };
-                        timer.start(FlowersFsm.this.valveOpeningDuration);
+                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
+                        FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
 
                     }
                 });
 
         flower_flow
-                .whenEnter(States.IRRIGATING, new ContextHandler<FlowContext>() {
+                .whenEnter(States.IRRIGATING, new ContextHandler<FlowContext>()
+
+                {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        //FlowersFsm.this.wait();
-                        SimpleCountDownTimer timer = new SimpleCountDownTimer() {
-                            @Override
-                            public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
-                            }
-                        };
-                        timer.start(FlowersFsm.this.irrigatingDuration);
-
-
+                        Thread.sleep(FlowersFsm.this.irrigatingDuration);
+                        FlowersFsm.this.flower_flow.trigger(Events.stop, context);
                     }
                 });
 
         flower_flow
-                .whenEnter(States.BARREL_FILLING, new ContextHandler<FlowContext>() {
+                .whenEnter(States.BARREL_FILLING, new ContextHandler<FlowContext>()
+
+                {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-
-                        SimpleCountDownTimer timer = new SimpleCountDownTimer() {
-                            @Override
-                            public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
-                            }
-                        };
-                        timer.start(FlowersFsm.this.barrelFillingDuration);
+                        Thread.sleep(FlowersFsm.this.barrelFillingDuration);
+                        FlowersFsm.this.flower_flow.trigger(Events.stop, context);
                     }
                 });
 
 
         flower_flow
-                .whenEnter(States.CLOSING, new ContextHandler<FlowContext>() {
+                .whenEnter(States.CLOSING, new ContextHandler<FlowContext>()
+
+                {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
