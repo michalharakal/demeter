@@ -1,0 +1,26 @@
+apply plugin: 'findbugs'
+
+tasks.withType(FindBugs) {
+    print project.name
+    if (name.contains('Main')) {
+        println name
+        group = 'verification'
+        description = "Run findbugs static analysis for the build."
+
+        ignoreFailures = true
+        effort = "default"
+        reportLevel = "medium"
+
+        excludeFilter = file("$rootProject.rootDir/config/quality/findbugs.xml")
+
+        reports {
+            // Only one of HTML or XML can be turned on at the same time
+            html.enabled = !runningOnJenkins
+            xml.enabled = runningOnJenkins
+            xml.withMessages = true
+
+            html.destination = "$project.buildDir/reports/findbugs/findbug.html"
+            xml.destination = "$project.buildDir/reports/findbugs/findbug.xml"
+        }
+    }
+}

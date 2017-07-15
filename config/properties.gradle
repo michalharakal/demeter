@@ -1,0 +1,7 @@
+ext.set("nexusReleasesRepository", project.hasProperty("NEXUS_RELEASES_REPOSITORY") ? NEXUS_RELEASES_REPOSITORY : "")
+ext.set("nexusSnapshotsRepository", project.hasProperty("NEXUS_SNAPSHOTS_REPOSITORY") ? NEXUS_SNAPSHOTS_REPOSITORY : "")
+ext.set("nexusPublicRepository", project.hasProperty("NEXUS_PUBLIC_REPOSITORY") ? NEXUS_PUBLIC_REPOSITORY : "")
+ext.set("nexusUsername", System.getenv('SA_WBENCH_2_USER') ?: project.hasProperty("NEXUS_USERNAME") ? NEXUS_USERNAME : "")
+ext.set("nexusPassword", System.getenv('SA_WBENCH_2_PW') ?: project.hasProperty("NEXUS_PASSWORD") ? NEXUS_PASSWORD : "")
+
+ext.set("runningOnJenkins", System.getenv('JENKINS_URL') != null)

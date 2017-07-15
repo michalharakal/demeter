@@ -1,0 +1,210 @@
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'cpd'
+apply plugin: 'jacoco'
+
+checkstyle {
+	toolVersion = '6.10.1'
+}
+
+jacoco {
+	toolVersion = "0.7.9"
+}
+
+if (android.hasProperty('applicationVariants')) {
+	android.applicationVariants.all { variant ->
+		createQualityTasks("", variant)
+	}
+} else {
+	if (android.hasProperty('libraryVariants')) {
+		android.libraryVariants.all { variant ->
+			createQualityTasks(project.name.capitalize().replaceAll("-",""), variant)
+		}
+	}
+}
+
+// create quality tasks for library or application variants
+def createQualityTasks(taskNamePrefix, variant) {
+	def productFlavorNames = variant.productFlavors.collect { it.name.capitalize() }
+	if (productFlavorNames.isEmpty()) {
+		productFlavorNames = [""]
+	}
+	productFlavorNames = productFlavorNames.join('')
+
+	def variationPath = variant.buildType.name
+	def variationName = variant.name.capitalize()
+
+	if (productFlavorNames != null && !productFlavorNames.isEmpty()) {
+		variationPath = productFlavorNames + "/${variationPath}"
+		variationName = productFlavorNames + "${variationPath}"
+	}
+
+	task("findbugs${taskNamePrefix.capitalize()}${variant.name.capitalize()}", type: FindBugs) {
+		group = 'verification'
+		description = "Run PMD static analysis for the ${variant.name} build."
+
+
+		ignoreFailures = true
+		effort = "default"
+		reportLevel = "medium"
+
+		classes = files("$project.buildDir/intermediates/classes/${variationPath}")
+		excludeFilter = file("$rootProject.rootDir/config/quality/findbugs.xml")
+
+		source = variant.javaCompile.source
+		classpath = files()
+
+		reports {
+			// Only one of HTML or XML can be turned on at the same time
+			html.enabled = !runningOnJenkins
+			xml.enabled = runningOnJenkins
+			xml.withMessages = true
+
+			html.destination = "$project.buildDir/reports/findbugs/${variationName}/findbug.html"
+			xml.destination = "$project.buildDir/reports/findbugs/${variationName}/findbug.xml"
+		}
+
+		dependsOn "compile${variant.name.capitalize()}JavaWithJavac"
+	}
+
+	task("pmd${taskNamePrefix.capitalize()}${variant.name.capitalize()}", type: Pmd) {
+		group = 'verification'
+		description = "Run PMD static analysis for the ${variant.name} build."
+
+		ruleSetFiles = files("${project.rootDir}/config/quality/pmd.xml")
+		ignoreFailures = false
+		ruleSets = []
+
+		source 'src'
+		include '**/*.java'
+		exclude '**/gen/**'
+
+		ignoreFailures = true
+
+		reports {
+			xml.enabled = runningOnJenkins
+			html.enabled = !runningOnJenkins
+			xml {
+				destination "$project.buildDir/reports/pmd/${variationName}/pmd.xml"
+			}
+			html {
+				destination "$project.buildDir/reports/pmd/${variationName}/pmd.html"
+			}
+		}
+		dependsOn "compile${variant.name.capitalize()}JavaWithJavac"
+	}
+
+	task("checkstyle${taskNamePrefix.capitalize()}${variant.name.capitalize()}", type: Checkstyle) {
+		group = 'verification'
+		description = "Run checkstyle static analysis for the ${variant.name} build."
+
+		configFile file("${project.rootDir}/config/quality/checkstyle/AndroidStyle.xml")
+		source 'src'
+		include '**/*.java'
+		exclude '**/gen/**'
+
+		ignoreFailures true
+
+		classpath = files()
+
+		checkstyleClasspath = files()
+
+		dependsOn "compile${variant.name.capitalize()}JavaWithJavac"
+	}
+
+	cpdCheck {
+		source = variant.javaCompile.source
+		ignoreFailures true
+		reports {
+			text.enabled = !runningOnJenkins
+			xml.enabled = runningOnJenkins
+		}
+	}
+
+
+	task("cpd${taskNamePrefix.capitalize()}${variant.name.capitalize()}") {
+		group = 'verification'
+		description = "Run cpd static analysis from finbug tool for the ${variant.name} build."
+
+		cpdCheck {
+			source = variant.javaCompile.source
+			ignoreFailures true
+			reports {
+				text.enabled = !runningOnJenkins
+				xml.enabled = runningOnJenkins
+			}
+		}
+		dependsOn "compile${variant.name.capitalize()}JavaWithJavac"
+	}
+
+	task("test${taskNamePrefix.capitalize()}${variant.name.capitalize()}WithCoverage", type: JacocoReport) {
+		group = 'verification'
+		description = "Run unit test for the ${variant.name} build with Jacoco code coverage reports."
+
+		classDirectories = fileTree(
+				dir: variant.javaCompile.destinationDir,
+				excludes: ['**/R.class',
+						   '**/R$*.class',
+						   '**/*$ViewInjector*.*',
+						   '**/*$ViewBinder*.*',
+						   '**/*$*.*',
+
+						   '**/BuildConfig.*',
+						   '**/Manifest*.*',
+						   '**/*Fragment.*',
+//						   '**/*Adapter.*',
+						   '**/*Activity.*',
+						   '**/*View.*',
+						   '**/*RawQuery.*',
+						   '**/*Query.*',
+						   '**/*Mapper.*',
+						   '**/*Listener*.*',
+						   '**/*Dialog*.*',
+						   '**/*Receiver*.*',
+						   '**/*Service*.*',
+						   '**/*Event.*',
+						   '**/*Constants.*',
+						   '**/*_Factory.*',
+						   '**/*_MembersInjector.*',
+						   '**/*Builder.*',
+
+						   '**/de/telekom/smarthomeb2c/dagger/*',
+						   '**/de/telekom/smarthomeb2c/commons/crypto/*',
+						   '**/de/telekom/uikit/*',
+						   '**/de/telekom/smarthomeb2c/cameras/database/model/*',
+						   '**/de/telekom/smarthomeb2c/commons/fragment/*',
+						   '**/de/telekom/smarthomeb2c/commons/widget/*',
+						   '**/de/telekom/smarthomeb2c/situations/database/model/*',
+						   '**/de/telekom/smarthomeb2c/situations/ui/adapter/*',
+						   '**/de/telekom/smarthomeb2c/situations/database/model/*',
+						   '**/de/telekom/smarthomeb2c/heating/widgets/*',
+						   '**/de/telekom/smarthomeb2c/commons/domain/*',
+						   '**/de/telekom/smarthomeb2c/alarm/view/*',
+						   '**/de/telekom/smarthomeb2c/commons/view/*',
+						   '**/de/telekom/smarthomeb2c/situations/util/enums/*',
+						   '**/de/telekom/smarthomeb2c/situations/json/recipes/*',
+						   '**/de/telekom/smarthomeb2c/situations/view/*',
+						   '**/de/telekom/smarthomeb2c/messages/event/*',
+						   '**/de/telekom/smarthomeb2c/messages/fragment/*',
+						   '**/de/telekom/smarthomeb2c/commons/ui/*',
+						   '**/com/qivicon/streaming/rtsp/util/*',
+						   '**/com/hannesdorfmann/fragmentargs/*']
+		)
+		sourceDirectories = files(variant.javaCompile.source)
+		executionData = files("${buildDir}/jacoco/test${variant.name.capitalize()}UnitTest.exec")
+
+		onlyIf = {
+			true
+		}
+
+		reports {
+			xml.enabled true
+			html.enabled = true
+			xml.destination "${buildDir}/reports/jacoco/${variant.name}/${variant.name}.xml"
+			html.destination "${buildDir}/reports/jacoco/${variant.name}/html"
+		}
+
+		dependsOn "test${variant.name.capitalize()}UnitTest"
+	}
+}

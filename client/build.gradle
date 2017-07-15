@@ -1,30 +1,64 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'com.android.application'
 
-buildscript {
-    repositories {
-        jcenter()
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.fiwo.iot.demeter.smart"
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+    compileOptions {
+        targetCompatibility 1.7
+        sourceCompatibility 1.7
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
 
-ext {
-    okhttp_version = "3.6.0"
-    daggerVersion = "2.10"
-    retrofit_version = "2.2.0"
-    junit_version = "4.12"
-    jodatime_version = "2.9.3"
-    rxandroid_version = "2.0.1";
-    rxjava_version = "2.0.1";
+
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp_version"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit_version"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofit_version"
+    compile "com.squareup.retrofit2:converter-scalars:$rootProject.retrofit_version"
+
+    compile "com.google.dagger:dagger-android:$rootProject.daggerVersion"
+    compile "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+    // if you use the support libraries
+    compile "com.google.dagger:dagger:$rootProject.daggerVersion"
+
+    annotationProcessor "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+
+
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'joda-time:joda-time:2.9.4'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-v4:25.3.1'
+    testCompile 'junit:junit:4.12'
 }
