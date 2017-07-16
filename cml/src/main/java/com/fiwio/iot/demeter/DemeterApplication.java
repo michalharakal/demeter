@@ -4,11 +4,16 @@ import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
 
+import com.evernote.android.job.JobManager;
 import com.fiwio.iot.demeter.device.mock.MockDigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.rpi3.DemeterDigitalPins;
+import com.fiwio.iot.demeter.events.DemeterEventBus;
+import com.fiwio.iot.demeter.events.IEventBus;
 import com.fiwio.iot.demeter.fsm.FlowersFsm;
+import com.fiwio.iot.demeter.scheduler.ReminderEngine;
+import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -16,18 +21,24 @@ public class DemeterApplication extends Application {
 
     private DigitalPins demeter;
     private FlowersFsm fsm;
+    private IEventBus eventBus;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.setTimeZone("Europe/Berlin");
 
         JodaTimeAndroid.init(this);
 
         demeter = createDeviceImageInstance();
         fsm = createFlowersFsm();
+        eventBus = new DemeterEventBus();
+
+        ReminderEngine reminderEngine = new ReminderEngine(this, eventBus);
+
+        JobManager.create(this).addJobCreator(new ReminderJobCreator(reminderEngine));
     }
 
     private DigitalPins createDeviceImageInstance() {
@@ -53,4 +64,7 @@ public class DemeterApplication extends Application {
         return fsm;
     }
 
+    public IEventBus getEventBus() {
+        return eventBus;
+    }
 }

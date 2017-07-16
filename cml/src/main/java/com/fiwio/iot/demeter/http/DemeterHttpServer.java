@@ -6,10 +6,15 @@ import com.fatboyindustrial.gsonjodatime.Converters;
 import com.fiwio.iot.demeter.api.Demeter;
 import com.fiwio.iot.demeter.api.FsmCommand;
 import com.fiwio.iot.demeter.api.Relay;
+import com.fiwio.iot.demeter.api.Task;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
+import com.fiwio.iot.demeter.events.FireFsmEvent;
+import com.fiwio.iot.demeter.events.IEventBus;
 import com.fiwio.iot.demeter.fsm.FlowersFsm;
+import com.fiwio.iot.demeter.scheduler.Reminder;
+import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -31,20 +36,19 @@ public class DemeterHttpServer extends NanoHTTPD {
 
     private final DigitalPins demeterRelays;
     private final FlowersFsm fsm;
+    private final IEventBus eventBus;
+    private final ReminderEngine reminderEngine;
 
     private final Gson gson;
 
 
-    /**
-     * Constructs an HTTP server on given port.
-     *
-     * @param demeterRelays
-     * @param fsm
-     */
-    public DemeterHttpServer(DigitalPins demeterRelays, FlowersFsm fsm) throws IOException {
+    public DemeterHttpServer(DigitalPins demeterRelays, FlowersFsm fsm, IEventBus eventBus, ReminderEngine reminderEngine) throws
+            IOException {
         super(8080);
         this.demeterRelays = demeterRelays;
         this.fsm = fsm;
+        this.eventBus = eventBus;
+        this.reminderEngine = reminderEngine;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
 
@@ -66,6 +70,9 @@ public class DemeterHttpServer extends NanoHTTPD {
             if (path.contains("fsm")) {
                 return newFixedLengthResponse(Response.Status.OK, "application/javascript", getFsmStatus());
             }
+            if (path.contains("schedule")) {
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
+            }
         }
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {
@@ -80,6 +87,14 @@ public class DemeterHttpServer extends NanoHTTPD {
                     processFsmRequest(gson.fromJson(postBody, FsmCommand.class));
                     return newFixedLengthResponse(Response.Status.OK, "application/javascript", getFsmStatus());
                 }
+
+                if (path.contains("schedule")) {
+                    processTaskRequest(gson.fromJson(postBody, Task.class));
+                    return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
+
+                }
+
+
             } catch (IOException ioe) {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
             } catch (ResponseException re) {
@@ -90,8 +105,37 @@ public class DemeterHttpServer extends NanoHTTPD {
         return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
     }
 
+    private void processTaskRequest(Task task) {
+
+    }
+
+    private String getScheduleStatus() {
+        JSONObject object = new JSONObject();
+        JSONArray jobs = new JSONArray();
+        try {
+            object.put("jobs", jobs);
+
+            List<Reminder> remonders = reminderEngine.getReminders();
+            for (Reminder reminder : remonders) {
+                final JSONObject reminderObj = new JSONObject();
+                reminderObj.put("id", reminder.getId());
+                reminderObj.put("timestamp", reminder.getTimestamp());
+                reminderObj.put("jobid", reminder.getJobId());
+                reminderObj.put("jobname", reminder.getJobName());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return object.toString();
+    }
+
     private void processFsmRequest(FsmCommand command) {
         Log.d(TAG, "processing" + gson.toJson(command));
+        reminderEngine.createNewReminder(command.getTime().getMillis(), command.getCommnad());
+        eventBus.post(new FireFsmEvent(command.getCommnad(), command.getFsm()));
     }
 
     private String getFsmStatus() {

@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,7 +29,7 @@ public class FlowersFsmTest {
     public void valvesClosedOnStart() {
         FlowersFsm fsm = new FlowersFsm(barrel_pump, barrel_valve, 10, 10, 10);
         fsm.run();
-        Assert.assertThat(fsm.getState(), is(equalTo(FlowersFsm.States.CLOSED)));
+        assertThat(fsm.getState(), is(equalTo(FlowersFsm.States.CLOSED)));
         verify(barrel_pump).setValue(DigitalValue.OFF);
     }
 

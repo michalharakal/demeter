@@ -3,7 +3,11 @@ package com.fiwio.iot.demeter.fsm;
 
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
+import com.fiwio.iot.demeter.events.FireFsmEvent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.joda.time.DateTime;
 
 import au.com.ds.ef.EasyFlow;
@@ -12,6 +16,7 @@ import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
 import au.com.ds.ef.SyncExecutor;
 import au.com.ds.ef.call.ContextHandler;
+import au.com.ds.ef.err.LogicViolationError;
 
 import static au.com.ds.ef.FlowBuilder.from;
 import static au.com.ds.ef.FlowBuilder.on;
@@ -46,6 +51,20 @@ public class FlowersFsm {
 
     public void fillBarrel() {
         flower_flow.safeTrigger(Events.fillingStart, ctx);
+    }
+
+    public void trigger(String command) {
+        if (command != null && (!"".equals(command))) {
+            if ("irrigate".equals(command)) {
+                flower_flow.safeTrigger(Events.irrigationStart, ctx);
+            }
+            if ("fill".equals(command)) {
+                flower_flow.safeTrigger(Events.fillingStart, ctx);
+            }
+            if ("stop".equals(command)) {
+                flower_flow.safeTrigger(Events.stop, ctx);
+            }
+        }
     }
 
     public enum States implements StateEnum {
@@ -99,6 +118,10 @@ public class FlowersFsm {
     // TODO replace with builder
     public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve, final long
             valveOpeningDuration, long irrigatingDuration, long barrelFillingDuration) {
+
+        EventBus.getDefault().register(this);
+
+
         this.barrel_pump = barrel_pump;
         this.barrel_valve = barrel_valve;
 
@@ -124,7 +147,8 @@ public class FlowersFsm {
                                 on(Events.openingFillingDurationLapsed).to(States.BARREL_FILLING).transit(
                                         on(Events.stop).to(States.CLOSING),
                                         on(Events.barrelFull).to(States.CLOSING)
-                                )
+                                ),
+                                on(Events.stop).to(States.CLOSING)
                         )
                 );
 
@@ -142,8 +166,18 @@ public class FlowersFsm {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         FlowersFsm.this.barrel_pump.setValue(DigitalValue.ON);
-                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
+
+                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                            @Override
+                            public void finished() {
+                                try {
+                                    FlowersFsm.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
+                                } catch (LogicViolationError logicViolationError) {
+                                    logicViolationError.printStackTrace();
+                                }
+                            }
+                        }).start();
+
                     }
                 });
 
@@ -154,9 +188,17 @@ public class FlowersFsm {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         FlowersFsm.this.barrel_valve.setValue(DigitalValue.ON);
-                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
 
+                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                            @Override
+                            public void finished() {
+                                try {
+                                    FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
+                                } catch (LogicViolationError logicViolationError) {
+                                    logicViolationError.printStackTrace();
+                                }
+                            }
+                        }).start();
                     }
                 });
 
@@ -166,8 +208,16 @@ public class FlowersFsm {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        Thread.sleep(FlowersFsm.this.irrigatingDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.stop, context);
+                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.irrigatingDuration) {
+                            @Override
+                            public void finished() {
+                                try {
+                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
+                                } catch (LogicViolationError logicViolationError) {
+                                    logicViolationError.printStackTrace();
+                                }
+                            }
+                        }).start();
                     }
                 });
 
@@ -177,8 +227,17 @@ public class FlowersFsm {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        Thread.sleep(FlowersFsm.this.barrelFillingDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.stop, context);
+                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.barrelFillingDuration) {
+                            @Override
+                            public void finished() {
+                                try {
+                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
+                                } catch (LogicViolationError logicViolationError) {
+                                    logicViolationError.printStackTrace();
+                                }
+                            }
+                        }).start();
+
                     }
                 });
 
@@ -188,11 +247,24 @@ public class FlowersFsm {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
-                        Thread.sleep(FlowersFsm.this.valveOpeningDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.closingDurationLapsed, context);
+                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                            @Override
+                            public void finished() {
+                                try {
+                                    FlowersFsm.this.flower_flow.trigger(Events.closingDurationLapsed, context);
+                                } catch (LogicViolationError logicViolationError) {
+                                    logicViolationError.printStackTrace();
+                                }
+                            }
+                        }).start();
 
                     }
                 });
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onFireFsmEvent(FireFsmEvent event) {
+        trigger(event.command);
     }
 
     public void run() {
