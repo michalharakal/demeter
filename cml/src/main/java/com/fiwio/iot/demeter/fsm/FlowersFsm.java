@@ -67,15 +67,25 @@ public class FlowersFsm {
         }
     }
 
-    enum Events implements EventEnum {
-        irrigationStart,
-        fillingStart,
-        stop,
-        openingIrrigationDurationLapsed,
-        irrigationDurationLapsed,
-        openingFillingDurationLapsed,
-        barrelFull,
-        closingDurationLapsed
+    public enum Events implements EventEnum {
+        irrigationStart("irrigate"),
+        fillingStart("fill"),
+        stop("stop"),
+        openingIrrigationDurationLapsed("openingIrrigationDurationLapsed"),
+        irrigationDurationLapsed("irrigationDurationLapsed"),
+        openingFillingDurationLapsed("openingFillingDurationLapsed"),
+        barrelFull("barrelFull"),
+        closingDurationLapsed("closingDurationLapsed");
+
+        private final String fieldDescription;
+
+        Events(String value) {
+            fieldDescription = value;
+        }
+
+        public String getText() {
+            return fieldDescription;
+        }
     }
 
     public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve) {
@@ -113,9 +123,7 @@ public class FlowersFsm {
                         on(Events.fillingStart).to(States.BARREL_FILLING_OPENING).transit(
                                 on(Events.openingFillingDurationLapsed).to(States.BARREL_FILLING).transit(
                                         on(Events.stop).to(States.CLOSING),
-                                        on(Events.barrelFull).to(States.CLOSING).transit(
-                                                on(Events.closingDurationLapsed).to(States.CLOSED)
-                                        )
+                                        on(Events.barrelFull).to(States.CLOSING)
                                 )
                         )
                 );
@@ -181,7 +189,7 @@ public class FlowersFsm {
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
                         Thread.sleep(FlowersFsm.this.valveOpeningDuration);
-                        FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
+                        FlowersFsm.this.flower_flow.trigger(Events.closingDurationLapsed, context);
 
                     }
                 });
