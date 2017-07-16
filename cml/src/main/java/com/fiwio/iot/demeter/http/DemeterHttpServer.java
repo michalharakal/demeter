@@ -2,7 +2,9 @@ package com.fiwio.iot.demeter.http;
 
 import android.util.Log;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.fiwio.iot.demeter.api.Demeter;
+import com.fiwio.iot.demeter.api.FsmCommand;
 import com.fiwio.iot.demeter.api.Relay;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
@@ -11,6 +13,7 @@ import com.fiwio.iot.demeter.fsm.FlowersFsm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +47,9 @@ public class DemeterHttpServer extends NanoHTTPD {
         this.fsm = fsm;
 
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gson = gsonBuilder.create();
+
+        // add joda time support
+        gson = Converters.registerDateTime(gsonBuilder).create();
     }
 
 
@@ -68,28 +73,39 @@ public class DemeterHttpServer extends NanoHTTPD {
                 session.parseBody(files);
                 // get the POST body
                 String postBody = files.get("postData");
-                processRequest(gson.fromJson(postBody, Demeter.class));
+                if (path.contains("demeter")) {
+                    processDemeterRequest(gson.fromJson(postBody, Demeter.class));
+                }
+                if (path.contains("fsm")) {
+                    processFsmRequest(gson.fromJson(postBody, FsmCommand.class));
+                    return newFixedLengthResponse(Response.Status.OK, "application/javascript", getFsmStatus());
+                }
             } catch (IOException ioe) {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
             } catch (ResponseException re) {
                 return newFixedLengthResponse(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
             }
-
-
-            // or you can access the POST request's parameters
-            String postBody = session.getParms().get("relay");
-
-            Log.d(TAG, "POST body " + postBody);
         }
 
         return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
     }
 
+    private void processFsmRequest(FsmCommand command) {
+        Log.d(TAG, "processing" + gson.toJson(command));
+    }
+
     private String getFsmStatus() {
         JSONObject result = new JSONObject();
+        JSONArray machines = new JSONArray();
+
         JSONObject fsmJson = new JSONObject();
         try {
-            result.put("fsm", fsmJson);
+
+            result.put("fsm", machines);
+
+            machines.put(0, fsmJson);
+            fsmJson.put("name", "garden");
+            fsmJson.put("time", new DateTime());
             fsmJson.put("state", fsm.getState().getText());
 
         } catch (JSONException e) {
@@ -99,7 +115,7 @@ public class DemeterHttpServer extends NanoHTTPD {
         return result.toString();
     }
 
-    private void processRequest(Demeter demeter) {
+    private void processDemeterRequest(Demeter demeter) {
         Log.d(TAG, "processing" + gson.toJson(demeter));
         List<Relay> relays = demeter.getRelays();
         for (Relay relay : relays) {

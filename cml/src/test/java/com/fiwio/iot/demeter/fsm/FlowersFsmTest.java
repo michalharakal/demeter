@@ -42,8 +42,8 @@ public class FlowersFsmTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        verify(barrel_pump, times(2)).setValue(DigitalValue.OFF);
-        verify(barrel_valve, times(2)).setValue(DigitalValue.OFF);
+        verify(barrel_pump, times(3)).setValue(DigitalValue.OFF);
+        verify(barrel_valve, times(3)).setValue(DigitalValue.OFF);
         verify(barrel_valve, times(1)).setValue(DigitalValue.ON);
     }
 
@@ -57,7 +57,7 @@ public class FlowersFsmTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        verify(barrel_pump, times(2)).setValue(DigitalValue.OFF);
+        verify(barrel_pump, times(3)).setValue(DigitalValue.OFF);
         verify(barrel_pump, times(1)).setValue(DigitalValue.ON);
     }
 
