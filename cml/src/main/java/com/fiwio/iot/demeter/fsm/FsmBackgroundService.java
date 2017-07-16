@@ -3,9 +3,16 @@ package com.fiwio.iot.demeter.fsm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.fiwio.iot.demeter.DemeterApplication;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
+import com.fiwio.iot.demeter.events.FireFsmEvent;
+import com.fiwio.iot.demeter.events.IEventBus;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class FsmBackgroundService extends IntentService {
     private static final String LOG_TAG = FsmBackgroundService.class.getSimpleName();
@@ -13,7 +20,10 @@ public class FsmBackgroundService extends IntentService {
     private Thread backgroundJob;
 
     private Object LOCK = new Object();
+
     private DigitalPins demeter;
+    private IEventBus eventBus;
+    private FlowersFsm fsm;
 
     @Override
     public IBinder onBind(final Intent intent) {
@@ -26,11 +36,29 @@ public class FsmBackgroundService extends IntentService {
 
         demeter = ((DemeterApplication) getApplication()).getDemeter();
 
-        FlowersFsm fsm = ((DemeterApplication) getApplication()).getFsm();
+        fsm = ((DemeterApplication) getApplication()).getFsm();
+
+        eventBus = ((DemeterApplication) getApplication()).getEventBus();
 
         backgroundJob = FsmRunnable.getInstance(fsm);
 
         backgroundJob.start();
+
+        EventBus.getDefault().register(this);
+        Log.d(LOG_TAG, "Eventbus registered");
+
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        eventBus.unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onFireFsmEvent(FireFsmEvent event) {
+        fsm.trigger(event.command);
     }
 
 

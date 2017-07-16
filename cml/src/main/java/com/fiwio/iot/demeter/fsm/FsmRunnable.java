@@ -24,6 +24,5 @@ public class FsmRunnable implements Runnable {
     @Override
     public void run() {
         fsm.run();
-        fsm.irrigate();
     }
 }
