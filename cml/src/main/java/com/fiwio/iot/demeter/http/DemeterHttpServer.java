@@ -2,7 +2,6 @@ package com.fiwio.iot.demeter.http;
 
 import android.util.Log;
 
-import com.fatboyindustrial.gsonjodatime.Converters;
 import com.fiwio.iot.demeter.api.Demeter;
 import com.fiwio.iot.demeter.api.FsmCommand;
 import com.fiwio.iot.demeter.api.Relay;
@@ -53,7 +52,7 @@ public class DemeterHttpServer extends NanoHTTPD {
         GsonBuilder gsonBuilder = new GsonBuilder();
 
         // add joda time support
-        gson = Converters.registerDateTime(gsonBuilder).create();
+        gson = gsonBuilder.create();
     }
 
 
@@ -72,6 +71,9 @@ public class DemeterHttpServer extends NanoHTTPD {
             }
             if (path.contains("schedule")) {
                 return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
+            }
+            if (path.contains("knx")) {
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", getKnxStatus());
             }
         }
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
@@ -105,6 +107,32 @@ public class DemeterHttpServer extends NanoHTTPD {
         return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
     }
 
+    private String getKnxStatus() {
+        JSONObject object = new JSONObject();
+        JSONArray plugs = new JSONArray();
+        try {
+            object.put("plugs", plugs);
+
+            JSONObject plug1 = new JSONObject();
+            plug1.put("id", 1);
+            plug1.put("name", "Licht Küche");
+            plug1.put("value", true);
+            plugs.put(0, plug1);
+
+            JSONObject plug2 = new JSONObject();
+            plug2.put("id", 2);
+            plug2.put("name", "Licht Bad");
+            plug2.put("value", true);
+            plugs.put(1, plug2);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return object.toString();
+    }
+
     private void processTaskRequest(Task task) {
 
     }
@@ -115,6 +143,7 @@ public class DemeterHttpServer extends NanoHTTPD {
         try {
             object.put("jobs", jobs);
 
+            int i = 0;
             List<Reminder> remonders = reminderEngine.getReminders();
             for (Reminder reminder : remonders) {
                 final JSONObject reminderObj = new JSONObject();
@@ -122,6 +151,7 @@ public class DemeterHttpServer extends NanoHTTPD {
                 reminderObj.put("timestamp", reminder.getTimestamp());
                 reminderObj.put("jobid", reminder.getJobId());
                 reminderObj.put("jobname", reminder.getJobName());
+                jobs.put(i, reminderObj);
             }
 
         } catch (JSONException e) {
