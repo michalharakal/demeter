@@ -8,7 +8,7 @@ import com.evernote.android.job.JobManager;
 import com.fiwio.iot.demeter.device.mock.MockDigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
-import com.fiwio.iot.demeter.device.rpi3.DemeterDigitalPins;
+import com.fiwio.iot.demeter.device.pifacedigital2.DemeterDigitalPins;
 import com.fiwio.iot.demeter.events.DemeterEventBus;
 import com.fiwio.iot.demeter.events.IEventBus;
 import com.fiwio.iot.demeter.fsm.FlowersFsm;
@@ -16,6 +16,8 @@ import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.io.IOException;
 
 public class DemeterApplication extends Application {
 
@@ -45,8 +47,13 @@ public class DemeterApplication extends Application {
         if (BuildConfig.MOCK_MODE) {
             return new MockDigitalPins();
         } else {
-            return new DemeterDigitalPins();
+            try {
+                return new DemeterDigitalPins();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return null;
     }
 
     private FlowersFsm createFlowersFsm() {
