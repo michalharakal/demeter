@@ -204,10 +204,10 @@ public class DemeterHttpServer extends NanoHTTPD {
         }
 
         for (DigitalIO digitalOutput : demeterRelays.getOutputs()) {
-            Input outputObject = new Input();
+            Relay outputObject = new Relay();
             outputObject.setName(digitalOutput.getName());
             outputObject.setValue(digitalOutput.getValue() == DigitalValue.OFF ? "OFF" : "ON");
-            demeter.addInputsItem(outputObject);
+            demeter.addRelaysItem(outputObject);
         }
 
         return gson.toJson(demeter);

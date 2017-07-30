@@ -74,7 +74,7 @@ public class DemeterDigitalPins implements DigitalPins, DigitalIoCallback {
     @Override
     public boolean onGpioEdge(DigitalIO digitalIO) {
         if (digitalIO.getValue() == DigitalValue.ON) {
-            EventBus.getDefault().post(new FireFsmEvent("stop", "garden"));
+            EventBus.getDefault().post(new FireFsmEvent("garden", "stop"));
         }
         return true;
     }
