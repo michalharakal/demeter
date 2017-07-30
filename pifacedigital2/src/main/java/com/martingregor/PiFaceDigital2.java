@@ -153,7 +153,7 @@ public class PiFaceDigital2 implements AutoCloseable {
             writeBuffer3[2] = 0;
             mSpiDevice.transfer(writeBuffer3, readBuffer3, writeBuffer3.length);
 
-            Log.d(TAG, "readSpiDevice - " + bytesToHex(readBuffer3));
+          //  Log.d(TAG, "readSpiDevice - " + bytesToHex(readBuffer3));
 
             return readBuffer3[2];
         }

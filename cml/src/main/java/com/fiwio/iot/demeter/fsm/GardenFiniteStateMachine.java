@@ -16,15 +16,14 @@ import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
 import au.com.ds.ef.SyncExecutor;
 import au.com.ds.ef.call.ContextHandler;
-import au.com.ds.ef.err.LogicViolationError;
 
 import static au.com.ds.ef.FlowBuilder.from;
 import static au.com.ds.ef.FlowBuilder.on;
 
 
-public class FlowersFsm {
+public class GardenFiniteStateMachine {
 
-    private static final String TAG = FlowersFsm.class.getSimpleName();
+    private static final String TAG = GardenFiniteStateMachine.class.getSimpleName();
 
 
     private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
@@ -53,18 +52,24 @@ public class FlowersFsm {
         flower_flow.safeTrigger(Events.fillingStart, ctx);
     }
 
+    /**
+     * iterate over possible commnad to find matching a triger event
+     *
+     * @param command
+     */
     public void trigger(String command) {
+
         if (command != null && (!"".equals(command))) {
-            if ("irrigate".equals(command)) {
-                flower_flow.safeTrigger(Events.irrigationStart, ctx);
-            }
-            if ("fill".equals(command)) {
-                flower_flow.safeTrigger(Events.fillingStart, ctx);
-            }
-            if ("stop".equals(command)) {
-                flower_flow.safeTrigger(Events.stop, ctx);
+            for (Events event : Events.values()) {
+                if (command.equals(event.getText())) {
+                    flower_flow.safeTrigger(event, ctx);
+                }
             }
         }
+    }
+
+    public String getName() {
+        return "garden";
     }
 
     public enum States implements StateEnum {
@@ -107,16 +112,16 @@ public class FlowersFsm {
         }
     }
 
-    public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve) {
+    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve) {
         this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, TEN_MINUTES_IN_MS, TWENTY_MINUTES_IN_MS);
     }
 
-    public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve, long irrigatingDuration) {
+    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve, long irrigatingDuration) {
         this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, irrigatingDuration, TWENTY_MINUTES_IN_MS);
     }
 
     // TODO replace with builder
-    public FlowersFsm(final DigitalIO barrel_pump, DigitalIO barrel_valve, final long
+    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve, final long
             valveOpeningDuration, long irrigatingDuration, long barrelFillingDuration) {
 
         EventBus.getDefault().register(this);
@@ -165,16 +170,12 @@ public class FlowersFsm {
                 .whenEnter(States.BARREL_FILLING_OPENING, new ContextHandler<FlowContext>() {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        FlowersFsm.this.barrel_pump.setValue(DigitalValue.ON);
+                        GardenFiniteStateMachine.this.barrel_pump.setValue(DigitalValue.ON);
 
-                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingFillingDurationLapsed, context);
                             }
                         }).start();
 
@@ -187,16 +188,12 @@ public class FlowersFsm {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        FlowersFsm.this.barrel_valve.setValue(DigitalValue.ON);
+                        GardenFiniteStateMachine.this.barrel_valve.setValue(DigitalValue.ON);
 
-                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingIrrigationDurationLapsed, context);
                             }
                         }).start();
                     }
@@ -208,14 +205,10 @@ public class FlowersFsm {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.irrigatingDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.irrigatingDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
                             }
                         }).start();
                     }
@@ -227,14 +220,10 @@ public class FlowersFsm {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.barrelFillingDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.barrelFillingDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
                             }
                         }).start();
 
@@ -247,14 +236,10 @@ public class FlowersFsm {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
-                        new Thread(new SimpleCountDownTimer(FlowersFsm.this.valveOpeningDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    FlowersFsm.this.flower_flow.trigger(Events.closingDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.closingDurationLapsed, context);
                             }
                         }).start();
 
@@ -278,8 +263,8 @@ public class FlowersFsm {
     }
 
     private void closeAllVentils() {
-        FlowersFsm.this.barrel_pump.setValue(DigitalValue.OFF);
-        FlowersFsm.this.barrel_valve.setValue(DigitalValue.OFF);
+        GardenFiniteStateMachine.this.barrel_pump.setValue(DigitalValue.OFF);
+        GardenFiniteStateMachine.this.barrel_valve.setValue(DigitalValue.OFF);
     }
 
     private static class FlowContext extends StatefulContext {

@@ -60,6 +60,7 @@ public class ReminderEngine {
         return null;
     }
 
+
     public Reminder createNewReminder(long timestamp, String jobName) {
         mReminderId++;
 
@@ -77,6 +78,20 @@ public class ReminderEngine {
         return reminder;
     }
 
+    public void removeReminderById(int reminderId) {
+        for (int i = 0; i < mReminders.size(); i++) {
+            Reminder reminder = mReminders.get(i);
+            if (reminder != null) {
+                if (mReminders.get(i).getId() == reminderId) {
+                    mReminders.remove(i);
+                }
+                JobManager.instance().cancel(reminder.getJobId());
+                saveReminders();
+            }
+        }
+    }
+
+
     public void removeReminder(int position) {
         removeReminder(position, true);
     }
@@ -92,7 +107,7 @@ public class ReminderEngine {
     }
 
     public void triggerEvent(Reminder reminder) {
-        mEventBus.post(new FireFsmEvent(reminder.getJobName(), "garten"));
+        mEventBus.post(new FireFsmEvent("garten", reminder.getJobName()));
     }
 
     private void saveReminders() {
