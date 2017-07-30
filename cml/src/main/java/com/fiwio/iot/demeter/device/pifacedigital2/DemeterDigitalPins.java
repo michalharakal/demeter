@@ -1,38 +1,38 @@
-package com.fiwio.iot.demeter.device.rpi3;
+package com.fiwio.iot.demeter.device.pifacedigital2;
 
-import android.util.Log;
-
+import com.fiwio.iot.demeter.device.BoardDefaults;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalIoCallback;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
 import com.fiwio.iot.demeter.events.FireFsmEvent;
-import com.google.android.things.pio.Gpio;
-import com.google.android.things.pio.GpioCallback;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.martingregor.InputEdgeCallback;
+import com.martingregor.PiFaceDigital2;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+public class DemeterDigitalPins implements DigitalPins, InputEdgeCallback {
 
-public class DemeterDigitalPins implements DigitalPins, DigitalIoCallback {
-
-    private static final String TAG = DemeterDigitalPins.class.getSimpleName();
+    private final DemeterInput floatBarrel;
+    private final PiFaceDigital2 piFaceDigital2;
     private List<DigitalIO> inputs = new ArrayList<>();
     private List<DigitalIO> relays = new ArrayList<>();
 
-    public DemeterDigitalPins() {
+    public DemeterDigitalPins() throws IOException {
 
-        PeripheralManagerService service = new PeripheralManagerService();
+        piFaceDigital2 = PiFaceDigital2.create(BoardDefaults.getSPIPort(), this);
+        relays.add(new DemeterRelay(piFaceDigital2, 7, "BCM23")); // Barrel filling
+        relays.add(new DemeterRelay(piFaceDigital2, 6, "BCM24")); // irrigating
+        relays.add(new DemeterRelay(piFaceDigital2, 5, "BCM22")); // flowers
 
-        relays.add(new DemeterRelay(service, "BCM23")); // X3.8 barrel filling
-        relays.add(new DemeterRelay(service, "BCM24")); // X3.7 irrigating
-        relays.add(new DemeterRelay(service, "BCM22")); // X3.6
+        floatBarrel = new DemeterInput(piFaceDigital2, 0, "INP0"); // mechanical float - barrel
+        inputs.add(floatBarrel);
 
-        inputs.add(new DemeterInput(service, "BCM26", this)); // X4.5
-        inputs.add(new DemeterInput(service, "BCM16", this));  // X4.6
+        inputs.add(new DemeterInput(piFaceDigital2, 1, "INP1")); // flowers ???
 
     }
 
@@ -72,15 +72,12 @@ public class DemeterDigitalPins implements DigitalPins, DigitalIoCallback {
     }
 
     @Override
-    public boolean onGpioEdge(DigitalIO digitalIO) {
-        if (digitalIO.getValue() == DigitalValue.ON) {
+    public boolean onGpioEdge(byte[] values) {
+
+        if (floatBarrel.getValue() == DigitalValue.ON) {
             EventBus.getDefault().post(new FireFsmEvent("stop", "garden"));
         }
         return true;
-    }
-
-    @Override
-    public void onGpioError(DigitalIO gpio, int error) {
 
     }
 }
