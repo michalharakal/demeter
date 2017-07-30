@@ -16,7 +16,6 @@ import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
 import au.com.ds.ef.SyncExecutor;
 import au.com.ds.ef.call.ContextHandler;
-import au.com.ds.ef.err.LogicViolationError;
 
 import static au.com.ds.ef.FlowBuilder.from;
 import static au.com.ds.ef.FlowBuilder.on;
@@ -176,11 +175,7 @@ public class GardenFiniteStateMachine {
                         new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    GardenFiniteStateMachine.this.flower_flow.trigger(Events.openingFillingDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingFillingDurationLapsed, context);
                             }
                         }).start();
 
@@ -198,11 +193,7 @@ public class GardenFiniteStateMachine {
                         new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    GardenFiniteStateMachine.this.flower_flow.trigger(Events.openingIrrigationDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingIrrigationDurationLapsed, context);
                             }
                         }).start();
                     }
@@ -217,11 +208,7 @@ public class GardenFiniteStateMachine {
                         new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.irrigatingDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    GardenFiniteStateMachine.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
                             }
                         }).start();
                     }
@@ -236,11 +223,7 @@ public class GardenFiniteStateMachine {
                         new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.barrelFillingDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    GardenFiniteStateMachine.this.flower_flow.trigger(Events.stop, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
                             }
                         }).start();
 
@@ -256,11 +239,7 @@ public class GardenFiniteStateMachine {
                         new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
                             @Override
                             public void finished() {
-                                try {
-                                    GardenFiniteStateMachine.this.flower_flow.trigger(Events.closingDurationLapsed, context);
-                                } catch (LogicViolationError logicViolationError) {
-                                    logicViolationError.printStackTrace();
-                                }
+                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.closingDurationLapsed, context);
                             }
                         }).start();
 
