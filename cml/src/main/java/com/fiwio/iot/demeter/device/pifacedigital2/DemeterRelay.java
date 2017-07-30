@@ -21,6 +21,7 @@ public class DemeterRelay implements DigitalIO {
         this.name = ioName;
         this.relayIndex = relayIndex;
         this.mPiFaceDigital2 = mPiFaceDigital2;
+        this.mLastValue = DigitalValue.OFF;
     }
 
     @Override

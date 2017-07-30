@@ -75,7 +75,7 @@ public class DemeterDigitalPins implements DigitalPins, InputEdgeCallback {
     public boolean onGpioEdge(byte[] values) {
 
         if (floatBarrel.getValue() == DigitalValue.ON) {
-            EventBus.getDefault().post(new FireFsmEvent("stop", "garden"));
+            EventBus.getDefault().post(new FireFsmEvent("garden", "stop"));
         }
         return true;
 
