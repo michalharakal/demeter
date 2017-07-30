@@ -105,12 +105,7 @@
           "200": {
             "description": "The info object list schduled events",
             "schema": {
-              "type": "object",
-              "properties": {
-                "fsm": {
-                  "$ref": "#/definitions/ScheduledEvents"
-                }
-              }
+              "$ref": "#/definitions/ScheduledEvents"
             }
           }
         }
@@ -130,12 +125,7 @@
           "200": {
             "description": "Current list of schduled eventrs",
             "schema": {
-              "type": "object",
-              "properties": {
-                "fsm": {
-                  "$ref": "#/definitions/ScheduledEvents"
-                }
-              }
+              "$ref": "#/definitions/ScheduledEvents"
             }
           }
         }
@@ -223,6 +213,12 @@
       }
     },
     "ScheduledEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ScheduledEvent"
+      }
+    },
+    "ScheduledEvent": {
       "type": "object",
       "properties": {
         "id": {
