@@ -3,11 +3,11 @@ package com.fiwio.iot.demeter.events;
 public class FireFsmEvent {
 
     public final String command;
-    public final String name;
+    public final String fmsName;
 
 
-    public FireFsmEvent(String command, String name) {
+    public FireFsmEvent(String fmsName, String command) {
+        this.fmsName = fmsName;
         this.command = command;
-        this.name = name;
     }
 }

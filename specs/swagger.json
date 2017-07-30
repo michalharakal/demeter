@@ -1,0 +1,259 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "Demeter API",
+    "description": "The first version of the Demeter API.\n"
+  },
+  "host": "demeter.com",
+  "basePath": "/demeter",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "paths": {
+    "/demeter": {
+      "get": {
+        "description": "Get information about a device",
+        "responses": {
+          "200": {
+            "description": "The user object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/Demeter"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Switch digital outputs ON/OFF",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/DigitalOutputs"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The user object for change digital output values",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/DigitalOutputs"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fsm": {
+      "get": {
+        "description": "Get information about a state machine",
+        "responses": {
+          "200": {
+            "description": "The info object about the current status of FSM. List also all possible commnads.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fsm": {
+                  "$ref": "#/definitions/StateMachine"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "triggers immedialtely a new event to change state machine",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/TriggerEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "current status of a state machine status",
+            "schema": {
+              "$ref": "#/definitions/StateMachine"
+            }
+          }
+        }
+      }
+    },
+    "/schedule": {
+      "get": {
+        "description": "Get information about scheduled events",
+        "responses": {
+          "200": {
+            "description": "The info object list schduled events",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fsm": {
+                  "$ref": "#/definitions/ScheduledEvents"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "schedule task for excution",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current list of schduled eventrs",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fsm": {
+                  "$ref": "#/definitions/ScheduledEvents"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Demeter": {
+      "type": "object",
+      "properties": {
+        "relays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Relay"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Input"
+          }
+        }
+      }
+    },
+    "DigitalOutputs": {
+      "type": "object",
+      "properties": {
+        "relays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Relay"
+          }
+        }
+      }
+    },
+    "Relay": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Input": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "StateMachine": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "commnads": {
+          "description": "List of all commnads (can be also commnad enable in current state)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TriggerEvent": {
+      "type": "object",
+      "properties": {
+        "fsm": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        }
+      }
+    },
+    "ScheduledEvents": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "command": {
+          "type": "string"
+        },
+        "fsm": {
+          "type": "string"
+        }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fsm": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
