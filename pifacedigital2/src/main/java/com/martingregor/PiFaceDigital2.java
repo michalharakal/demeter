@@ -52,6 +52,8 @@ public class PiFaceDigital2 implements AutoCloseable {
     private final SpiDevice mSpiDevice;
     private final Gpio mGpio;
 
+    private InputEdgeCallback mCallback;
+
     private GpioCallback mGpioCallback = new GpioCallback() {
         @Override
         public boolean onGpioEdge(Gpio gpio) {
@@ -66,27 +68,9 @@ public class PiFaceDigital2 implements AutoCloseable {
                 String currentButtonValue = bytesToHex(array);
                 Log.d(TAG, currentButtonValue);
 
-
-				/*switch (currentButtonValue) {
-                    case "FF":
-						writeSpiDevice(GPIOA, (byte) 0xFF);
-						break;
-					case "FE":
-						writeSpiDevice(GPIOA, (byte) 0x03);
-						break;
-					case "FD":
-						writeSpiDevice(GPIOA, (byte) 0x0C);
-						break;
-					case "FB":
-						writeSpiDevice(GPIOA, (byte) 0x30);
-						break;
-					case "F7":
-						writeSpiDevice(GPIOA, (byte) 0xC0);
-						break;
-					default:
-						writeSpiDevice(GPIOA, (byte) 0x00);
-						break;
-				}*/
+                if (mCallback != null) {
+                    mCallback.onGpioEdge(readBuffer3);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -100,7 +84,10 @@ public class PiFaceDigital2 implements AutoCloseable {
         }
     };
 
-    PiFaceDigital2(SpiDevice spiDevice, Gpio gpio) throws IOException {
+    PiFaceDigital2(SpiDevice spiDevice, Gpio gpio, InputEdgeCallback callback) throws IOException {
+
+        mCallback = callback;
+
         mGpio = gpio; // This pin is for detecting changes on output ports
         mGpio.setDirection(Gpio.DIRECTION_IN);
         mGpio.setActiveType(Gpio.ACTIVE_LOW);
@@ -188,10 +175,11 @@ public class PiFaceDigital2 implements AutoCloseable {
      *
      * @param spiBusPort Name of the SPI bus
      */
-    public static PiFaceDigital2 create(String spiBusPort) throws IOException {
+    public static PiFaceDigital2 create(String spiBusPort, InputEdgeCallback callback) throws IOException {
         PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
         try {
-            return new PiFaceDigital2(peripheralManagerService.openSpiDevice(spiBusPort), peripheralManagerService.openGpio(GPIO_PORT));
+            return new PiFaceDigital2(peripheralManagerService.openSpiDevice(spiBusPort),
+                    peripheralManagerService.openGpio(GPIO_PORT), callback);
         } catch (IOException e) {
             throw new IOException("Unable to open SPI device in bus port " + spiBusPort, e);
         }

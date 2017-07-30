@@ -4,13 +4,11 @@ import android.util.Log;
 
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalIOType;
+import com.fiwio.iot.demeter.device.model.DigitalIoCallback;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
-import com.fiwio.iot.demeter.events.FireFsmEvent;
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
 import com.google.android.things.pio.PeripheralManagerService;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -20,8 +18,11 @@ public class DemeterInput implements DigitalIO {
     private Gpio mLedGpio;
     private final String name;
 
-    public DemeterInput(PeripheralManagerService gpio, String ioName) {
+    private final DigitalIoCallback callback;
+
+    public DemeterInput(PeripheralManagerService gpio, String ioName, DigitalIoCallback callback) {
         this.name = ioName;
+        this.callback = callback;
         try {
             mLedGpio = gpio.openGpio(ioName);
             mLedGpio.setDirection(Gpio.DIRECTION_IN);
@@ -40,17 +41,9 @@ public class DemeterInput implements DigitalIO {
         @Override
         public boolean onGpioEdge(Gpio gpio) {
             // Read the active low pin state
-            try {
-                if (mLedGpio.getValue()) {
-                    EventBus.getDefault().post(new FireFsmEvent("stop", "garden"));
-                } else {
-                    // Pin is HIGH
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (callback != null) {
+                callback.onGpioEdge(DemeterInput.this);
             }
-
-            // Continue listening for more interrupts
             return true;
         }
 

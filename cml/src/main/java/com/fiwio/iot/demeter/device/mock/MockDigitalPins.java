@@ -1,6 +1,7 @@
 package com.fiwio.iot.demeter.device.mock;
 
 import com.fiwio.iot.demeter.device.model.DigitalIO;
+import com.fiwio.iot.demeter.device.model.DigitalIoCallback;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 
 import java.util.ArrayList;
@@ -50,5 +51,10 @@ public class MockDigitalPins implements DigitalPins {
             }
         }
         return null;
+    }
+
+    @Override
+    public void registerInputCallback(DigitalIoCallback callback) {
+
     }
 }
