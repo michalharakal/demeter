@@ -2,10 +2,6 @@ package com.fiwio.iot.demeter.http;
 
 import android.util.Log;
 
-import com.fiwio.iot.demeter.api.Demeter;
-import com.fiwio.iot.demeter.api.FsmCommand;
-import com.fiwio.iot.demeter.api.Relay;
-import com.fiwio.iot.demeter.api.Task;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
@@ -14,6 +10,10 @@ import com.fiwio.iot.demeter.events.IEventBus;
 import com.fiwio.iot.demeter.fsm.FlowersFsm;
 import com.fiwio.iot.demeter.scheduler.Reminder;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
+import com.fiwo.iot.demeter.api.model.Demeter;
+import com.fiwo.iot.demeter.api.model.Relay;
+import com.fiwo.iot.demeter.api.model.Task;
+import com.fiwo.iot.demeter.api.model.TriggerEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -86,7 +86,7 @@ public class DemeterHttpServer extends NanoHTTPD {
                     processDemeterRequest(gson.fromJson(postBody, Demeter.class));
                 }
                 if (path.contains("fsm")) {
-                    processFsmRequest(gson.fromJson(postBody, FsmCommand.class));
+                    processFsmRequest(gson.fromJson(postBody, TriggerEvent.class));
                     return newFixedLengthResponse(Response.Status.OK, "application/javascript", getFsmStatus());
                 }
 
@@ -134,7 +134,8 @@ public class DemeterHttpServer extends NanoHTTPD {
     }
 
     private void processTaskRequest(Task task) {
-
+        Log.d(TAG, "processing" + gson.toJson(task));
+        reminderEngine.createNewReminder(task.getTime().getMillis(), task.getCommand());
     }
 
     private String getScheduleStatus() {
@@ -162,10 +163,10 @@ public class DemeterHttpServer extends NanoHTTPD {
         return object.toString();
     }
 
-    private void processFsmRequest(FsmCommand command) {
+    private void processFsmRequest(TriggerEvent command) {
         Log.d(TAG, "processing" + gson.toJson(command));
-        reminderEngine.createNewReminder(command.getTime().getMillis(), command.getCommnad());
-        eventBus.post(new FireFsmEvent(command.getCommnad(), command.getFsm()));
+//        reminderEngine.createNewReminder(, command.getCommnad());
+        eventBus.post(new FireFsmEvent(command.getFsm(), command.getCommand()));
     }
 
     private String getFsmStatus() {
