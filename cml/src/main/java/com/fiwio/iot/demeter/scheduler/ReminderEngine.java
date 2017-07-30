@@ -78,6 +78,20 @@ public class ReminderEngine {
         return reminder;
     }
 
+    public void removeReminderById(int reminderId) {
+        for (int i = 0; i < mReminders.size(); i++) {
+            Reminder reminder = mReminders.get(i);
+            if (reminder != null) {
+                if (mReminders.get(i).getId() == reminderId) {
+                    mReminders.remove(i);
+                }
+                JobManager.instance().cancel(reminder.getJobId());
+                saveReminders();
+            }
+        }
+    }
+
+
     public void removeReminder(int position) {
         removeReminder(position, true);
     }

@@ -80,6 +80,15 @@ public class DemeterHttpServer extends NanoHTTPD {
                 return newFixedLengthResponse(Response.Status.OK, "application/javascript", getKnxStatus());
             }
         }
+        if (Method.DELETE.equals(method)) {
+            if (path.contains("schedule")) {
+                String[] segments = session.getUri().split("/");
+
+                reminderEngine.removeReminderById(Integer.valueOf(segments[2]));
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
+            }
+        }
+
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {
                 Map<String, String> files = new HashMap<>();
@@ -97,9 +106,7 @@ public class DemeterHttpServer extends NanoHTTPD {
                 if (path.contains("schedule")) {
                     processTaskRequest(gson.fromJson(postBody, Task.class));
                     return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
-
                 }
-
 
             } catch (IOException ioe) {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
