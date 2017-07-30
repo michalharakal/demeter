@@ -2,22 +2,28 @@ package com.fiwio.iot.demeter.http;
 
 import android.util.Log;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
 import com.fiwio.iot.demeter.events.FireFsmEvent;
 import com.fiwio.iot.demeter.events.IEventBus;
-import com.fiwio.iot.demeter.fsm.FlowersFsm;
+import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.scheduler.Reminder;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwo.iot.demeter.api.model.Demeter;
+import com.fiwo.iot.demeter.api.model.Input;
 import com.fiwo.iot.demeter.api.model.Relay;
+import com.fiwo.iot.demeter.api.model.ScheduledEvent;
+import com.fiwo.iot.demeter.api.model.ScheduledEvents;
+import com.fiwo.iot.demeter.api.model.StateMachine;
 import com.fiwo.iot.demeter.api.model.Task;
 import com.fiwo.iot.demeter.api.model.TriggerEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,14 +40,14 @@ public class DemeterHttpServer extends NanoHTTPD {
     private static final String TAG = DemeterHttpServer.class.getSimpleName();
 
     private final DigitalPins demeterRelays;
-    private final FlowersFsm fsm;
+    private final GardenFiniteStateMachine fsm;
     private final IEventBus eventBus;
     private final ReminderEngine reminderEngine;
 
     private final Gson gson;
 
 
-    public DemeterHttpServer(DigitalPins demeterRelays, FlowersFsm fsm, IEventBus eventBus, ReminderEngine reminderEngine) throws
+    public DemeterHttpServer(DigitalPins demeterRelays, GardenFiniteStateMachine fsm, IEventBus eventBus, ReminderEngine reminderEngine) throws
             IOException {
         super(8080);
         this.demeterRelays = demeterRelays;
@@ -49,10 +55,8 @@ public class DemeterHttpServer extends NanoHTTPD {
         this.eventBus = eventBus;
         this.reminderEngine = reminderEngine;
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-
-        // add joda time support
-        gson = gsonBuilder.create();
+        // gson with JodaTime support
+        gson = Converters.registerDateTime(new GsonBuilder()).create();
     }
 
 
@@ -78,7 +82,7 @@ public class DemeterHttpServer extends NanoHTTPD {
         }
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {
-                Map<String, String> files = new HashMap<String, String>();
+                Map<String, String> files = new HashMap<>();
                 session.parseBody(files);
                 // get the POST body
                 String postBody = files.get("postData");
@@ -139,55 +143,39 @@ public class DemeterHttpServer extends NanoHTTPD {
     }
 
     private String getScheduleStatus() {
-        JSONObject object = new JSONObject();
-        JSONArray jobs = new JSONArray();
-        try {
-            object.put("jobs", jobs);
+        ScheduledEvents scheduledEvents = new ScheduledEvents();
 
-            int i = 0;
-            List<Reminder> remonders = reminderEngine.getReminders();
-            for (Reminder reminder : remonders) {
-                final JSONObject reminderObj = new JSONObject();
-                reminderObj.put("id", reminder.getId());
-                reminderObj.put("timestamp", reminder.getTimestamp());
-                reminderObj.put("jobid", reminder.getJobId());
-                reminderObj.put("jobname", reminder.getJobName());
-                jobs.put(i, reminderObj);
-            }
+        for (Reminder reminder : reminderEngine.getReminders()) {
+            ScheduledEvent scheduledEvent = new ScheduledEvent();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            DateTime dt = new DateTime(reminder.getTimestamp(), DateTimeZone.UTC);
+            scheduledEvent.setTime(dt.toDateTime());
+            scheduledEvent.setCommand(reminder.getJobName());
+            scheduledEvent.setId(reminder.getId());
+            // for multiple FSMs you have to map names to jobIds
+            scheduledEvent.setFsm(fsm.getName());
+
+            scheduledEvents.add(scheduledEvent);
         }
-
-
-        return object.toString();
+        return gson.toJson(scheduledEvents);
     }
 
     private void processFsmRequest(TriggerEvent command) {
         Log.d(TAG, "processing" + gson.toJson(command));
-//        reminderEngine.createNewReminder(, command.getCommnad());
         eventBus.post(new FireFsmEvent(command.getFsm(), command.getCommand()));
     }
 
     private String getFsmStatus() {
-        JSONObject result = new JSONObject();
-        JSONArray machines = new JSONArray();
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.setName(fsm.getName());
+        stateMachine.setState(fsm.getState().getText());
 
-        JSONObject fsmJson = new JSONObject();
-        try {
-
-            result.put("fsm", machines);
-
-            machines.put(0, fsmJson);
-            fsmJson.put("name", "garden");
-            fsmJson.put("time", new DateTime());
-            fsmJson.put("state", fsm.getState().getText());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        // iterate over Enum to get list of commands as text
+        for (GardenFiniteStateMachine.Events event : GardenFiniteStateMachine.Events.values()) {
+            stateMachine.addCommnadsItem(event.getText());
         }
 
-        return result.toString();
+        return gson.toJson(stateMachine);
     }
 
     private void processDemeterRequest(Demeter demeter) {
@@ -199,35 +187,22 @@ public class DemeterHttpServer extends NanoHTTPD {
     }
 
     private String getDemeterStatus() {
-        JSONObject object = new JSONObject();
-        JSONArray relays = new JSONArray();
-        JSONArray inputs = new JSONArray();
-        try {
-            object.put("relays", relays);
-            object.put("inputs", inputs);
+        Demeter demeter = new Demeter();
 
-            List<DigitalIO> inputsList = demeterRelays.getInputs();
-            for (int i = 0; i < inputsList.size(); i++) {
-                final JSONObject relay = new JSONObject();
-                relay.put("name", inputsList.get(i).getName());
-                relay.put("value", inputsList.get(i).getValue() == DigitalValue.OFF ? "OFF" : "ON");
-                inputs.put(i, relay);
-            }
-
-            List<DigitalIO> outputsList = demeterRelays.getOutputs();
-            for (int i = 0; i < outputsList.size(); i++) {
-                final JSONObject relay = new JSONObject();
-                relay.put("name", outputsList.get(i).getName());
-                relay.put("value", outputsList.get(i).getValue() == DigitalValue.OFF ? "OFF" : "ON");
-                relays.put(i, relay);
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        for (DigitalIO digitalInput : demeterRelays.getInputs()) {
+            Input inputObject = new Input();
+            inputObject.setName(digitalInput.getName());
+            inputObject.setValue(digitalInput.getValue() == DigitalValue.OFF ? "OFF" : "ON");
+            demeter.addInputsItem(inputObject);
         }
 
+        for (DigitalIO digitalOutput : demeterRelays.getOutputs()) {
+            Input outputObject = new Input();
+            outputObject.setName(digitalOutput.getName());
+            outputObject.setValue(digitalOutput.getValue() == DigitalValue.OFF ? "OFF" : "ON");
+            demeter.addInputsItem(outputObject);
+        }
 
-        return object.toString();
+        return gson.toJson(demeter);
     }
 }
