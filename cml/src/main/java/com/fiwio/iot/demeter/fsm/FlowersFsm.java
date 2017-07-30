@@ -53,16 +53,18 @@ public class FlowersFsm {
         flower_flow.safeTrigger(Events.fillingStart, ctx);
     }
 
+    /**
+     * iterate over possible commnad to find matching a triger event
+     *
+     * @param command
+     */
     public void trigger(String command) {
+
         if (command != null && (!"".equals(command))) {
-            if ("irrigate".equals(command)) {
-                flower_flow.safeTrigger(Events.irrigationStart, ctx);
-            }
-            if ("fill".equals(command)) {
-                flower_flow.safeTrigger(Events.fillingStart, ctx);
-            }
-            if ("stop".equals(command)) {
-                flower_flow.safeTrigger(Events.stop, ctx);
+            for (Events event : Events.values()) {
+                if (command.equals(event.getText())) {
+                    flower_flow.safeTrigger(event, ctx);
+                }
             }
         }
     }
