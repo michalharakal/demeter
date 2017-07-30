@@ -11,7 +11,7 @@ import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.pifacedigital2.DemeterDigitalPins;
 import com.fiwio.iot.demeter.events.DemeterEventBus;
 import com.fiwio.iot.demeter.events.IEventBus;
-import com.fiwio.iot.demeter.fsm.FlowersFsm;
+import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class DemeterApplication extends Application {
 
     private DigitalPins demeter;
-    private FlowersFsm fsm;
+    private GardenFiniteStateMachine fsm;
     private IEventBus eventBus;
 
     @Override
@@ -56,18 +56,18 @@ public class DemeterApplication extends Application {
         return null;
     }
 
-    private FlowersFsm createFlowersFsm() {
+    private GardenFiniteStateMachine createFlowersFsm() {
         DigitalIO barrel_pump = demeter.getOutput("BCM23");
         DigitalIO barrel_valve = demeter.getOutput("BCM24");
 
-        return new FlowersFsm(barrel_pump, barrel_valve, 1000 * 60);
+        return new GardenFiniteStateMachine(barrel_pump, barrel_valve, 1000 * 60);
     }
 
     public DigitalPins getDemeter() {
         return demeter;
     }
 
-    public FlowersFsm getFsm() {
+    public GardenFiniteStateMachine getFsm() {
         return fsm;
     }
 

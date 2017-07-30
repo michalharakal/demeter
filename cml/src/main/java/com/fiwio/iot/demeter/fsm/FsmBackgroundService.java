@@ -23,7 +23,7 @@ public class FsmBackgroundService extends IntentService {
 
     private DigitalPins demeter;
     private IEventBus eventBus;
-    private FlowersFsm fsm;
+    private GardenFiniteStateMachine fsm;
 
     @Override
     public IBinder onBind(final Intent intent) {
