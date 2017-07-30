@@ -17,6 +17,8 @@ import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.io.IOException;
+
 public class DemeterApplication extends Application {
 
     private DigitalPins demeter;
@@ -45,8 +47,13 @@ public class DemeterApplication extends Application {
         if (BuildConfig.MOCK_MODE) {
             return new MockDigitalPins();
         } else {
-            return new DemeterDigitalPins();
+            try {
+                return new DemeterDigitalPins();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return null;
     }
 
     private FlowersFsm createFlowersFsm() {
