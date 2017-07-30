@@ -3,7 +3,6 @@ package com.fiwio.iot.demeter.fsm;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -27,15 +26,15 @@ public class FlowersFsmTest {
 
     @Test
     public void valvesClosedOnStart() {
-        FlowersFsm fsm = new FlowersFsm(barrel_pump, barrel_valve, 10, 10, 10);
+        GardenFiniteStateMachine fsm = new GardenFiniteStateMachine(barrel_pump, barrel_valve, 10, 10, 10);
         fsm.run();
-        assertThat(fsm.getState(), is(equalTo(FlowersFsm.States.CLOSED)));
+        assertThat(fsm.getState(), is(equalTo(GardenFiniteStateMachine.States.CLOSED)));
         verify(barrel_pump).setValue(DigitalValue.OFF);
     }
 
     @Test
     public void irrigationWorking() {
-        FlowersFsm fsm = new FlowersFsm(barrel_pump, barrel_valve, 10, 10, 10);
+        GardenFiniteStateMachine fsm = new GardenFiniteStateMachine(barrel_pump, barrel_valve, 10, 10, 10);
         fsm.run();
         fsm.irrigate();
         try {
@@ -50,7 +49,7 @@ public class FlowersFsmTest {
 
     @Test
     public void fillingWorking() {
-        FlowersFsm fsm = new FlowersFsm(barrel_pump, barrel_valve, 10, 10, 10);
+        GardenFiniteStateMachine fsm = new GardenFiniteStateMachine(barrel_pump, barrel_valve, 10, 10, 10);
         fsm.run();
         fsm.fillBarrel();
         try {

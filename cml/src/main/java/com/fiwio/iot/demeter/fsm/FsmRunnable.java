@@ -6,15 +6,15 @@ public class FsmRunnable implements Runnable {
 
     private static Thread _instance;
 
-    private final FlowersFsm fsm;
+    private final GardenFiniteStateMachine fsm;
 
 
-    private FsmRunnable(FlowersFsm fsm) {
+    private FsmRunnable(GardenFiniteStateMachine fsm) {
         this.fsm = fsm;
     }
 
 
-    public synchronized static Thread getInstance(FlowersFsm fsm) {
+    public synchronized static Thread getInstance(GardenFiniteStateMachine fsm) {
         if (_instance == null) {
             _instance = new Thread(new FsmRunnable(fsm));
         }

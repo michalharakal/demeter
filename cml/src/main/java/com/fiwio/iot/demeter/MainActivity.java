@@ -10,7 +10,7 @@ import android.util.Log;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.discovery.NdsService;
 import com.fiwio.iot.demeter.events.IEventBus;
-import com.fiwio.iot.demeter.fsm.FlowersFsm;
+import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.fsm.FsmBackgroundService;
 import com.fiwio.iot.demeter.http.DemeterHttpServer;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         handler = new Handler(pioThread.getLooper());
         // instantiate a connection to our peripheral
         relays = ((DemeterApplication) getApplication()).getDemeter();
-        FlowersFsm fsm = ((DemeterApplication) getApplication()).getFsm();
+        GardenFiniteStateMachine fsm = ((DemeterApplication) getApplication()).getFsm();
 
         IEventBus eventBus = ((DemeterApplication) getApplication()).getEventBus();
 
