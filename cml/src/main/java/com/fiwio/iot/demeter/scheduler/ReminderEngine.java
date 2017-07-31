@@ -53,7 +53,7 @@ public class ReminderEngine {
     @Nullable
     public Reminder getReminderById(int id) {
         for (Reminder reminder : mReminders) {
-            if (reminder.getId() == id) {
+            if (reminder.getJobId() == id) {
                 return reminder;
             }
         }
@@ -107,7 +107,7 @@ public class ReminderEngine {
     }
 
     public void triggerEvent(Reminder reminder) {
-        mEventBus.post(new FireFsmEvent("garten", reminder.getJobName()));
+        mEventBus.post(new FireFsmEvent("garden", reminder.getJobName()));
     }
 
     private void saveReminders() {
