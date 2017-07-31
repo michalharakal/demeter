@@ -98,6 +98,44 @@
         }
       }
     },
+    "/config": {
+      "get": {
+        "description": "Get configuration parameters",
+        "responses": {
+          "200": {
+            "description": "The info object about the current configuration parameters",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fsm": {
+                  "$ref": "#/definitions/Configuration"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "new configuration parameters",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Configuration"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "current configuration values",
+            "schema": {
+              "$ref": "#/definitions/Configuration"
+            }
+          }
+        }
+      }
+    },
     "/schedule": {
       "get": {
         "description": "Get information about scheduled events",
@@ -320,6 +358,40 @@
         },
         "command": {
           "type": "string"
+        }
+      }
+    },
+    "Configuration": {
+      "type": "object",
+      "properties": {
+        "fillingTime": {
+          "$ref": "#/definitions/DayTime"
+        },
+        "irrigatingTime": {
+          "$ref": "#/definitions/DayTime"
+        },
+        "valve": {
+          "type": "integer"
+        },
+        "fillingDuration": {
+          "type": "integer"
+        },
+        "irrigatingDuration": {
+          "type": "integer"
+        }
+      }
+    },
+    "DayTime": {
+      "type": "object",
+      "properties": {
+        "hour": {
+          "type": "integer"
+        },
+        "minute": {
+          "type": "integer"
+        },
+        "second": {
+          "type": "integer"
         }
       }
     }

@@ -3,6 +3,7 @@ package com.fiwio.iot.demeter.http;
 import android.util.Log;
 
 import com.fatboyindustrial.gsonjodatime.Converters;
+import com.fiwio.iot.demeter.configuration.Configuration;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
@@ -13,6 +14,7 @@ import com.fiwio.iot.demeter.scheduler.Reminder;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwo.iot.demeter.api.model.Demeter;
 import com.fiwo.iot.demeter.api.model.Input;
+import com.fiwo.iot.demeter.api.model.ModelConfiguration;
 import com.fiwo.iot.demeter.api.model.Relay;
 import com.fiwo.iot.demeter.api.model.ScheduledEvent;
 import com.fiwo.iot.demeter.api.model.ScheduledEvents;
@@ -43,17 +45,20 @@ public class DemeterHttpServer extends NanoHTTPD {
     private final GardenFiniteStateMachine fsm;
     private final IEventBus eventBus;
     private final ReminderEngine reminderEngine;
+    private final Configuration confgurationEngine;
 
     private final Gson gson;
 
 
-    public DemeterHttpServer(DigitalPins demeterRelays, GardenFiniteStateMachine fsm, IEventBus eventBus, ReminderEngine reminderEngine) throws
+    public DemeterHttpServer(DigitalPins demeterRelays, GardenFiniteStateMachine fsm, IEventBus eventBus,
+                             ReminderEngine reminderEngine, Configuration configuration) throws
             IOException {
         super(8080);
         this.demeterRelays = demeterRelays;
         this.fsm = fsm;
         this.eventBus = eventBus;
         this.reminderEngine = reminderEngine;
+        this.confgurationEngine = configuration;
 
         // gson with JodaTime support
         gson = Converters.registerDateTime(new GsonBuilder()).create();
@@ -79,6 +84,12 @@ public class DemeterHttpServer extends NanoHTTPD {
             if (path.contains("knx")) {
                 return newFixedLengthResponse(Response.Status.OK, "application/javascript", getKnxStatus());
             }
+
+            if (path.contains("config")) {
+                return newFixedLengthResponse(Response.Status.OK, "application/javascript", getConfigStatus());
+            }
+
+
         }
         if (Method.DELETE.equals(method)) {
             if (path.contains("schedule")) {
@@ -108,6 +119,12 @@ public class DemeterHttpServer extends NanoHTTPD {
                     return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
                 }
 
+                if (path.contains("config")) {
+                    processConfigurationRequest(gson.fromJson(postBody, ModelConfiguration.class));
+                    return newFixedLengthResponse(Response.Status.OK, "application/javascript", getConfigStatus());
+                }
+
+
             } catch (IOException ioe) {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
             } catch (ResponseException re) {
@@ -117,6 +134,7 @@ public class DemeterHttpServer extends NanoHTTPD {
 
         return newFixedLengthResponse(Response.Status.OK, "application/javascript", getDemeterStatus());
     }
+
 
     private String getKnxStatus() {
         JSONObject object = new JSONObject();
@@ -146,6 +164,7 @@ public class DemeterHttpServer extends NanoHTTPD {
 
     private void processTaskRequest(Task task) {
         Log.d(TAG, "processing" + gson.toJson(task));
+        Log.d(TAG, "current date time=" + new DateTime().toString());
         reminderEngine.createNewReminder(task.getTime().getMillis(), task.getCommand());
     }
 
@@ -166,6 +185,17 @@ public class DemeterHttpServer extends NanoHTTPD {
         }
         return gson.toJson(scheduledEvents);
     }
+
+    private String getConfigStatus() {
+        return gson.toJson(confgurationEngine.getConfiguration());
+    }
+
+
+    private void processConfigurationRequest(ModelConfiguration newConfiguration) {
+        Log.d(TAG, "processing" + gson.toJson(newConfiguration));
+        confgurationEngine.setConfiguration(newConfiguration);
+    }
+
 
     private void processFsmRequest(TriggerEvent command) {
         Log.d(TAG, "processing" + gson.toJson(command));

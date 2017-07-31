@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.evernote.android.job.JobManager;
+import com.fiwio.iot.demeter.configuration.Configuration;
 import com.fiwio.iot.demeter.device.mock.MockDigitalPins;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
@@ -24,6 +25,7 @@ public class DemeterApplication extends Application {
     private DigitalPins demeter;
     private GardenFiniteStateMachine fsm;
     private IEventBus eventBus;
+    private Configuration configuration;
 
     @Override
     public void onCreate() {
@@ -37,6 +39,7 @@ public class DemeterApplication extends Application {
         demeter = createDeviceImageInstance();
         fsm = createFlowersFsm();
         eventBus = new DemeterEventBus();
+        configuration = new Configuration(this);
 
         ReminderEngine reminderEngine = new ReminderEngine(this, eventBus);
 
@@ -66,6 +69,11 @@ public class DemeterApplication extends Application {
     public DigitalPins getDemeter() {
         return demeter;
     }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
 
     public GardenFiniteStateMachine getFsm() {
         return fsm;
