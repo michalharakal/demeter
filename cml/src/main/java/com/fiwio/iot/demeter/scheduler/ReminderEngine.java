@@ -107,7 +107,7 @@ public class ReminderEngine {
     }
 
     public void triggerEvent(Reminder reminder) {
-        mEventBus.post(new FireFsmEvent("garten", reminder.getJobName()));
+        mEventBus.post(new FireFsmEvent("garden", reminder.getJobName()));
     }
 
     private void saveReminders() {

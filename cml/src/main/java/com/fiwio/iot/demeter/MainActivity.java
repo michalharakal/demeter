@@ -2,16 +2,18 @@ package com.fiwio.iot.demeter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.RestrictionsManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.fiwio.iot.demeter.configuration.Configuration;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.discovery.NdsService;
 import com.fiwio.iot.demeter.events.IEventBus;
-import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.fsm.FsmBackgroundService;
+import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.http.DemeterHttpServer;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.google.android.things.pio.PeripheralManagerService;
@@ -42,9 +44,11 @@ public class MainActivity extends Activity {
 
         IEventBus eventBus = ((DemeterApplication) getApplication()).getEventBus();
 
+        Configuration configuration = ((DemeterApplication) getApplication()).getConfiguration();
+        ReminderEngine reminderEngine = ((DemeterApplication) getApplication()).getRemainderEngine();
+
         try {
-            ReminderEngine reminderEngine = new ReminderEngine(this, eventBus);
-            api = new DemeterHttpServer(relays, fsm, eventBus, reminderEngine);
+            api = new DemeterHttpServer(relays, fsm, eventBus, reminderEngine, configuration);
             api.start();
         } catch (IOException e) {
             e.printStackTrace();
