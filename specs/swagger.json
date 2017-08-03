@@ -98,6 +98,39 @@
         }
       }
     },
+    "/schedule": {
+      "get": {
+        "description": "Get information about scheduled events",
+        "responses": {
+          "200": {
+            "description": "The info object list schduled events",
+            "schema": {
+              "$ref": "#/definitions/ScheduledEvents"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "schedule task for excution",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current list of schduled eventrs",
+            "schema": {
+              "$ref": "#/definitions/ScheduledEvents"
+            }
+          }
+        }
+      }
+    },
     "/config": {
       "get": {
         "description": "Get configuration parameters",
@@ -131,39 +164,6 @@
             "description": "current configuration values",
             "schema": {
               "$ref": "#/definitions/Configuration"
-            }
-          }
-        }
-      }
-    },
-    "/schedule": {
-      "get": {
-        "description": "Get information about scheduled events",
-        "responses": {
-          "200": {
-            "description": "The info object list schduled events",
-            "schema": {
-              "$ref": "#/definitions/ScheduledEvents"
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "schedule task for excution",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/Task"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Current list of schduled eventrs",
-            "schema": {
-              "$ref": "#/definitions/ScheduledEvents"
             }
           }
         }
@@ -361,13 +361,41 @@
         }
       }
     },
+    "Reminders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Reminder"
+      }
+    },
+    "Reminder": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "timestamp": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "jobId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "jobName": {
+          "type": "string"
+        }
+      }
+    },
     "Configuration": {
       "type": "object",
       "properties": {
         "fillingTime": {
           "$ref": "#/definitions/DayTime"
         },
-        "irrigatingTime": {
+        "irrigatingTimeMorning": {
+          "$ref": "#/definitions/DayTime"
+        },
+        "irrigatingTimeEvening": {
           "$ref": "#/definitions/DayTime"
         },
         "valve": {
@@ -376,7 +404,10 @@
         "fillingDuration": {
           "type": "integer"
         },
-        "irrigatingDuration": {
+        "irrigatingDurationMorning": {
+          "type": "integer"
+        },
+        "irrigatingDurationEvening": {
           "type": "integer"
         }
       }

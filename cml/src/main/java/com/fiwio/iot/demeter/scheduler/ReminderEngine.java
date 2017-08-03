@@ -53,7 +53,7 @@ public class ReminderEngine {
     @Nullable
     public Reminder getReminderById(int id) {
         for (Reminder reminder : mReminders) {
-            if (reminder.getJobId() == id) {
+            if (reminder.getId() == id) {
                 return reminder;
             }
         }
