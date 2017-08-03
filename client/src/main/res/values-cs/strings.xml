@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Demeter</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="title_dashboard">Automatika</string>
+    <string name="title_home">Manuálni</string>
+    <string name="title_notifications">Parametry</string>
+</resources>

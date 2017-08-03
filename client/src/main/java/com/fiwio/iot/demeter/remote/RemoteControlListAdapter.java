@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fiwio.iot.demeter.api.model.Demeter;
-import com.fiwio.iot.demeter.api.model.Relay;
+import com.fiwo.iot.demeter.api.model.Demeter;
+import com.fiwo.iot.demeter.api.model.Relay;
 import com.fiwo.iot.demeter.smart.R;
 
 

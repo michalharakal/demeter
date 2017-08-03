@@ -153,7 +153,7 @@ public class PiFaceDigital2 implements AutoCloseable {
             writeBuffer3[2] = 0;
             mSpiDevice.transfer(writeBuffer3, readBuffer3, writeBuffer3.length);
 
-          //  Log.d(TAG, "readSpiDevice - " + bytesToHex(readBuffer3));
+            // Log.d(TAG, "readSpiDevice - " + bytesToHex(readBuffer3));
 
             return readBuffer3[2];
         }
@@ -246,7 +246,7 @@ public class PiFaceDigital2 implements AutoCloseable {
             Log.e(TAG, position + " is not a valid input position");
         } else {
             boolean result = ((readBuffer3[2] >> position) & 1) == 0;
-            Log.d(TAG, "result for pin=" + String.valueOf(position) + "=" + String.valueOf(result));
+           // Log.d(TAG, "result for pin=" + String.valueOf(position) + "=" + String.valueOf                    (result));
             return result;
         }
         return false;

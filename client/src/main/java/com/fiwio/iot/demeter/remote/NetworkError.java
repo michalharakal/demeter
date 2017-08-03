@@ -1,8 +1,4 @@
-package com.fiwio.iot.demeter.api;
-
-/**
- * Created by mharakal on 17.04.17.
- */
+package com.fiwio.iot.demeter.remote;
 
 public class NetworkError {
 
@@ -10,7 +6,6 @@ public class NetworkError {
 
     public NetworkError(Throwable e) {
         this.throwable = e;
-
     }
 
     public String getAppErrorMessage() {

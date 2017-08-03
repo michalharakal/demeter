@@ -16,10 +16,6 @@ import com.fiwo.iot.demeter.smart.R;
 
 import javax.inject.Inject;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class SplashActivity extends AppCompatActivity implements DemerServiceFound {
 
     public static final int TWENTY_SECONDS = 5000;

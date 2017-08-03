@@ -3,4 +3,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_splash">Demeter</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Manual</string>
+    <string name="title_dashboard">Automatic</string>
+    <string name="title_notifications">Settings</string>
 </resources>

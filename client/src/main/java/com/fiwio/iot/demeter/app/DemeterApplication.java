@@ -21,7 +21,7 @@ public class DemeterApplication extends Application implements Application
     private ApplicationComponent appComponent;
 
 
-    private void initAppComponent() {
+    protected void initAppComponent() {
         appComponent = DaggerApplicationComponent.builder().applicationModule(new
                 ApplicationModule(this)).build();
     }

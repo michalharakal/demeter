@@ -5,10 +5,10 @@ import android.os.Handler;
 
 import com.fiwio.iot.data.CmlRepository;
 import com.fiwio.iot.data.DemeterRepository;
-import com.fiwio.iot.demeter.api.NetworkError;
-import com.fiwio.iot.demeter.api.model.Demeter;
 import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.di.ActivityScope;
+import com.fiwo.iot.demeter.api.model.Demeter;
+import com.fiwo.iot.demeter.api.model.DigitalOutputs;
 
 import javax.inject.Inject;
 
@@ -86,11 +86,23 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     @Override
     public void switchRelay(String name, boolean on) {
         view.showWait();
-        repository.switchRelay(name, on, new CmlRepository.GetDemeterCallback() {
+        repository.switchRelay(name, on, new CmlRepository.PostDemeterCallback() {
             @Override
-            public void onSuccess(Demeter demeter) {
-                view.setList(demeter);
-                view.removeWait();
+            public void onSuccess(final DigitalOutputs outputs) {
+                repository.getDemeter(new CmlRepository.GetDemeterCallback() {
+                    @Override
+                    public void onSuccess(Demeter demeter) {
+                        demeter.setRelays(outputs.getRelays());
+                        view.setList(demeter);
+                        view.removeWait();
+                    }
+
+                    @Override
+                    public void onError(NetworkError networkError) {
+
+                    }
+                });
+
             }
 
             @Override
