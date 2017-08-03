@@ -23,6 +23,7 @@ import com.fiwo.iot.demeter.api.model.Task;
 import com.fiwo.iot.demeter.api.model.TriggerEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -115,7 +116,19 @@ public class DemeterHttpServer extends NanoHTTPD {
                 }
 
                 if (path.contains("schedule")) {
-                    processTaskRequest(gson.fromJson(postBody, Task.class));
+
+                    try {
+                        processTaskRequest(gson.fromJson(postBody, Task.class));
+                    } catch (JsonSyntaxException e) {
+                        Task task = new Task();
+                        DateTime dateTime = new DateTime();
+                        dateTime.plusMinutes(1);
+                        task.setTime(dateTime);
+                        task.setCommand("close");
+                        task.setFsm("garden");
+                        processTaskRequest(task);
+
+                    }
                     return newFixedLengthResponse(Response.Status.OK, "application/javascript", getScheduleStatus());
                 }
 

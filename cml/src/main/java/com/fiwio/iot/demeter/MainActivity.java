@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.RestrictionsManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -44,9 +45,9 @@ public class MainActivity extends Activity {
         IEventBus eventBus = ((DemeterApplication) getApplication()).getEventBus();
 
         Configuration configuration = ((DemeterApplication) getApplication()).getConfiguration();
+        ReminderEngine reminderEngine = ((DemeterApplication) getApplication()).getRemainderEngine();
 
         try {
-            ReminderEngine reminderEngine = new ReminderEngine(this, eventBus);
             api = new DemeterHttpServer(relays, fsm, eventBus, reminderEngine, configuration);
             api.start();
         } catch (IOException e) {
