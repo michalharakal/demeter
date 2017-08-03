@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def debugKeystorePropertiesFile = rootProject.file("debugKeystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def debugKeystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+debugKeystoreProperties.load(new FileInputStream(debugKeystorePropertiesFile))
+
+
 android {
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
@@ -28,6 +39,14 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'org/joda/time/format/*.properties'
     }
+    signingConfigs {
+        debug {
+            keyAlias debugKeystoreProperties['keyAlias']
+            keyPassword debugKeystoreProperties['keyPassword']
+            storeFile file(debugKeystoreProperties['storeFile'])
+            storePassword debugKeystoreProperties['storePassword']
+        }
+    }
 }
 
 dependencies {
@@ -55,7 +74,6 @@ dependencies {
     }
 
 //    compile 'com.birbit:android-priority-jobqueue:2.0.1'
-    // https://mvnrepository.com/artifact/com.evernote/android-job
     compile "com.google.android.gms:play-services-gcm:10.0.0"
     compile group: 'com.evernote', name: 'android-job', version: '1.1.11'
 

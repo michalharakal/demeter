@@ -1,6 +1,9 @@
 package com.fiwio.iot.demeter.fsm;
 
 
+import android.util.Log;
+
+import com.fiwio.iot.demeter.configuration.ConfigurationProvider;
 import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
 import com.fiwio.iot.demeter.events.FireFsmEvent;
@@ -25,31 +28,17 @@ public class GardenFiniteStateMachine {
 
     private static final String TAG = GardenFiniteStateMachine.class.getSimpleName();
 
-
-    private static final long TEN_MINUTES_IN_MS = 10 * 60 * 1000;
-    private static final long TWENTY_MINUTES_IN_MS = 2 * TEN_MINUTES_IN_MS;
-    private static final long THIRTY_SECONDS_IN_MS = 30 * 1000;
-
     private final EasyFlow<FlowContext> flower_flow;
     private final DigitalIO barrel_pump;
+    private final DigitalIO barrel_input;
     private final DigitalIO barrel_valve;
 
     private FlowContext ctx;
 
-    private final long valveOpeningDuration;
-    private final long irrigatingDuration;
-    private final long barrelFillingDuration;
+    private final ConfigurationProvider configurationProvider;
 
     public States getState() {
         return (States) ctx.getState();
-    }
-
-    public void irrigate() {
-        flower_flow.safeTrigger(Events.irrigationStart, ctx);
-    }
-
-    public void fillBarrel() {
-        flower_flow.safeTrigger(Events.fillingStart, ctx);
     }
 
     /**
@@ -63,6 +52,7 @@ public class GardenFiniteStateMachine {
             for (Events event : Events.values()) {
                 if (command.equals(event.getText())) {
                     flower_flow.safeTrigger(event, ctx);
+                    Log.d(TAG, "fired trigger=" + command);
                 }
             }
         }
@@ -112,28 +102,13 @@ public class GardenFiniteStateMachine {
         }
     }
 
-    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve) {
-        this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, TEN_MINUTES_IN_MS, TWENTY_MINUTES_IN_MS);
-    }
-
-    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve, long irrigatingDuration) {
-        this(barrel_pump, barrel_valve, THIRTY_SECONDS_IN_MS, irrigatingDuration, TWENTY_MINUTES_IN_MS);
-    }
-
-    // TODO replace with builder
-    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve, final long
-            valveOpeningDuration, long irrigatingDuration, long barrelFillingDuration) {
-
-        EventBus.getDefault().register(this);
-
-
+    public GardenFiniteStateMachine(final DigitalIO barrel_pump, DigitalIO barrel_valve, final DigitalIO barrel_input, ConfigurationProvider configurationProvider) {
+        this.barrel_input = barrel_input;
         this.barrel_pump = barrel_pump;
         this.barrel_valve = barrel_valve;
+        this.configurationProvider = configurationProvider;
 
-        this.valveOpeningDuration = valveOpeningDuration;
-        this.irrigatingDuration = irrigatingDuration;
-        this.barrelFillingDuration = barrelFillingDuration;
-
+        EventBus.getDefault().register(this);
 
         flower_flow =
                 from(States.CLOSED).transit(
@@ -170,15 +145,20 @@ public class GardenFiniteStateMachine {
                 .whenEnter(States.BARREL_FILLING_OPENING, new ContextHandler<FlowContext>() {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        GardenFiniteStateMachine.this.barrel_pump.setValue(DigitalValue.ON);
+                        // only if mechanical flot not active
+                        if (GardenFiniteStateMachine.this.barrel_input.getValue() == DigitalValue.ON) {
+                            GardenFiniteStateMachine.this.barrel_pump.setValue(DigitalValue.ON);
 
-                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
-                            @Override
-                            public void finished() {
-                                GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingFillingDurationLapsed, context);
-                            }
-                        }).start();
-
+                            new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.intoMs(GardenFiniteStateMachine
+                                    .this.configurationProvider.getValveOpeningDuration())) {
+                                @Override
+                                public void finished() {
+                                    GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingFillingDurationLapsed, context);
+                                }
+                            }).start();
+                        } else {
+                            flower_flow.safeTrigger(Events.stop, ctx);
+                        }
                     }
                 });
 
@@ -190,7 +170,9 @@ public class GardenFiniteStateMachine {
                     public void call(final FlowContext context) throws Exception {
                         GardenFiniteStateMachine.this.barrel_valve.setValue(DigitalValue.ON);
 
-                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.intoMs(
+                                GardenFiniteStateMachine.this
+                                        .configurationProvider.getValveOpeningDuration())) {
                             @Override
                             public void finished() {
                                 GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.openingIrrigationDurationLapsed, context);
@@ -205,7 +187,8 @@ public class GardenFiniteStateMachine {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.irrigatingDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.intoMs(GardenFiniteStateMachine.this
+                                .configurationProvider.getIrrigatingDuration())) {
                             @Override
                             public void finished() {
                                 GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
@@ -220,7 +203,8 @@ public class GardenFiniteStateMachine {
                 {
                     @Override
                     public void call(final FlowContext context) throws Exception {
-                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.barrelFillingDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.intoMs(GardenFiniteStateMachine
+                                .this.configurationProvider.getBarrelFillingDuration())) {
                             @Override
                             public void finished() {
                                 GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.stop, context);
@@ -236,7 +220,8 @@ public class GardenFiniteStateMachine {
                     @Override
                     public void call(final FlowContext context) throws Exception {
                         closeAllVentils();
-                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.valveOpeningDuration) {
+                        new Thread(new SimpleCountDownTimer(GardenFiniteStateMachine.this.intoMs(GardenFiniteStateMachine.this
+                                .configurationProvider.getValveOpeningDuration())) {
                             @Override
                             public void finished() {
                                 GardenFiniteStateMachine.this.flower_flow.safeTrigger(Events.closingDurationLapsed, context);
@@ -245,6 +230,11 @@ public class GardenFiniteStateMachine {
 
                     }
                 });
+        flower_flow.trace();
+    }
+
+    private long intoMs(long valueInSec) {
+        return valueInSec * 1000;
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
