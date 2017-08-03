@@ -1,13 +1,13 @@
 package com.fiwio.iot.demeter.remote;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,7 +20,7 @@ import com.fiwo.iot.demeter.smart.R;
 
 import javax.inject.Inject;
 
-public class RemoteControlActivity extends AppCompatActivity implements RemoteControlContract.View {
+public class RemoteControlFragment extends Fragment implements RemoteControlContract.View {
 
     @Inject
     public RemoteControlPresenter presenter;
@@ -33,63 +33,51 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
     private TextView url;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remote);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private View mContent;
+    private TextView mTextView;
 
-        setSupportActionBar(toolbar);
+    public static Fragment newInstance() {
+        Fragment frag = new RemoteControlFragment();
+        return frag;
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_remote, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // initialize views
+        mContent = view;
 
         inject();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            endpoitUrlProvider.setUrl(bundle.getString("host"));
-        }
-
         renderView();
         init();
+
         presenter.onStart();
     }
 
     private void inject() {
-        DemeterApplication.get(this).getAppComponent().plus(new RemoteControlModule(this)).injects
+        DemeterApplication.get(getContext()).getAppComponent().plus(new RemoteControlModule(this)).injects
                 (this);
     }
 
     public void renderView() {
-        list = (RecyclerView) findViewById(R.id.control_list);
-        progressBar = (ProgressBar) findViewById(R.id.progress);
-        url = (TextView) findViewById(R.id.url);
+        list = (RecyclerView) mContent.findViewById(R.id.control_list);
+        progressBar = (ProgressBar) mContent.findViewById(R.id.progress);
+        url = (TextView) mContent.findViewById(R.id.url);
     }
 
     public void init() {
-        list.setLayoutManager(new LinearLayoutManager(this));
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void showWait() {
@@ -109,8 +97,7 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
     @Override
     public void setList(Demeter demeter) {
         url.setVisibility(View.GONE);
-        RemoteControlListAdapter adapter = new RemoteControlListAdapter(getApplicationContext(),
-                demeter,
+        RemoteControlListAdapter adapter = new RemoteControlListAdapter(getContext(), demeter,
                 new RemoteControlListAdapter.OnItemClickListener() {
                     @Override
                     public void onClick(Relay item) {
@@ -132,6 +119,4 @@ public class RemoteControlActivity extends AppCompatActivity implements RemoteCo
     public void setPresenter(RemoteControlContract.Presenter presenter) {
 
     }
-
-
 }
