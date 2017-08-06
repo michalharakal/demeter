@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter.remote;
+package com.fiwio.iot.demeter.scheduler;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,21 +11,22 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.app.EndpoitUrlProvider;
-import com.fiwio.iot.demeter.features.remote.RemoteControlContract;
-import com.fiwio.iot.demeter.features.remote.RemoteControlPresenter;
-import com.fiwio.iot.demeter.remote.di.RemoteControlModule;
-import com.fiwo.iot.demeter.api.model.Demeter;
+import com.fiwio.iot.demeter.app.DemeterApplication;
+import com.fiwio.iot.demeter.features.scheduler.SchedulerContract;
+import com.fiwio.iot.demeter.remote.RemoteControlListAdapter;
+import com.fiwio.iot.demeter.scheduler.di.SchedulerModule;
 import com.fiwo.iot.demeter.api.model.Relay;
+import com.fiwo.iot.demeter.api.model.ScheduledEvent;
+import com.fiwo.iot.demeter.api.model.ScheduledEvents;
 import com.fiwo.iot.demeter.smart.R;
 
 import javax.inject.Inject;
 
-public class RemoteControlFragment extends Fragment implements RemoteControlContract.View {
+public class SchedulerFragment extends Fragment implements SchedulerContract.View, SchedulerListAdapter.OnItemClickListener {
 
     @Inject
-    public RemoteControlPresenter presenter;
+    public SchedulerContract.Presenter presenter;
 
     @Inject
     protected EndpoitUrlProvider endpoitUrlProvider;
@@ -36,10 +37,9 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
 
 
     private View mContent;
-    private TextView mTextView;
 
     public static Fragment newInstance() {
-        Fragment frag = new RemoteControlFragment();
+        Fragment frag = new SchedulerFragment();
         return frag;
     }
 
@@ -66,7 +66,7 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
     }
 
     private void inject() {
-        DemeterApplication.get(getContext()).getAppComponent().plus(new RemoteControlModule(this)).injects
+        DemeterApplication.get(getContext()).getAppComponent().plus(new SchedulerModule(this)).injects
                 (this);
     }
 
@@ -97,28 +97,21 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
     }
 
     @Override
-    public void setList(Demeter demeter) {
+    public void setList(ScheduledEvents events) {
         url.setVisibility(View.GONE);
-        RemoteControlListAdapter adapter = new RemoteControlListAdapter(getContext(), demeter,
-                new RemoteControlListAdapter.OnItemClickListener() {
-                    @Override
-                    public void onClick(Relay item) {
-                        presenter.switchRelay(item.getName(), "OFF".equals(item.getValue()) ?
-                                true : false);
-                    }
-                });
+        SchedulerListAdapter adapter = new SchedulerListAdapter(getContext(), events, this);
 
         list.setAdapter(adapter);
     }
 
+
     @Override
-    public void showEndpoint(String url) {
-        this.url.setText(url);
+    public void setPresenter(SchedulerContract.Presenter presenter) {
+
     }
 
-
     @Override
-    public void setPresenter(RemoteControlContract.Presenter presenter) {
+    public void onClick(ScheduledEvent Item) {
 
     }
 }

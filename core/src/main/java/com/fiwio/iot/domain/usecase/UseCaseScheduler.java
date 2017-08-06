@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package com.fiwio.iot;
+package com.fiwio.iot.domain.usecase;
 
-public interface BaseView<T> {
+/**
+ * Interface for schedulers.
+ */
+public interface UseCaseScheduler {
 
-    void setPresenter(T presenter);
+    void execute(Runnable runnable);
 
+    <V extends UseCase.ResponseValue> void notifyResponse(final V response,
+            final UseCase.UseCaseCallback<V> useCaseCallback);
+
+    <V extends UseCase.ResponseValue> void onError(
+            final UseCase.UseCaseCallback<V> useCaseCallback);
 }

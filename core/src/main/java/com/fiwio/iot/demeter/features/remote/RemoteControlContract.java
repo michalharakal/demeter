@@ -1,7 +1,7 @@
-package com.fiwio.iot.demeter.remote;
+package com.fiwio.iot.demeter.features.remote;
 
-import com.fiwio.iot.BasePresenter;
-import com.fiwio.iot.BaseView;
+import com.fiwio.iot.mvp.BasePresenter;
+import com.fiwio.iot.mvp.BaseView;
 import com.fiwo.iot.demeter.api.model.Demeter;
 
 public class RemoteControlContract {
@@ -18,8 +18,7 @@ public class RemoteControlContract {
         void showEndpoint(String url);
     }
 
-    interface Presenter extends BasePresenter {
-
+    public interface Presenter extends BasePresenter {
         void switchRelay(String name, boolean on);
     }
 }

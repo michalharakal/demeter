@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
+import com.fiwio.iot.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.app.StringEndpoitUrlProvider;
 
 import javax.inject.Singleton;

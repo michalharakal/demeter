@@ -9,6 +9,8 @@ import com.fiwio.iot.demeter.di.ApplicationComponent;
 import com.fiwio.iot.demeter.di.ApplicationModule;
 import com.fiwio.iot.demeter.di.DaggerApplicationComponent;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 public class DemeterApplication extends Application implements Application
         .ActivityLifecycleCallbacks {
 
@@ -34,6 +36,7 @@ public class DemeterApplication extends Application implements Application
     public void onCreate() {
         super.onCreate();
         initAppComponent();
+        JodaTimeAndroid.init(this);
     }
 
 
