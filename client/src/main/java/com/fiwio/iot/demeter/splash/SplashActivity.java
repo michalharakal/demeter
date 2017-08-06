@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.discovery.DemerServiceFound;
 import com.fiwio.iot.demeter.discovery.MulticastDns;
-import com.fiwio.iot.demeter.remote.RemoteControlActivity;
+import com.fiwio.iot.demeter.main.MainActivity;
 import com.fiwio.iot.demeter.splash.di.SplashModule;
 import com.fiwo.iot.demeter.smart.R;
 
@@ -76,7 +76,7 @@ public class SplashActivity extends AppCompatActivity implements DemerServiceFou
     public void onServiceFound(String ipAddress) {
         multicastDns.stopDiscovery();
         multicastDns = null;
-        Intent mainIntent = new Intent(this, RemoteControlActivity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("host", ipAddress);
         mainIntent.putExtras(bundle);
@@ -88,7 +88,7 @@ public class SplashActivity extends AppCompatActivity implements DemerServiceFou
     public void onServiceSearchFailed() {
         if (repeatCount >= 3) {
             multicastDns.stopDiscovery();
-            Intent mainIntent = new Intent(this, RemoteControlActivity.class);
+            Intent mainIntent = new Intent(this, MainActivity.class);
             this.startActivity(mainIntent);
             this.finish();
         } else {

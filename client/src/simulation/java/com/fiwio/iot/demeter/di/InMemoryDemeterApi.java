@@ -102,7 +102,47 @@ public class InMemoryDemeterApi implements DefaultApi {
 
     @Override
     public Call<ScheduledEvents> scheduleGet() {
-        return null;
+        String cmd = "[{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":14,\"time\":\"2017-08-03T04:15:00.758Z\"},{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":22,\"time\":\"2017-08-03T17:15:00.758Z\"},{\"command\":\"fill\",\"fsm\":\"garden\",\"id\":27,\"time\":\"2017-08-03T19:00:00.758Z\"},{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":15,\"time\":\"2017-08-04T04:15:00.758Z\"},{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":23,\"time\":\"2017-08-04T17:15:00.758Z\"},{\"command\":\"fill\",\"fsm\":\"garden\",\"id\":26,\"time\":\"2017-08-04T19:00:00.758Z\"},{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":16,\"time\":\"2017-08-05T04:15:00.758Z\"},{\"command\":\"irrigate\",\"fsm\":\"garden\",\"id\":24,\"time\":\"2017-08-05T17:15:00.758Z\"},{\"command\":\"fill\",\"fsm\":\"garden\",\"id\":25,\"time\":\"2017-08-05T19:00:00.758Z\"}]";
+
+        final ScheduledEvents scheduledEvents = gson.fromJson(cmd, ScheduledEvents.class);
+
+        return new Call<ScheduledEvents>() {
+
+            @Override
+            public Response<ScheduledEvents> execute() throws IOException {
+                return null;
+            }
+
+            @Override
+            public void enqueue(Callback<ScheduledEvents> callback) {
+                callback.onResponse(this, Response.success(scheduledEvents));
+            }
+
+            @Override
+            public boolean isExecuted() {
+                return false;
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+
+            @Override
+            public boolean isCanceled() {
+                return false;
+            }
+
+            @Override
+            public Call<ScheduledEvents> clone() {
+                return null;
+            }
+
+            @Override
+            public Request request() {
+                return null;
+            }
+        };
     }
 
     @Override

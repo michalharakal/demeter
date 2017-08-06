@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.fiwio.iot;
+package com.fiwio.iot.mvp;
 
 public interface BasePresenter {
 

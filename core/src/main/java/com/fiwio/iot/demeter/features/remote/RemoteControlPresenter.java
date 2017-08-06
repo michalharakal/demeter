@@ -1,23 +1,15 @@
-package com.fiwio.iot.demeter.remote;
+package com.fiwio.iot.demeter.features.remote;
 
-
-import android.os.Handler;
-
+import com.fiwio.iot.app.EndpoitUrlProvider;
 import com.fiwio.iot.data.CmlRepository;
-import com.fiwio.iot.data.DemeterRepository;
-import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
-import com.fiwio.iot.demeter.di.ActivityScope;
+import com.fiwio.iot.data.NetworkError;
 import com.fiwo.iot.demeter.api.model.Demeter;
 import com.fiwo.iot.demeter.api.model.DigitalOutputs;
 
-import javax.inject.Inject;
 
-
-@ActivityScope
 public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     private final RemoteControlContract.View view;
-    private final DemeterRepository repository;
-    private final Handler handler;
+    private final CmlRepository repository;
     private final EndpoitUrlProvider endpoitUrlProvider;
 
     // Define the code block to be executed
@@ -28,19 +20,17 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
         public void run() {
             getDemeter(false);
             // Repeat this the same runnable code block again another 2 seconds
-            handler.postDelayed(runnableCode, DELAY_TIME);
+            // handler.postDelayed(runnableCode, DELAY_TIME);
         }
     };
 
-
-    @Inject
-    public RemoteControlPresenter(DemeterRepository repository, RemoteControlContract.View view,
+    public RemoteControlPresenter(CmlRepository repository, RemoteControlContract.View view,
                                   EndpoitUrlProvider endpoitUrlProvider) {
         this.repository = repository;
         this.view = view;
         this.endpoitUrlProvider = endpoitUrlProvider;
 
-        handler = new Handler();
+//        handler = new Handler();
 
     }
 
@@ -72,14 +62,10 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     @Override
     public void onStart() {
         getDemeter(true);
-        // Start the initial runnable task by posting through the handler
-        handler.post(runnableCode);
         view.showEndpoint(endpoitUrlProvider.getUrl());
     }
 
     public void onStop() {
-        // Removes pending code execution
-        handler.removeCallbacks(runnableCode);
     }
 
 

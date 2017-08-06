@@ -1,7 +1,6 @@
 package com.fiwio.iot.data;
 
 
-import com.fiwio.iot.demeter.remote.NetworkError;
 import com.fiwo.iot.demeter.api.DefaultApi;
 import com.fiwo.iot.demeter.api.model.Demeter;
 import com.fiwo.iot.demeter.api.model.DigitalOutputs;

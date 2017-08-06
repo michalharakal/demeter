@@ -1,1 +1,1 @@
-include ':client', ':cml', ':data', ':pifacedigital2', ':client-api'
+include ':client', ':cml', ':data', ':pifacedigital2', ':client-api', ':core'

@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter.remote;
+package com.fiwio.iot.data;
 
 public class NetworkError {
 

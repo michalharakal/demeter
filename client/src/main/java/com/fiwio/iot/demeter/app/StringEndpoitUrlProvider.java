@@ -3,6 +3,8 @@ package com.fiwio.iot.demeter.app;
 
 import android.text.TextUtils;
 
+import com.fiwio.iot.app.EndpoitUrlProvider;
+
 public class StringEndpoitUrlProvider implements EndpoitUrlProvider {
 
     private String url = null;

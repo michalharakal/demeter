@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.fiwio.iot.demeter.remote.RemoteControlFragment;
+import com.fiwio.iot.demeter.scheduler.SchedulerFragment;
 import com.fiwo.iot.demeter.smart.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
                         loadManualFragment();
                         return true;
                     case R.id.navigation_automatic:
-                        loadProfileFragment();
+                        loadSchedulesFragment();
                         return true;
                     case R.id.navigation_settings:
                         loadSettingsFragment();
@@ -57,19 +58,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadManualFragment() {
 
-        Fragment fragment =  RemoteControlFragment.newInstance();
+        Fragment fragment = RemoteControlFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_frame, fragment);
         ft.commit();
     }
 
-    private void loadProfileFragment() {
-/*
-        ProfileFragment fragment = ProfileFragment.newInstance();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+    private void loadSchedulesFragment() {
+        Fragment fragment = SchedulerFragment.newInstance();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_frame, fragment);
         ft.commit();
-        */
     }
 
     private void loadSettingsFragment() {
