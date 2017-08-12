@@ -1,5 +1,6 @@
 package com.fiwio.iot.demeter.di;
 
+import com.fiwio.iot.demeter.main.MainActivity;
 import com.fiwio.iot.demeter.remote.di.RemoteControlComponent;
 import com.fiwio.iot.demeter.remote.di.RemoteControlModule;
 import com.fiwio.iot.demeter.scheduler.di.SchedulerComponent;
@@ -21,4 +22,6 @@ public interface ApplicationComponent {
     SchedulerComponent plus(SchedulerModule schedulerModule);
 
     SplashComponent plus(SplashModule remoteControlModule);
+
+    void inject(MainActivity mainActivity);
 }

@@ -12,7 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.IOException;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PiFaceDigital2Test {
+public class PiFaceDigital2Test implements InputEdgeCallback {
 	@Mock
 	private SpiDevice mSpiDevice;
 	@Mock
@@ -22,7 +22,7 @@ public class PiFaceDigital2Test {
 
 	@Before
 	public void setUp() throws IOException {
-		mPiFaceDigital2 = new PiFaceDigital2(mSpiDevice, mGpio);
+		mPiFaceDigital2 = new PiFaceDigital2(mSpiDevice, mGpio, this);
 	}
 
 	@Test
@@ -30,5 +30,10 @@ public class PiFaceDigital2Test {
 		mPiFaceDigital2.setLED(0, true);
 
 		//verify(mSpiDevice).write(any(byte[].class), anyInt());
+	}
+
+	@Override
+	public boolean onGpioEdge(byte[] values) {
+		return false;
 	}
 }

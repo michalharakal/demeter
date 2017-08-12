@@ -24,12 +24,7 @@
           "200": {
             "description": "The user object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
                   "$ref": "#/definitions/Demeter"
-                }
-              }
             }
           }
         }
@@ -49,12 +44,7 @@
           "200": {
             "description": "The user object for change digital output values",
             "schema": {
-              "type": "object",
-              "properties": {
-                "data": {
-                  "$ref": "#/definitions/DigitalOutputs"
-                }
-              }
+               "$ref": "#/definitions/DigitalOutputs"
             }
           }
         }

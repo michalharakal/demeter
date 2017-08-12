@@ -33,4 +33,14 @@ public class DemeterSchedulerRepository implements SchedulerRepository {
         });
 
     }
+
+    @Override
+    public void addTask(GetSchedulerCallback callback) {
+
+    }
+
+    @Override
+    public void removeTask(GetSchedulerCallback callback) {
+
+    }
 }

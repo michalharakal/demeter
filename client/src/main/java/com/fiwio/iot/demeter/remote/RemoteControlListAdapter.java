@@ -59,7 +59,11 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
 
     @Override
     public int getItemCount() {
-        return data.getRelays().size();
+        if (data != null) {
+            return data.getRelays().size();
+        } else {
+            return 0;
+        }
     }
 
 

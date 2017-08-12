@@ -9,13 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.fiwio.iot.app.EndpoitUrlProvider;
+import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.remote.RemoteControlFragment;
 import com.fiwio.iot.demeter.scheduler.SchedulerFragment;
 import com.fiwo.iot.demeter.smart.R;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView mBottomNavigationView;
+
+    @Inject
+    protected EndpoitUrlProvider endpoitUrlProvider;
 
     private void setupBottomNavigation() {
 
@@ -42,12 +49,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        inject();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            endpoitUrlProvider.setUrl(bundle.getString("host"));
+        }
 
         setupBottomNavigation();
 
@@ -62,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_frame, fragment);
         ft.commit();
+    }
+
+    private void inject() {
+        DemeterApplication.get(this).getAppComponent().inject(this);
     }
 
     private void loadSchedulesFragment() {

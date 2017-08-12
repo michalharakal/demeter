@@ -4,6 +4,7 @@ import com.fiwio.iot.app.EndpoitUrlProvider;
 import com.fiwio.iot.data.NetworkError;
 import com.fiwio.iot.data.SchedulerRepository;
 import com.fiwo.iot.demeter.api.model.ScheduledEvents;
+import com.fiwo.iot.demeter.api.model.Task;
 
 public class SchedulerContractPresenter implements SchedulerContract.Presenter {
     private final SchedulerContract.View view;
@@ -12,11 +13,6 @@ public class SchedulerContractPresenter implements SchedulerContract.Presenter {
     public SchedulerContractPresenter(SchedulerRepository repository, SchedulerContract.View view, EndpoitUrlProvider endpoitUrlProvider) {
         this.view = view;
         this.repository = repository;
-    }
-
-    @Override
-    public void switchRelay(String name, boolean on) {
-
     }
 
     @Override
@@ -48,6 +44,15 @@ public class SchedulerContractPresenter implements SchedulerContract.Presenter {
 
     @Override
     public void onStop() {
+
+    }
+
+    @Override
+    public void addTask(Task task) {
+    }
+
+    @Override
+    public void deleteTask(String taskId) {
 
     }
 }
