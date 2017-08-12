@@ -1,6 +1,7 @@
 package com.fiwio.iot.demeter.di;
 
-import com.fiwio.iot.demeter.app.EndpoitUrlProvider;
+import com.fatboyindustrial.gsonjodatime.Converters;
+import com.fiwio.iot.app.EndpoitUrlProvider;
 import com.fiwo.iot.demeter.api.DefaultApi;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -33,7 +34,7 @@ public class NetModule {
     Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        return gsonBuilder.create();
+        return Converters.registerDateTime(gsonBuilder).create();
     }
 
     @Provides
