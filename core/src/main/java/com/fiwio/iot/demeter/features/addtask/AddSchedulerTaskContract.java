@@ -9,10 +9,11 @@ public class AddSchedulerTaskContract {
 
         void showTime(String value);
 
+        void handleTaskInserted();
     }
 
     public interface Presenter extends BasePresenter {
-        void addTask();
+        void addTask(boolean irrigate);
 
         void putDate(int year, int monthOfYear, int dayOfMonth);
 

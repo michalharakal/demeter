@@ -18,13 +18,11 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 class SchedulerListAdapter extends RecyclerView.Adapter<SchedulerListAdapter.ViewHolder> {
-    private final SchedulerListAdapter.OnItemClickListener listener;
     private ScheduledEvents events;
     private Context context;
 
-    public SchedulerListAdapter(Context context, ScheduledEvents events, SchedulerListAdapter.OnItemClickListener listener) {
+    public SchedulerListAdapter(Context context, ScheduledEvents events) {
         this.events = events;
-        this.listener = listener;
         this.context = context;
     }
 
@@ -38,8 +36,10 @@ class SchedulerListAdapter extends RecyclerView.Adapter<SchedulerListAdapter.Vie
 
     @Override
     public void onBindViewHolder(SchedulerListAdapter.ViewHolder holder, int position) {
-        holder.click(events.get(position), listener);
-        holder.name.setText(events.get(position).getCommand());
+        // holder.click(events.get(position), listener);
+
+        String command = events.get(position).getCommand();
+        holder.name.setText("irrigate".equals(command) ? "Závlaha" : "Napouštení");
 
         DateTimeZone timeZone = DateTimeZone.forID("Europe/Berlin");
 

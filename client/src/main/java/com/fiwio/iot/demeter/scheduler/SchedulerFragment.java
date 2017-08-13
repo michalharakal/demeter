@@ -17,13 +17,12 @@ import com.fiwio.iot.demeter.addtask.AddSchedulerTaskActivity;
 import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.features.scheduler.SchedulerContract;
 import com.fiwio.iot.demeter.scheduler.di.SchedulerModule;
-import com.fiwo.iot.demeter.api.model.ScheduledEvent;
 import com.fiwo.iot.demeter.api.model.ScheduledEvents;
 import com.fiwo.iot.demeter.smart.R;
 
 import javax.inject.Inject;
 
-public class SchedulerFragment extends Fragment implements SchedulerContract.View, SchedulerListAdapter.OnItemClickListener {
+public class SchedulerFragment extends Fragment implements SchedulerContract.View {
 
     @Inject
     public SchedulerContract.Presenter presenter;
@@ -60,6 +59,12 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
         renderView();
         init();
 
+        presenter.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         presenter.onStart();
     }
 
@@ -107,7 +112,7 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
     public void setList(ScheduledEvents events) {
         getActivity().setTitle(getString(R.string.automatic_tasks));
         url.setVisibility(View.GONE);
-        SchedulerListAdapter adapter = new SchedulerListAdapter(getContext(), events, this);
+        SchedulerListAdapter adapter = new SchedulerListAdapter(getContext(), events);
 
         list.setAdapter(adapter);
     }
@@ -122,11 +127,6 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
 
     @Override
     public void setPresenter(SchedulerContract.Presenter presenter) {
-
-    }
-
-    @Override
-    public void onClick(ScheduledEvent Item) {
 
     }
 }

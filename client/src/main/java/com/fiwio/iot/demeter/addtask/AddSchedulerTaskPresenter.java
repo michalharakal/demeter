@@ -1,8 +1,11 @@
 package com.fiwio.iot.demeter.addtask;
 
 import com.fiwio.iot.app.EndpoitUrlProvider;
+import com.fiwio.iot.data.NetworkError;
 import com.fiwio.iot.data.SchedulerRepository;
 import com.fiwio.iot.demeter.features.addtask.AddSchedulerTaskContract;
+import com.fiwo.iot.demeter.api.model.ScheduledEvents;
+import com.fiwo.iot.demeter.api.model.Task;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -13,6 +16,7 @@ public class AddSchedulerTaskPresenter implements AddSchedulerTaskContract.Prese
     private final DateTimeFormatter dtTimeFormatter;
     private DateTime dateTime;
     private final AddSchedulerTaskContract.View view;
+    private final SchedulerRepository repository;
 
 
     public AddSchedulerTaskPresenter(SchedulerRepository repository, AddSchedulerTaskContract.View view, EndpoitUrlProvider endpoitUrlProvider) {
@@ -20,10 +24,27 @@ public class AddSchedulerTaskPresenter implements AddSchedulerTaskContract.Prese
         dateTime = new DateTime();
         dtDateFormatter = DateTimeFormat.forPattern("dd.MM.yyyy");
         dtTimeFormatter = DateTimeFormat.forPattern("HH:mm:ss");
+        this.repository = repository;
     }
 
     @Override
-    public void addTask() {
+    public void addTask(boolean irrigate) {
+        Task task = new Task();
+        task.setFsm("garden");
+        task.setCommand(irrigate ? "irrigate" : "fill");
+        task.setTime(dateTime);
+        repository.addTask(task, new SchedulerRepository.GetSchedulerCallback() {
+            @Override
+            public void onSuccess(ScheduledEvents demeter) {
+                view.handleTaskInserted();
+
+            }
+
+            @Override
+            public void onError(NetworkError networkError) {
+                view.handleTaskInserted();
+            }
+        });
 
     }
 
