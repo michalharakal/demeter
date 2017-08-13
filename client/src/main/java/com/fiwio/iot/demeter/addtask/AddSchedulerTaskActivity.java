@@ -1,10 +1,13 @@
 package com.fiwio.iot.demeter.addtask;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.fiwio.iot.demeter.addtask.di.AddSchedulerTaskModule;
@@ -26,6 +29,8 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
     private TextView date;
     private TextView time;
     private Button pickTime;
+    private FloatingActionButton fab;
+    private RadioButton rbIrrigate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //
@@ -34,11 +39,17 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
 
         inject();
 
         date = (TextView) findViewById(R.id.date_value);
         time = (TextView) findViewById(R.id.time_value);
+
+        rbIrrigate = (RadioButton) findViewById(R.id.rb_irrigate);
 
 
         pickDate = (Button) findViewById(R.id.bt_pick_date);
@@ -64,6 +75,14 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
                         true
                 );
                 dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        fab = (FloatingActionButton) findViewById(R.id.fab_edit_task_done);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.addTask(rbIrrigate.isChecked());
             }
         });
 
@@ -96,6 +115,11 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
     @Override
     public void showTime(String value) {
         time.setText(value);
+    }
+
+    @Override
+    public void handleTaskInserted() {
+        finish();
     }
 
     @Override
