@@ -15,11 +15,12 @@ public class SchedulerContract {
         void onFailure(String appErrorMessage);
 
         void setList(ScheduledEvents events);
+
+        void showAddTask();
+
     }
 
     public interface Presenter extends BasePresenter {
-
-        void addTask(Task task);
 
         void deleteTask(String taskId);
     }

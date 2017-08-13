@@ -48,10 +48,6 @@ public class SchedulerContractPresenter implements SchedulerContract.Presenter {
     }
 
     @Override
-    public void addTask(Task task) {
-    }
-
-    @Override
     public void deleteTask(String taskId) {
 
     }

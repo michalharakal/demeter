@@ -20,5 +20,7 @@ public class RemoteControlContract {
 
     public interface Presenter extends BasePresenter {
         void switchRelay(String name, boolean on);
+
+        void switchAllOff();
     }
 }

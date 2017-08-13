@@ -81,4 +81,42 @@ public class DemeterRepository implements CmlRepository {
             }
         });
     }
+
+    @Override
+    public void switchAllOff(final PostDemeterCallback callback) {
+        Call<Demeter> call = networkService.get().demeterGet();
+        call.enqueue(new Callback<Demeter>() {
+            @Override
+            public void onResponse(Call<Demeter> call, Response<Demeter> response) {
+                Demeter answer = response.body();
+
+                List<Relay> relays = answer.getRelays();
+
+                DigitalOutputs postOutputs = new DigitalOutputs();
+                postOutputs.setRelays(relays);
+
+                for (Relay relay : relays) {
+                    relay.setValue("OFF");
+                }
+
+                Call<DigitalOutputs> post = networkService.get().demeterPost(postOutputs);
+                post.enqueue(new Callback<DigitalOutputs>() {
+                    @Override
+                    public void onResponse(Call<DigitalOutputs> call, Response<DigitalOutputs> response) {
+                        callback.onSuccess(response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<DigitalOutputs> call, Throwable t) {
+                        callback.onError(new NetworkError(t));
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<Demeter> call, Throwable t) {
+
+            }
+        });
+    }
 }
