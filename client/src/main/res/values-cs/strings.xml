@@ -5,4 +5,11 @@
     <string name="title_dashboard">Automatika</string>
     <string name="title_home">Manuálni</string>
     <string name="title_notifications">Parametry</string>
+    <string name="manual_control">Manuální ovládaní</string>
+    <string name="barrel_fill">Napustit</string>
+    <string name="irrigate">Zalévat</string>
+    <string name="time">Čas</string>
+    <string name="date">Datum</string>
+    <string name="automatic_tasks">Automatické úkoly</string>
+    <string name="new_task">Nový úkol</string>
 </resources>

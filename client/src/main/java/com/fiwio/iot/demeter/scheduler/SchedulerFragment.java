@@ -1,7 +1,9 @@
 package com.fiwio.iot.demeter.scheduler;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fiwio.iot.app.EndpoitUrlProvider;
+import com.fiwio.iot.demeter.addtask.AddSchedulerTaskActivity;
 import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.features.scheduler.SchedulerContract;
 import com.fiwio.iot.demeter.scheduler.di.SchedulerModule;
@@ -26,15 +28,13 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
     @Inject
     public SchedulerContract.Presenter presenter;
 
-    @Inject
-    protected EndpoitUrlProvider endpoitUrlProvider;
-
     private ProgressBar progressBar;
     private RecyclerView list;
     private TextView url;
 
 
     private View mContent;
+    private FloatingActionButton fab;
 
     public static Fragment newInstance() {
         Fragment frag = new SchedulerFragment();
@@ -46,7 +46,7 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_remote, container, false);
+        return inflater.inflate(R.layout.fragment_scheduler, container, false);
     }
 
     @Override
@@ -69,9 +69,18 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
     }
 
     public void renderView() {
+
         list = (RecyclerView) mContent.findViewById(R.id.control_list);
         progressBar = (ProgressBar) mContent.findViewById(R.id.progress);
         url = (TextView) mContent.findViewById(R.id.url);
+
+        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add_task);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddTask();
+            }
+        });
     }
 
     public void init() {
@@ -96,10 +105,18 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
 
     @Override
     public void setList(ScheduledEvents events) {
+        getActivity().setTitle(getString(R.string.automatic_tasks));
         url.setVisibility(View.GONE);
         SchedulerListAdapter adapter = new SchedulerListAdapter(getContext(), events, this);
 
         list.setAdapter(adapter);
+    }
+
+    @Override
+    public void showAddTask() {
+        Intent intent = new Intent(getContext(), AddSchedulerTaskActivity.class);
+        startActivityForResult(intent, AddSchedulerTaskActivity.REQUEST_ADD_TASK);
+
     }
 
 

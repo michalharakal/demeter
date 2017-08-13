@@ -10,6 +10,8 @@ public interface CmlRepository {
 
     void switchRelay(final String name, final boolean on, final PostDemeterCallback callback);
 
+    void switchAllOff(final PostDemeterCallback callback);
+
     interface GetDemeterCallback {
         void onSuccess(Demeter demeter);
 

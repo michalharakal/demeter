@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter.remote;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.app.EndpoitUrlProvider;
+import com.fiwio.iot.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.features.remote.RemoteControlContract;
 import com.fiwio.iot.demeter.features.remote.RemoteControlPresenter;
 import com.fiwio.iot.demeter.remote.di.RemoteControlModule;
@@ -37,6 +38,7 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
 
     private View mContent;
     private TextView mTextView;
+    private FloatingActionButton fab;
 
     public static Fragment newInstance() {
         Fragment frag = new RemoteControlFragment();
@@ -63,6 +65,7 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
         init();
 
         presenter.onStart();
+
     }
 
     private void inject() {
@@ -71,9 +74,17 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
     }
 
     public void renderView() {
+        getActivity().setTitle(getString(R.string.manual_control));
         list = (RecyclerView) mContent.findViewById(R.id.control_list);
         progressBar = (ProgressBar) mContent.findViewById(R.id.progress);
         url = (TextView) mContent.findViewById(R.id.url);
+        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_switch_off);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.switchAllOff();
+            }
+        });
     }
 
     public void init() {

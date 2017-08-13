@@ -98,4 +98,34 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
             }
         });
     }
+
+    @Override
+    public void switchAllOff() {
+        view.showWait();
+        repository.switchAllOff(new CmlRepository.PostDemeterCallback() {
+            @Override
+            public void onSuccess(final DigitalOutputs outputs) {
+                repository.getDemeter(new CmlRepository.GetDemeterCallback() {
+                    @Override
+                    public void onSuccess(Demeter demeter) {
+                        demeter.setRelays(outputs.getRelays());
+                        view.setList(demeter);
+                        view.removeWait();
+                    }
+
+                    @Override
+                    public void onError(NetworkError networkError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(NetworkError networkError) {
+                view.onFailure(networkError.getAppErrorMessage());
+                view.removeWait();
+            }
+        });
+    }
 }

@@ -7,4 +7,11 @@
     <string name="title_home">Manual</string>
     <string name="title_dashboard">Automatic</string>
     <string name="title_notifications">Settings</string>
+    <string name="manual_control">Manual Control</string>
+    <string name="barrel_fill">Fill barrel</string>
+    <string name="irrigate">Irrigate garden</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="automatic_tasks">Automatické úkoly</string>
+    <string name="new_task">New task</string>
 </resources>
