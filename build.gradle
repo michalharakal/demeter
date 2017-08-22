@@ -9,20 +9,24 @@ buildscript {
         maven {
             url 'https://maven.google.com'
         }
+
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.2'
         classpath "gradle.plugin.org.detoeuf:swagger-codegen-plugin:1.7.2"
+        classpath 'com.google.gms:google-services:3.1.0'
     }
-
-
 }
+
 
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 
     tasks.withType(JavaCompile) {
