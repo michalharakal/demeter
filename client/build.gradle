@@ -1,11 +1,10 @@
 apply plugin: 'com.android.application'
 
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.fiwo.iot.demeter.smart"
+        applicationId "com.fiwo.iot.demeter.app"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
@@ -30,13 +29,27 @@ android {
         machine {
         }
         simulation {
-            applicationId "com.fiwo.iot.demeter.smart.simulation"
         }
     }
     lintOptions {
         abortOnError false
     }
+
+
 }
+
+def googleServicesJson = 'google-services.json'
+
+task copyGoogleServices(type: Copy) {
+    println "XXX" + "${project.rootDir}/../config"
+    println "XXX" + projectDir
+    description = 'Switches to DEBUG google-services.json'
+    from "${project.rootDir}/../config"
+    include "$googleServicesJson"
+    into "${projectDir}"
+}
+
+
 
 task clientApi(dependsOn: ':client-api:jar', type: Copy) {
     from tasks.getByPath(':client-api:jar')
@@ -44,9 +57,13 @@ task clientApi(dependsOn: ':client-api:jar', type: Copy) {
 }
 
 preBuild.dependsOn clientApi
+preBuild.dependsOn copyGoogleServices
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'proglibs')
+
+    compile 'com.google.firebase:firebase-core:11.2.0'
+    compile "com.google.firebase:firebase-crash:11.2.0"
 
     compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp3Version"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
@@ -71,6 +88,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+
+
     compile 'com.wdullaer:materialdatetimepicker:3.2.2'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:recyclerview-v7:25.3.1'
@@ -84,3 +103,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(path: ':core')
 }
+
+// Add to the bottom of the file
+apply plugin: 'com.google.gms.google-services'
+

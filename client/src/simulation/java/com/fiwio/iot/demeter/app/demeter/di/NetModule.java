@@ -1,7 +1,6 @@
 package com.fiwio.iot.demeter.app.demeter.di;
 
 import com.fatboyindustrial.gsonjodatime.Converters;
-import com.fiwio.iot.demeter.app.app.EndpoitUrlProvider;
 import com.fiwo.iot.demeter.api.DefaultApi;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -13,8 +12,6 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class NetModule {
@@ -34,21 +31,12 @@ public class NetModule {
     Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        return Converters.registerDateTime(gsonBuilder).create();
+        return Converters.registerDateTime(new GsonBuilder()).create();
     }
 
     @Provides
     @Singleton
-    DefaultApi provideFestivalRestService(Gson gson, OkHttpClient client, EndpoitUrlProvider endpoitUrlProvider) {
-
-        Retrofit restAdapter = new Retrofit.Builder()
-                .baseUrl(endpoitUrlProvider.getUrl())
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        return restAdapter.create(DefaultApi.class);
-
-
+    DefaultApi provideFestivalRestService(Gson gson) {
+        return new InMemoryDemeterApi(gson);
     }
 }
