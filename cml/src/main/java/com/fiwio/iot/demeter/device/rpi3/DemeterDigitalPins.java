@@ -9,7 +9,7 @@ import com.fiwio.iot.demeter.device.model.DigitalValue;
 import com.fiwio.iot.demeter.events.FireFsmEvent;
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,7 +25,7 @@ public class DemeterDigitalPins implements DigitalPins, DigitalIoCallback {
 
     public DemeterDigitalPins() {
 
-        PeripheralManagerService service = new PeripheralManagerService();
+        PeripheralManager service = PeripheralManager.getInstance();
 
         relays.add(new DemeterRelay(service, "BCM23")); // X3.8 barrel filling
         relays.add(new DemeterRelay(service, "BCM24")); // X3.7 irrigating

@@ -3,7 +3,6 @@ package com.fiwio.iot.demeter.app.demeter.scheduler.di;
 import com.fiwio.iot.demeter.app.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.app.data.DemeterSchedulerRepository;
 import com.fiwio.iot.demeter.app.data.SchedulerRepository;
-import com.fiwio.iot.demeter.app.demeter.di.ActivityScope;
 import com.fiwio.iot.demeter.app.demeter.features.scheduler.SchedulerContract;
 import com.fiwio.iot.demeter.app.demeter.features.scheduler.SchedulerContractPresenter;
 import com.fiwo.iot.demeter.api.DefaultApi;
@@ -22,14 +21,12 @@ public class SchedulerModule {
     }
 
     @Provides
-    @ActivityScope
     SchedulerRepository provideCmlRespotiroy(Lazy<DefaultApi> defaultApi) {
         return new DemeterSchedulerRepository(defaultApi);
     }
 
 
     @Provides
-    @ActivityScope
     SchedulerContract.Presenter provideHomePresenter(SchedulerRepository repository,
                                                     EndpoitUrlProvider
     endpoitUrlProvider) {

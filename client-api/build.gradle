@@ -25,20 +25,21 @@ allprojects {
     tasks.whenTaskAdded { theTask ->
         if (theTask.name.equals('assemble')) {
             jar.dependsOn (theTask.name)
-            theTask.name.dependsOn("sagger")
+            theTask.name.dependsOn("swagger")
         }
     }
 }
 
+
 dependencies {
-    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
-    compile "com.squareup.retrofit2:converter-scalars:$rootProject.retrofitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
-    compile "io.swagger:swagger-annotations:$rootProject.swaggerAnnotationsVersion"
-    compile("org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:$rootProject.oltuVersion") {
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "io.swagger:swagger-annotations:$rootProject.swaggerAnnotationsVersion"
+    implementation("org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:$rootProject.oltuVersion") {
         exclude group: 'org.apache.oltu.oauth2', module: 'org.apache.oltu.oauth2.common'
     }
-    compile "joda-time:joda-time:$rootProject.jodaTimeVersion"
+    implementation "joda-time:joda-time:$rootProject.jodaTimeVersion"
 
-    testCompile "junit:junit:$rootProject.junitVersion"
+    testImplementation "junit:junit:$rootProject.junitVersion"
 }

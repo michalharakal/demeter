@@ -37,8 +37,6 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);

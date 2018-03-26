@@ -5,9 +5,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.fiwio.iot.demeter.di.ApplicationComponent;
-import com.fiwio.iot.demeter.di.ApplicationModule;
-import com.fiwio.iot.demeter.di.DaggerApplicationComponent;
+import com.fiwio.iot.demeter.app.demeter.di.ApplicationComponent;
+import com.fiwio.iot.demeter.app.demeter.di.ApplicationModule;
+import com.fiwio.iot.demeter.app.demeter.di.DaggerApplicationComponent;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 

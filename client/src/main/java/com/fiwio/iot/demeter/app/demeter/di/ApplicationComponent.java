@@ -9,6 +9,7 @@ import com.fiwio.iot.demeter.app.demeter.scheduler.di.SchedulerComponent;
 import com.fiwio.iot.demeter.app.demeter.scheduler.di.SchedulerModule;
 import com.fiwio.iot.demeter.app.demeter.splash.di.SplashComponent;
 import com.fiwio.iot.demeter.app.demeter.splash.di.SplashModule;
+import com.fiwio.iot.demeter.app.di.NetModule;
 
 import javax.inject.Singleton;
 
@@ -28,6 +29,4 @@ public interface ApplicationComponent {
     AddSchedulerTaskComponent plus(AddSchedulerTaskModule addSchedulerTaskModule);
 
     void inject(MainActivity mainActivity);
-
-
 }
