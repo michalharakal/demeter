@@ -32,13 +32,12 @@ public class DemeterDigitalPins implements DigitalPins, InputEdgeCallback {
 
         piFaceDigital2 = PiFaceDigital2.create(BoardDefaults.getSPIPort(), this);
         relays.add(new DemeterRelay(piFaceDigital2, 0, "BCM23")); // Barrel filling
-        relays.add(new DemeterRelay(piFaceDigital2, 1, "BCM24")); // irrigating
+        relays.add(new DemeterRelay(piFaceDigital2, 1, "BCM24")); // garden
+        relays.add(new DemeterRelay(piFaceDigital2, 2, "BCM25")); // flowers
+        relays.add(new DemeterRelay(piFaceDigital2, 4, "BCM26")); // greenhouse
 
         floatBarrel = new DemeterInput(piFaceDigital2, 0, "INP0"); // mechanical float - barrel
         inputs.add(floatBarrel);
-
-        //    inputs.add(new DemeterInput(piFaceDigital2, 1, "INP1")); // flowers ???
-
     }
 
     @Override
