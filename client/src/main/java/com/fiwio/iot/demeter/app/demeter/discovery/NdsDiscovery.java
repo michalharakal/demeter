@@ -60,7 +60,6 @@ public class NdsDiscovery implements NsdManager.DiscoveryListener, MulticastDns 
     @Override
     public void onDiscoveryStarted(String serviceType) {
         Log.d(LOG_TAG, "Started" + serviceType);
-
     }
 
     @Override

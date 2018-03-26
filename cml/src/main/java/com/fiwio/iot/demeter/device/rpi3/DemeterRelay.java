@@ -6,7 +6,7 @@ import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalIOType;
 import com.fiwio.iot.demeter.device.model.DigitalValue;
 import com.google.android.things.pio.Gpio;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ public class DemeterRelay implements DigitalIO {
     private Gpio mLedGpio;
     private final String name;
 
-    public DemeterRelay(PeripheralManagerService gpio, String ioName) {
+    public DemeterRelay(PeripheralManager gpio, String ioName) {
         this.name = ioName;
         try {
             mLedGpio = gpio.openGpio(ioName);

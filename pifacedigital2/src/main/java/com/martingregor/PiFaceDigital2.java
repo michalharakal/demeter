@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.google.android.things.pio.Gpio;
 import com.google.android.things.pio.GpioCallback;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 import com.google.android.things.pio.SpiDevice;
 
 import java.io.IOException;
@@ -176,7 +176,7 @@ public class PiFaceDigital2 implements AutoCloseable {
      * @param spiBusPort Name of the SPI bus
      */
     public static PiFaceDigital2 create(String spiBusPort, InputEdgeCallback callback) throws IOException {
-        PeripheralManagerService peripheralManagerService = new PeripheralManagerService();
+        PeripheralManager peripheralManagerService = PeripheralManager.getInstance();
         try {
             return new PiFaceDigital2(peripheralManagerService.openSpiDevice(spiBusPort),
                     peripheralManagerService.openGpio(GPIO_PORT), callback);

@@ -1,15 +1,5 @@
 apply plugin: 'java'
 
-task clientApi(dependsOn: ':client-api:jar', type: Copy) {
-    from tasks.getByPath(':client-api:jar')
-    into 'proglibs'
-}
-
-compileJava.dependsOn clientApi
-
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'proglibs')
+    compile project(path: ':client-api')
 }
-
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"

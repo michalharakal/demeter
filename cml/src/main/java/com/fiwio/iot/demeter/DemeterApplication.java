@@ -18,6 +18,7 @@ import com.fiwio.iot.demeter.events.IEventBus;
 import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
+import com.google.android.things.device.TimeManager;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -36,8 +37,8 @@ public class DemeterApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        am.setTimeZone("Europe/Berlin");
+        TimeManager tm =  TimeManager.getInstance();
+        tm.setTimeZone("Europe/Berlin");
 
         JodaTimeAndroid.init(this);
 

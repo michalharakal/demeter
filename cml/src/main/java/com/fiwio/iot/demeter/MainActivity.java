@@ -16,7 +16,7 @@ import com.fiwio.iot.demeter.fsm.FsmBackgroundService;
 import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.http.DemeterHttpServer;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
-import com.google.android.things.pio.PeripheralManagerService;
+import com.google.android.things.pio.PeripheralManager;
 
 import java.io.IOException;
 
@@ -58,8 +58,7 @@ public class MainActivity extends Activity {
 
         service.startServer("demeter", null);
 
-        PeripheralManagerService service = new PeripheralManagerService();
-        Log.d(TAG, "Available GPIO: " + service.getGpioList());
+        Log.d(TAG, "Available GPIO: " + PeripheralManager.getInstance().getGpioList());
 
 
         final Intent intent = new Intent(Intent.ACTION_SYNC, null, this, FsmBackgroundService.class);

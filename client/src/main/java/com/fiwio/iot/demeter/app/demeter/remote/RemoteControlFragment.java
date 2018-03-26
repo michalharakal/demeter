@@ -28,9 +28,6 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
     @Inject
     public RemoteControlPresenter presenter;
 
-    @Inject
-    protected EndpoitUrlProvider endpoitUrlProvider;
-
     private ProgressBar progressBar;
     private RecyclerView list;
     private TextView url;

@@ -12,24 +12,30 @@ debugKeystoreProperties.load(new FileInputStream(debugKeystorePropertiesFile))
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfiguration["compileSdkVersion"]
+    buildToolsVersion globalConfiguration["buildToolsVersion"]
 
     defaultConfig {
+        minSdkVersion globalConfiguration["minSdkVersionAndroidThings"]
+        targetSdkVersion globalConfiguration["targetSdkVersion"]
         applicationId "com.fiwio.iot.demeter"
-        minSdkVersion 24
-        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "default"
+
     productFlavors {
         sensorsConnected {
+            dimension "default"
             buildConfigField "boolean", "MOCK_MODE", "false"
         }
 
         sensorsNotConnected {
+            dimension "default"
             buildConfigField "boolean", "MOCK_MODE", "true"
         }
     }
@@ -39,6 +45,7 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'org/joda/time/format/*.properties'
     }
+
     signingConfigs {
         debug {
             keyAlias debugKeystoreProperties['keyAlias']
@@ -50,37 +57,41 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: '../client-api/build/libs')
+    compileOnly 'com.google.android.things:androidthings:0.7-devpreview'
+
+    compile project(path: ':pifacedigital2')
+    compile (project(path: ':client-api')) {
+        // Exclude joda-time from this dependency to remove the errors.
+        exclude module: 'joda-time'
+    }
 
 
-    provided 'com.google.android.things:androidthings:0.4-devpreview'
-
-    compile "org.greenrobot:eventbus:$rootProject.ext.greenEventBusVersion"
+    implementation "org.greenrobot:eventbus:$rootProject.ext.greenEventBusVersion"
 
 
     provided 'com.google.auto.value:auto-value:1.2'
     annotationProcessor 'com.google.auto.value:auto-value:1.2'
 
-    compile 'org.nanohttpd:nanohttpd:2.2.0'
-    compile "com.google.code.gson:gson:$rootProject.gsonVersion"
-    compile 'net.danlew:android.joda:2.9.9'
+    implementation 'org.nanohttpd:nanohttpd:2.2.0'
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
 
-    compile ('com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.6.0') {
-       exclude group: 'joda-time', module: 'joda-time'
+    implementation "net.danlew:android.joda:$rootProject.androidJodaTimeVersion"
+
+    implementation('com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:1.6.0') {
+        exclude group: 'joda-time', module: 'joda-time'
     }
-
-    compile ("au.com.datasymphony:EasyFlow:1.3.1") {
-      exclude group: "org.slf4j"
+    compile("au.com.datasymphony:EasyFlow:1.3.1") {
+        exclude group: "org.slf4j"
     }
 
 //    compile 'com.birbit:android-priority-jobqueue:2.0.1'
-    compile "com.google.android.gms:play-services-gcm:10.0.0"
-    compile group: 'com.evernote', name: 'android-job', version: '1.1.11'
+    implementation "com.google.android.gms:play-services-gcm:10.0.0"
+    implementation group: 'com.evernote', name: 'android-job', version: '1.1.11'
 
 
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'com.github.tony19:logback-android-core:1.1.1-6'
-    compile('com.github.tony19:logback-android-classic:1.1.1-6') {
+    implementation 'org.slf4j:slf4j-api:1.7.21'
+    implementation 'com.github.tony19:logback-android-core:1.1.1-6'
+    implementation('com.github.tony19:logback-android-classic:1.1.1-6') {
         // workaround issue #73
         exclude group: 'com.google.android', module: 'android'
     }
@@ -93,5 +104,5 @@ dependencies {
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile "org.mockito:mockito-core:$rootProject.ext.mockitocoreVersion"
     testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-    compile project(path: ':pifacedigital2')
+
 }
