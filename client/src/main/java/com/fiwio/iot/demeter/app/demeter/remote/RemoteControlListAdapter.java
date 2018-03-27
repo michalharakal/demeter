@@ -30,10 +30,13 @@ public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControl
             return "Napouštení";
         }
         if (internalName.equals("BCM24")) {
-            return "Vypouštení";
+            return "Sklenik";
         }
-        if (internalName.equals("BCM22")) {
+        if (internalName.equals("BCM25")) {
             return "Kytky";
+        }
+        if (internalName.equals("BCM26")) {
+            return "Zahrada";
         }
         return internalName;
     }
