@@ -7,11 +7,11 @@ tasks.withType(FindBugs) {
         group = 'verification'
         description = "Run findbugs static analysis for the build."
 
-        ignoreFailures = true
+        ignoreFailures = false
         effort = "default"
         reportLevel = "medium"
 
-        excludeFilter = file("$rootProject.rootDir/config/quality/findbugs.xml")
+        excludeFilter = file("$rootProject.rootDir/config/quality/findbugs_exclude.xml")
 
         reports {
             // Only one of HTML or XML can be turned on at the same time

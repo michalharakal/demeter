@@ -1,0 +1,49 @@
+apply plugin: 'kotlin'
+apply plugin: 'jacoco'
+
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml {
+            enabled true // coveralls plugin depends on xml format report
+        }
+
+        html {
+            enabled true
+        }
+    }
+
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            '**/demeter/domain/model'
+                    ])
+        })
+    }
+}
+
+dependencies {
+    def domainDependencies = rootProject.ext.domainDependencies
+    def domainTestDependencies = rootProject.ext.domainTestDependencies
+
+    implementation domainDependencies.javaxAnnotation
+    implementation domainDependencies.javaxInject
+    implementation domainDependencies.rxKotlin
+    implementation domainDependencies.kotlin
+    implementation domainDependencies.jodaTime
+
+    testImplementation domainTestDependencies.junit
+    testImplementation domainTestDependencies.mockito
+    testImplementation domainTestDependencies.assertj
+}
+

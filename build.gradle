@@ -1,42 +1,35 @@
-apply from: "versions.gradle"
-
 buildscript {
+    ext.kotlin_version = '1.2.31'
     repositories {
         jcenter()
+        google()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
         maven {
-            url 'https://maven.google.com'
+            url 'https://maven.fabric.io/public'
         }
-
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.2'
+        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "gradle.plugin.org.detoeuf:swagger-codegen-plugin:1.7.2"
-        classpath 'com.google.gms:google-services:3.1.0'
+        classpath "com.dicedmelon.gradle:jacoco-android:0.1.2"
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.2'
+        classpath 'com.google.gms:google-services:3.2.0' // google-services plugin
+        classpath 'io.fabric.tools:gradle:1.25.1'
     }
 }
 
+apply from: 'dependencies.gradle'
 
 allprojects {
     repositories {
+        google()
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
     }
-
     tasks.withType(JavaCompile) {
-        sourceCompatibility = "1.7"
-        targetCompatibility = "1.7"
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
     }
 }
-
-tasks.withType(JavaCompile) {
-    sourceCompatibility = "1.7"
-    targetCompatibility = "1.7"
-}
-

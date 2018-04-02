@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name" translatable="false">Demeter</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="manual_control">Manual</string>
+    <string name="filling">Filling</string>
+    <string name="greenhouse">Greenhouse</string>
+    <string name="flowers">Flowers</string>
+    <string name="garden">Garden</string>
+</resources>

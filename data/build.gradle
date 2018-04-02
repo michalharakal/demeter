@@ -1,0 +1,31 @@
+apply plugin: 'kotlin'
+apply plugin: 'jacoco'
+
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    }
+}
+
+dependencies {
+    def dataDependencies = rootProject.ext.dataDependencies
+    def dataTestDependencies = rootProject.ext.dataTestDependencies
+
+    compile project(':domain')
+
+    implementation dataDependencies.javaxAnnotation
+    implementation dataDependencies.javaxInject
+    implementation dataDependencies.rxKotlin
+    implementation dataDependencies.rxRelay
+    implementation dataDependencies.kotlin
+    implementation dataDependencies.jodaTime
+
+    testImplementation dataTestDependencies.junit
+    testImplementation dataTestDependencies.mockito
+    testImplementation dataTestDependencies.assertj
+
+}
