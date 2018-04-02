@@ -9,7 +9,7 @@ checkstyle {
 }
 
 jacoco {
-	toolVersion = "0.7.9"
+   toolVersion = '0.7.5.201505241946'
 }
 
 if (android.hasProperty('applicationVariants')) {
@@ -50,7 +50,8 @@ def createQualityTasks(taskNamePrefix, variant) {
 		reportLevel = "medium"
 
 		classes = files("$project.buildDir/intermediates/classes/${variationPath}")
-		excludeFilter = file("$rootProject.rootDir/config/quality/findbugs.xml")
+		excludeFilter = file("$rootProject.rootDir/config/quality/findbugs_exclude.xml")
+		includeFilter = file("$rootProject.rootDir/config/quality/findbugs_include.xml")
 
 		source = variant.javaCompile.source
 		classpath = files()
@@ -73,14 +74,12 @@ def createQualityTasks(taskNamePrefix, variant) {
 		description = "Run PMD static analysis for the ${variant.name} build."
 
 		ruleSetFiles = files("${project.rootDir}/config/quality/pmd.xml")
-		ignoreFailures = false
+		ignoreFailures = true
 		ruleSets = []
 
 		source 'src'
 		include '**/*.java'
 		exclude '**/gen/**'
-
-		ignoreFailures = true
 
 		reports {
 			xml.enabled = runningOnJenkins

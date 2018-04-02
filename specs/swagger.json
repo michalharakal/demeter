@@ -24,7 +24,7 @@
           "200": {
             "description": "The user object",
             "schema": {
-                  "$ref": "#/definitions/Demeter"
+              "$ref": "#/definitions/Demeter"
             }
           }
         }
@@ -44,43 +44,30 @@
           "200": {
             "description": "The user object for change digital output values",
             "schema": {
-               "$ref": "#/definitions/DigitalOutputs"
+              "$ref": "#/definitions/DigitalOutputs"
             }
           }
         }
       }
     },
-    "/fsm": {
+    "/statemachines": {
+      "get": {
+        "description": "Get state machines list",
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/StateMachines"
+            }
+          }
+        }
+      }
+    },
+    "/statemachines/{id}": {
       "get": {
         "description": "Get information about a state machine",
         "responses": {
           "200": {
-            "description": "The info object about the current status of FSM. List also all possible commnads.",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "fsm": {
-                  "$ref": "#/definitions/StateMachine"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "triggers immedialtely a new event to change state machine",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "$ref": "#/definitions/TriggerEvent"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "current status of a state machine status",
+            "description": "The info object about the current status of FSM. List also all possible commands.",
             "schema": {
               "$ref": "#/definitions/StateMachine"
             }
@@ -113,7 +100,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Current list of schduled eventrs",
+            "description": "Current list of scheduled events",
             "schema": {
               "$ref": "#/definitions/ScheduledEvents"
             }
@@ -128,12 +115,7 @@
           "200": {
             "description": "The info object about the current configuration parameters",
             "schema": {
-              "type": "object",
-              "properties": {
-                "fsm": {
-                  "$ref": "#/definitions/Configuration"
-                }
-              }
+              "$ref": "#/definitions/Configuration"
             }
           }
         }
@@ -217,7 +199,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The info object list schduled events",
+            "description": "The info object list scheduled events",
             "schema": {
               "$ref": "#/definitions/ScheduledEvents"
             }
@@ -283,9 +265,19 @@
         }
       }
     },
+    "StateMachines": {
+      "description": "List of all state machines",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StateMachine"
+      }
+    },
     "StateMachine": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },

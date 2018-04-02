@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Demeter</string>
+    <string name="title_home">Domov</string>
+    <string name="filling">Napouštení</string>
+    <string name="manual_control">Manuální</string>
+    <string name="greenhouse">Sklenník</string>
+    <string name="flowers">Kytky</string>
+    <string name="garden">Zahrada</string>
+</resources>

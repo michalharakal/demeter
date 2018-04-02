@@ -41,5 +41,5 @@ dependencies {
     }
     implementation "joda-time:joda-time:$rootProject.jodaTimeVersion"
 
-    testImplementation "junit:junit:$rootProject.junitVersion"
+    testImplementation "junit:junit:$rootProject.jUnitVersion"
 }

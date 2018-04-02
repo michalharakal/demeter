@@ -1,1 +1,1 @@
-include ':client', ':cml', ':pifacedigital2', ':client-api', ':core'
+include ':client-api', ':data', ':domain', ':presentation', ':mobile-ui', ':mobile-cache'
