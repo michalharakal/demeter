@@ -10,5 +10,4 @@ package org.buffer.android.boilerplate.presentation.mapper
 interface Mapper<out V, in D> {
 
     fun mapToView(type: D): V
-
 }

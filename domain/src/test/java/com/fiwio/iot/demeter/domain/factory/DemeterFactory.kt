@@ -1,9 +1,9 @@
 package com.fiwio.iot.demeter.domain.factory
 
 import com.fiwio.iot.demeter.domain.model.Demeter
-import com.fiwio.iot.demeter.domain.model.Input
+import com.fiwio.iot.demeter.domain.model.Sensor
 import com.fiwio.iot.demeter.domain.model.InputValue
-import com.fiwio.iot.demeter.domain.model.Relay
+import com.fiwio.iot.demeter.domain.model.Actuator
 
 /**
  * Factory class for [Demeter] related instances
@@ -18,12 +18,12 @@ class DemeterFactory {
 
         fun makeDemeterAllOnIOs(count: Int): Demeter {
 
-            val relays = mutableListOf<Relay>()
+            val relays = mutableListOf<Actuator>()
             repeat(count) {
                 relays.add(makeRelay(true))
             }
 
-            val inputs = mutableListOf<Input>()
+            val inputs = mutableListOf<Sensor>()
             repeat(count) {
                 inputs.add(makeInputs(true))
             }
@@ -31,12 +31,12 @@ class DemeterFactory {
             return Demeter(relays, emptyList())
         }
 
-        private fun makeInputs(b: Boolean): Input {
-            return Input("name", InputValue.ON)
+        private fun makeInputs(b: Boolean): Sensor {
+            return Sensor("name", InputValue.ON)
         }
 
-        private fun makeRelay(b: Boolean): Relay {
-            return Relay("name", b)
+        private fun makeRelay(b: Boolean): Actuator {
+            return Actuator("name", b)
         }
     }
 }

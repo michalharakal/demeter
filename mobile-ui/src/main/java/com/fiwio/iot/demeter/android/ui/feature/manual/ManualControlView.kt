@@ -14,14 +14,14 @@ import kotlinx.android.synthetic.main.view_actuators.view.*
 import javax.inject.Inject
 
 class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
-        FrameLayout(context, attrs, defStyle), ActuatorsListContract.View {
+        FrameLayout(context, attrs, defStyle), ActuatorsListContract.View, ActuatorsListAdapter.OnItemClickListener {
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
 
     override fun setData(data: List<ActuatorView>) {
-        val adapter = ActuatorsListAdapter()
+        val adapter = ActuatorsListAdapter(this)
 
         adapter.data = data
         list!!.adapter = adapter
@@ -46,6 +46,10 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         presenter.attachView(this)
+    }
+
+    override fun onClick(actuator: ActuatorView) {
+        presenter.switchRelay(actuator)
     }
 
     override fun showLoading(pullToRefresh: Boolean) {

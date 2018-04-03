@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.fiwio.iot.demeter.android.ui.R
-import com.fiwio.iot.demeter.domain.model.Relay
 import com.fiwio.iot.demeter.presentation.model.ActuatorState
 import com.fiwio.iot.demeter.presentation.model.ActuatorView
 
 
-internal class ActuatorsListAdapter :
+internal class ActuatorsListAdapter(private val listener: OnItemClickListener) :
         RecyclerView.Adapter<ActuatorsListAdapter.ViewHolder>() {
 
     var data: List<ActuatorView> = listOf()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_actuator, parent, false)
@@ -23,7 +23,7 @@ internal class ActuatorsListAdapter :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //holder.click(data.getRelays().get(position), listener)
+        holder.click(data.get(position), listener)
         holder.name.setText(data.get(position).caption)
         holder.value.setText(data.get(position).state.toString())
         holder.background.setBackgroundResource(if (data.get(position).state.equals(ActuatorState.ON))
@@ -37,8 +37,9 @@ internal class ActuatorsListAdapter :
     }
 
     interface OnItemClickListener {
-        fun onClick(Item: Relay)
+        fun onClick(actuator: ActuatorView)
     }
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var name: TextView
@@ -50,6 +51,10 @@ internal class ActuatorsListAdapter :
             value = itemView.findViewById(R.id.relay_value) as TextView
             background = itemView.findViewById(R.id.led) as ImageView
 
+        }
+
+        fun click(actuator: ActuatorView, listener: OnItemClickListener) {
+            itemView.setOnClickListener { listener.onClick(actuator) }
         }
     }
 }
