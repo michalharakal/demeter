@@ -1,8 +1,12 @@
 package com.fiwio.iot.demeter.presentation.feature.manual
 
 import com.fiwio.iot.demeter.domain.features.manual.GetDemeter
+import com.fiwio.iot.demeter.domain.features.manual.SetActuatorUseCase
+import com.fiwio.iot.demeter.domain.model.Actuator
 import com.fiwio.iot.demeter.domain.model.Demeter
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
+import com.fiwio.iot.demeter.presentation.model.ActuatorState
+import com.fiwio.iot.demeter.presentation.model.ActuatorView
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import org.buffer.android.boilerplate.presentation.mapper.ActuatorViewMapper
@@ -11,6 +15,7 @@ import javax.inject.Inject
 class ActuatorsListPresenter @Inject constructor(
         val demeterRepository: DemeterRepository,
         val getDemeter: GetDemeter,
+        val setActuatorUseCase: SetActuatorUseCase,
         val actuatorViewMapper: ActuatorViewMapper) :
         ActuatorsListContract.Presenter {
 
@@ -28,6 +33,10 @@ class ActuatorsListPresenter @Inject constructor(
     override fun destroy() {
     }
 
+    override fun switchRelay(actuator: ActuatorView) {
+        setActuatorUseCase.execute(DemeterSubscriber(), Actuator(actuator.name, actuator.state != ActuatorState.ON))
+    }
+
     private fun subscribeForChanges() {
         demeterRepository.getDemeterImage()
                 .subscribeOn(Schedulers.newThread())
@@ -37,7 +46,7 @@ class ActuatorsListPresenter @Inject constructor(
     }
 
     private fun handleDemeterEventSuccess(t: Demeter) {
-        view?.setData(t.relays.map { it ->
+        view?.setData(t.actuators.map { it ->
             actuatorViewMapper.mapToView(it)
         })
     }
@@ -52,6 +61,5 @@ class ActuatorsListPresenter @Inject constructor(
             view?.showError(exception, false)
         }
     }
-
-
 }
+

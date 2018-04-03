@@ -11,6 +11,8 @@ interface ActuatorsListContract {
 
     interface View : MvpLceView<List<ActuatorView>>
 
-    interface Presenter : MvpPresenter<View>
+    interface Presenter : MvpPresenter<View> {
+        fun switchRelay(actuator: ActuatorView)
+    }
 
 }

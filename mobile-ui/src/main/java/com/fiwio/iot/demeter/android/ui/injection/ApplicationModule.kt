@@ -3,10 +3,15 @@ package com.fiwio.iot.demeter.android.ui.injection
 import android.app.Application
 import android.content.Context
 import com.fatboyindustrial.gsonjodatime.Converters
+import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
+import com.fiwio.iot.demeter.android.ui.app.StringEndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.app.UiThread
+import com.fiwio.iot.demeter.android.ui.aspects.connectivity.AndroidConnectivityState
 import com.fiwio.iot.demeter.data.executor.JobExecutor
+import com.fiwio.iot.demeter.domain.connectivity.ConnectivityState
 import com.fiwio.iot.demeter.domain.executor.PostExecutionThread
 import com.fiwio.iot.demeter.domain.executor.ThreadExecutor
+import com.fiwo.iot.demeter.api.DefaultApi
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -16,6 +21,8 @@ import mu.KotlinLogging
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 private val logger = KotlinLogging.logger {}
@@ -39,6 +46,18 @@ open class ApplicationModule {
     @Provides
     internal fun providePostExecutionThread(uiThread: UiThread): PostExecutionThread {
         return uiThread
+    }
+
+    @Singleton
+    @Provides
+    fun provideConnectivityState(): ConnectivityState {
+        return AndroidConnectivityState()
+    }
+
+    @Singleton
+    @Provides
+    fun provideEndpointUrlProvider():EndpointUrlProvider {
+        return StringEndpointUrlProvider("http://192.168.1.34:8080/")
     }
 
 
@@ -65,19 +84,17 @@ open class ApplicationModule {
         return Converters.registerDateTime(gsonBuilder).create()
     }
 
-    /*
     @Provides
-    internal fun provideConfernceService(client: OkHttpClient, gson: Gson, conferenceConfiguration: ConferenceConfiguration): DemeterA {
+    @Singleton
+    internal fun provideConfernceService(client: OkHttpClient, gson: Gson, endpointUrlProvider: EndpointUrlProvider): DefaultApi {
         var restAdapter = Retrofit.Builder()
-                .baseUrl(conferenceConfiguration.baseUrl)
+                .baseUrl(endpointUrlProvider.url)
                 .client(client)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
 
-        return restAdapter.create(ConferencesApi::class.java)
+        return restAdapter.create(DefaultApi::class.java)
     }
-    */
 }
 
 

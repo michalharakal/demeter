@@ -1,8 +1,14 @@
 package com.fiwio.iot.demeter.data.repository
 
-import com.fiwio.iot.demeter.domain.model.Demeter
+import com.fiwio.iot.demeter.data.model.ActuatorEntity
+import com.fiwio.iot.demeter.data.model.DemeterEntity
+import io.reactivex.Completable
 import io.reactivex.Single
 
 interface DemeterCache {
-    fun getDemeterImage(): Single<Demeter>
+    fun getDemeterImage(): Single<DemeterEntity>
+    fun isCached(): Boolean
+    fun isExpired(): Boolean
+    fun saveDemeterImage(demeter: DemeterEntity): Completable
+    fun setLastCacheTime(lastCache: Long)
 }

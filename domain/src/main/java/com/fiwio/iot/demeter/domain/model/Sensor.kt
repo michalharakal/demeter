@@ -1,6 +1,6 @@
 package com.fiwio.iot.demeter.domain.model
 
-data class Relay(
+data class Sensor(
         val name: String,
-        val value: Boolean
+        val value: InputValue
 )
