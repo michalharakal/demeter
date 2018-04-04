@@ -1,7 +1,7 @@
 package com.fiwio.iot.demeter.presentation.feature.manual
 
 import com.fiwio.iot.demeter.domain.features.manual.GetDemeter
-import com.fiwio.iot.demeter.domain.features.manual.SetActuatorUseCase
+import com.fiwio.iot.demeter.domain.features.manual.SetActuator
 import com.fiwio.iot.demeter.domain.model.Actuator
 import com.fiwio.iot.demeter.domain.model.Demeter
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class ActuatorsListPresenter @Inject constructor(
         val demeterRepository: DemeterRepository,
         val getDemeter: GetDemeter,
-        val setActuatorUseCase: SetActuatorUseCase,
+        val setActuator: SetActuator,
         val actuatorViewMapper: ActuatorViewMapper) :
         ActuatorsListContract.Presenter {
 
@@ -34,7 +34,7 @@ class ActuatorsListPresenter @Inject constructor(
     }
 
     override fun switchRelay(actuator: ActuatorView) {
-        setActuatorUseCase.execute(DemeterSubscriber(), Actuator(actuator.name, actuator.state != ActuatorState.ON))
+        setActuator.execute(DemeterSubscriber(), Actuator(actuator.name, actuator.state != ActuatorState.ON))
     }
 
     private fun subscribeForChanges() {

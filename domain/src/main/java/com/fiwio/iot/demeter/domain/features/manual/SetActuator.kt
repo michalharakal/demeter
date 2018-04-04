@@ -13,9 +13,9 @@ import javax.inject.Inject
 /**
  * Use case used for retreiving a single [Event] instances from the [ConferenceRepository] with id
  */
-open class SetActuatorUseCase @Inject constructor(val demeterRepository: DemeterRepository,
-                                                  threadExecutor: ThreadExecutor,
-                                                  postExecutionThread: PostExecutionThread) :
+open class SetActuator @Inject constructor(val demeterRepository: DemeterRepository,
+                                           threadExecutor: ThreadExecutor,
+                                           postExecutionThread: PostExecutionThread) :
         SingleUseCase<Demeter, Actuator>(threadExecutor, postExecutionThread) {
     override fun buildUseCaseObservable(params: Actuator?): Single<Demeter> {
         return demeterRepository.switchActuator(params!!)

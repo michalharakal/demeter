@@ -3,14 +3,16 @@ package com.fiwio.iot.demeter.android.ui.injection
 import android.app.Application
 import android.content.Context
 import com.fatboyindustrial.gsonjodatime.Converters
+import com.fiwio.iot.demeter.android.networking.aspects.connectivity.AndroidConnectivityState
+import com.fiwio.iot.demeter.android.networking.datasource.DiscoveryDemeterFinder
 import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.app.StringEndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.app.UiThread
-import com.fiwio.iot.demeter.android.ui.aspects.connectivity.AndroidConnectivityState
 import com.fiwio.iot.demeter.data.executor.JobExecutor
 import com.fiwio.iot.demeter.domain.connectivity.ConnectivityState
 import com.fiwio.iot.demeter.domain.executor.PostExecutionThread
 import com.fiwio.iot.demeter.domain.executor.ThreadExecutor
+import com.fiwio.iot.demeter.domain.repository.DemeterFinder
 import com.fiwo.iot.demeter.api.DefaultApi
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -56,10 +58,15 @@ open class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideEndpointUrlProvider():EndpointUrlProvider {
+    fun provideEndpointUrlProvider(): EndpointUrlProvider {
         return StringEndpointUrlProvider("http://192.168.1.34:8080/")
     }
 
+    @Singleton
+    @Provides
+    fun provideDemeterFinder(context: Context): DemeterFinder {
+        return DiscoveryDemeterFinder(context)
+    }
 
     @Singleton
     @Provides
