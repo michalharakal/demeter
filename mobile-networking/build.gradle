@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfiguration["androidCompileSdkVersion"]
+    buildToolsVersion globalConfiguration["androidBuildToolsVersion"]
+
+    defaultConfig {
+        minSdkVersion globalConfiguration["androidMinSdkVersion"]
+        targetSdkVersion globalConfiguration["androidTargetSdkVersion"]
+        multiDexEnabled = false
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    def networkingDependencies = rootProject.ext.networkingDependencies
+    def networkingTestDependencies = rootProject.ext.networkingTestDependencies
+
+    compileOnly networkingDependencies.javaxAnnotation
+
+    implementation project(':domain')
+
+    implementation networkingDependencies.kotlin
+    implementation networkingDependencies.javaxInject
+    implementation networkingDependencies.rxKotlin
+    implementation networkingDependencies.gson
+    implementation networkingDependencies.jodaTime
+    implementation networkingDependencies.kotlinLogging
+    implementation networkingDependencies.androidAnnotations
+    implementation networkingDependencies.rxRelay
+
+
+
+    testImplementation networkingTestDependencies.junit
+    testImplementation networkingTestDependencies.kotlinJUnit
+    testImplementation networkingTestDependencies.mockito
+    testImplementation networkingTestDependencies.assertj
+    testImplementation networkingTestDependencies.robolectric
+}

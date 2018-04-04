@@ -7,7 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 /**
- * MainThread (UI Thread) implementation based on a [Scheduler]
+ * MainThread (UI Thread) implementation based on rxNdsDiscovery [Scheduler]
  * which will execute actions on the Android UI thread
  */
 class UiThread @Inject internal constructor() : PostExecutionThread {
