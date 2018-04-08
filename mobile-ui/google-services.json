@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "350573611435",
+    "firebase_url": "https://demeter-552e2.firebaseio.com",
+    "project_id": "demeter-552e2",
+    "storage_bucket": "demeter-552e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350573611435:android:b18173ba0831d0ec",
+        "android_client_info": {
+          "package_name": "com.fiwo.iot.demeter.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350573611435-97g88i1e4i8roo0ng6hkhcu93u9chr7u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBedVc1CbRUmLIG6B7PH4EiPYB1LAiOCa4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
