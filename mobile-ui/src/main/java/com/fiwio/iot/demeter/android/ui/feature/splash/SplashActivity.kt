@@ -20,7 +20,7 @@ import javax.inject.Inject
 class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
     override fun showContent() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        loading_container.visibility = View.VISIBLE
     }
 
     override fun setData(data: DnsLookupState) {
@@ -49,46 +49,20 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
         super.onPostCreate(savedInstanceState)
 
         presenter.attachView(this)
+
+        manual_ip_button.setOnClickListener({
+            presenter.startWithUrl(manual_ip_edit.editableText.toString())
+        })
     }
-
-
-    /*
-    override fun onServiceFound(ipAddress: String) {
-        multicastDns.stopDiscovery()
-        val mainIntent = Intent(this, MainActivity::class.java)
-        val bundle = Bundle()
-        bundle.putString("host", ipAddress)
-        mainIntent.putExtras(bundle)
-        this.startActivity(mainIntent)
-        this.finish()
-    }
-
-    override fun onServiceSearchFailed() {
-        if (repeatCount >= 3) {
-            multicastDns.stopDiscovery()
-            if (!started) {
-                started = true
-                val mainIntent = Intent(this, MainActivity::class.java)
-                this.startActivity(mainIntent)
-                this.finish()
-            }
-        } else {
-            repeatCount++
-            if (multicastDns != null) {
-                multicastDns.stopDiscovery()
-                multicastDns.discoverServices(this, handler)
-                startWatchDog()
-            }
-
-        }
-    }
-    */
 
     override fun enterUrlByHand() {
-        splash_ip_container.visibility = View.VISIBLE
+        loading_container.visibility = View.GONE
+        manual_ip_container.visibility = View.VISIBLE
     }
 
     override fun showLoading(pullToRefresh: Boolean) {
+        loading_container.visibility = View.VISIBLE
+        manual_ip_container.visibility = View.GONE
     }
 
     override fun showError(e: Throwable, pullToRefresh: Boolean) {

@@ -7,4 +7,6 @@
     <string name="greenhouse">Greenhouse</string>
     <string name="flowers">Flowers</string>
     <string name="garden">Garden</string>
+    <string name="looking_for_demeter">looking for CML</string>
+    <string name="connect_to_cml">connect to cml</string>
 </resources>
