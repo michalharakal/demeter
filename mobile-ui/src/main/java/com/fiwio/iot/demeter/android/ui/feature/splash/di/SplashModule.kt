@@ -7,6 +7,7 @@ import com.fiwio.iot.demeter.android.networking.aspects.discovery.NotSupportedNd
 import com.fiwio.iot.demeter.domain.features.splash.FindDemeter
 import com.fiwio.iot.demeter.presentation.feature.splash.SplashContract
 import com.fiwio.iot.demeter.presentation.feature.splash.SplashPresenter
+import com.fiwio.iot.demeter.presentation.mapper.DnsLookupStateMapper
 import dagger.Module
 import dagger.Provides
 
@@ -22,8 +23,7 @@ class SplashModule {
     }
 
     @Provides
-    internal fun provideSplashPresenter(
-            findDemeter: FindDemeter): SplashContract.Presenter {
-        return SplashPresenter(findDemeter)
+    internal fun provideSplashPresenter(findDemeter: FindDemeter, dnsLookupStateMapper: DnsLookupStateMapper): SplashContract.Presenter {
+        return SplashPresenter(findDemeter, dnsLookupStateMapper)
     }
 }

@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter.android.networking.aspects.discovery
 
 import android.content.Context
 import android.os.Build
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import com.fiwio.iot.demeter.domain.model.DemeterSearchDnsInfo
 import com.fiwio.iot.demeter.domain.model.DnsSearchResult
@@ -13,10 +14,13 @@ class RxNdsDiscovery(val context: Context) : HandleDemeterServiceSearch {
 
     private var relay: PublishRelay<DemeterSearchDnsInfo> = PublishRelay.create<DemeterSearchDnsInfo>()
 
+    private val handler = Handler()
+
     private val ndsDicscovery = NdsDiscovery(context)
 
     fun startSearch(): Observable<DemeterSearchDnsInfo> {
-        ndsDicscovery.discoverServices(this)
+        ndsDicscovery.discoverServices(this, handler)
+        startWatchDog()
         return relay
     }
 
@@ -26,5 +30,16 @@ class RxNdsDiscovery(val context: Context) : HandleDemeterServiceSearch {
 
     override fun onServiceSearchFailed() {
         relay.accept(DemeterSearchDnsInfo(DnsSearchResult.NOT_FOUND))
+    }
+
+
+    private fun startWatchDog() {
+        Thread(Runnable {
+            try {
+                Thread.sleep(3.toLong())
+                onServiceSearchFailed()
+            } catch (e: Exception) {
+            }
+        }).start()
     }
 }
