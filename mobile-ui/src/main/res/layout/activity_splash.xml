@@ -4,7 +4,7 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/splash_auto_container"
+        android:id="@+id/loading_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical">
@@ -20,28 +20,29 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Demeter" />
+            android:text="@string/looking_for_demeter" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/splash_ip_container"
+        android:id="@+id/manual_ip_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
         <EditText
-            android:id="@+id/splash_ip_edit"
+            android:id="@+id/manual_ip_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="192.168.1.79:8080"
              />
 
         <Button
+            android:id="@+id/manual_ip_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Demeter" />
+            android:text="@string/connect_to_cml" />
 
     </LinearLayout>
 
