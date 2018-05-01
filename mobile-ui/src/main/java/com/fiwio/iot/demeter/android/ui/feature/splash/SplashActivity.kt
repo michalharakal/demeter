@@ -1,9 +1,7 @@
 package com.fiwio.iot.demeter.android.ui.feature.splash
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -14,22 +12,26 @@ import com.fiwio.iot.demeter.android.ui.feature.main.MainNavigator
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashComponent
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashModule
 import com.fiwio.iot.demeter.presentation.feature.splash.SplashContract
-import com.fiwio.iot.demeter.presentation.model.ActuatorView
+import com.fiwio.iot.demeter.presentation.model.DnsLookupState
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
 
 class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
+    override fun showContent() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-    val TWENTY_SECONDS = 5000
+    override fun setData(data: DnsLookupState) {
+        if (data.found) {
+            navigateToMainWithUrl(data.ipAdress)
+        }
+    }
+
 
     @Inject
     internal lateinit var presenter: SplashContract.Presenter
-
-    private val handler = Handler()
-    private var repeatCount = 0
-    private var started = false
 
     private lateinit var component: SplashComponent
 
@@ -48,18 +50,6 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
         presenter.attachView(this)
     }
-
-    /*
-    private fun startWatchDog() {
-        Thread(Runnable {
-            try {
-                Thread.sleep(TWENTY_SECONDS.toLong())
-                handler.post(Runnable { onServiceSearchFailed() })
-            } catch (e: Exception) {
-            }
-        }).start()
-    }
-    */
 
 
     /*
@@ -99,23 +89,12 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
     }
 
     override fun showLoading(pullToRefresh: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showContent() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showError(e: Throwable, pullToRefresh: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun setData(data: List<ActuatorView>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun loadData(pullToRefresh: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun navigateToMainWithUrl(url: String) {

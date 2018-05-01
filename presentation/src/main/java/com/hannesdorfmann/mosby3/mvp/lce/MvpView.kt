@@ -22,5 +22,5 @@ package com.hannesdorfmann.mosby3.mvp;
  * @author Hannes Dorfmann
  * @since 1.0.0
  */
-public interface MvpView {
+interface MvpView {
 }

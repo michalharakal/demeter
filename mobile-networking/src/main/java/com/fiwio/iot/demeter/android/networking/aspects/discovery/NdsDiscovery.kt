@@ -24,7 +24,7 @@ class NdsDiscovery(context: Context) : NsdManager.DiscoveryListener, MulticastDn
 
     private lateinit var searchHandler: HandleDemeterServiceSearch
 
-    override fun discoverServices(demeterServiceFinder: HandleDemeterServiceSearch) {
+    override fun discoverServices(demeterServiceFinder: HandleDemeterServiceSearch, handler: Handler) {
         try {
             this.handler = handler
             this.searchHandler = demeterServiceFinder
