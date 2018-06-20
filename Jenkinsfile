@@ -3,8 +3,8 @@ node {
     //Utilizing a try block so as to make the code cleaner and send slack notification in case of any error
     try {
         // Global variable declaration
-        def project = 'dukecon_android'
-        def appName = 'Dukecon Android'
+        def project = 'demeter'
+        def appName = 'demeter'
         
         // Stage, is to tell the Jenkins that this is the new process/step that needs to be executed
         stage('Checkout') {
@@ -20,7 +20,7 @@ node {
 
         stage('Run application test') {
             def workspace = pwd()
-            sh("docker run --rm -v $workspace:/opt/workspace -u `id -u` -w /opt/workspace ${project} ./gradlew --stacktrace --info clean test")
+            sh("docker run --rm -u `id -u` -w /opt/workspace ${project} ./gradlew --stacktrace --info clean test")
         } 
 
         stage('Build application') {
