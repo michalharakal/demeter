@@ -20,12 +20,12 @@ node {
 
         stage('Run application test') {
             def workspace = pwd()
-            sh("docker run --rm -u `id -u` ${project} ./gradlew --stacktrace --info clean test")
+            sh("docker run --rm  ${project} ./gradlew --stacktrace --info clean test")
         } 
 
         stage('Build application') {
             def workspace = pwd()
-            sh("docker run --rm  -u `id -u` ${project} ./gradlew --stacktrace --info clean assembleDebug")
+            sh("docker run --rm  ${project} ./gradlew --stacktrace --info clean assembleDebug")
         }       
 
         stage("Archive")   {
