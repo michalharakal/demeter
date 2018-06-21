@@ -1,5 +1,9 @@
 pipeline {
   agent none
+  environment {
+        DEMETER_UI_APP_HOCKEYAPP_API_TOKEN = credentials('demeter_ui-app-hockeyapp-api-token')
+  }
+ 
   stages {
     stage('Docker Build') {
       agent any
@@ -17,5 +21,20 @@ pipeline {
         sh './gradlew --stacktrace --info clean test'
       }
     }
+
+    // https://github.com/gini/gini-vision-lib-android/blob/master/Jenkinsfile
+    stage('Upload Apps to Hockeyapp') {
+            steps {
+                sh "echo $(DEMETER_UI_APP_HOCKEYAPP_API_TOKEN)" 
+                step([$class: 'HockeyappRecorder', 
+                  applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
+                  //dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
+                  filePath: 'mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk', 
+                  mandatory: false, 
+                  notifyTeam: false, 
+                  releaseNotesMethod: 
+                  [$class: 'ChangelogReleaseNotes'], uploadMethod: [$class: 'AppCreation', publicPage: false]]], debugMode: false, failGracefully: false])
+            }
+        }
   }
 }
