@@ -27,7 +27,7 @@ pipeline {
             steps {
                 step([$class: 'HockeyappRecorder', 
   
-                  sh "echo $(DEMETER_UI_APP_HOCKEYAPP_API_TOKEN)" 
+                  sh "echo ${DEMETER_UI_APP_HOCKEYAPP_API_TOKEN}" 
 
                   applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
                   //dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
