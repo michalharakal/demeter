@@ -5,11 +5,6 @@ pipeline {
   }
  
   stages {
-    stage('Import Pipeline Libraries') {
-        steps{
-             library 'android-tools'
-        }
-    }
     stage('Docker Build') {
       agent any
       steps {
@@ -42,15 +37,13 @@ pipeline {
     // https://github.com/gini/gini-vision-lib-android/blob/master/Jenkinsfile
     stage('Upload Apps to Hockeyapp') {
             steps {
-                step([$class: 'HockeyappRecorder', 
-                  applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
+                step([$class: 'HockeyappRecorder', applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
                   //dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
                   filePath: 'mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk', 
                   mandatory: false, 
                   notifyTeam: false, 
-                  releaseNotesMethod: 
-                  [$class: 'ChangelogReleaseNotes'], uploadMethod: [$class: 'AppCreation', publicPage: false]]], debugMode: false, failGracefully: false])
+                  releaseNotesMethod: [$class: 'ChangelogReleaseNotes'], uploadMethod: [$class: 'AppCreation', publicPage: false]]], debugMode: false, failGracefully: false])
             }
-        }
+    }
   }
 }
