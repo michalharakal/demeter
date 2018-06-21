@@ -15,19 +15,16 @@ node {
         stage('Build Image') {
             // Build our docker Image
             sh("docker build -t ${project} .")
-            sh("ls -la")
-            sh("pwd")
         }
-     
-
+  
         stage('Run application test') {
             def workspace = pwd()
-            sh("docker run --rm  ${project} ./gradlew --stacktrace --info clean test")
+            sh("docker run --rm -v $workspace:/opt/workspace -u `id -u` -w /opt/workspace ${project} ./gradlew --stacktrace --info clean test")
         } 
 
         stage('Build application') {
             def workspace = pwd()
-            sh("docker run --rm  ${project} ./gradlew --stacktrace --info clean assembleDebug")
+            sh("docker run --rm -v $workspace:/opt/workspace -u `id -u` -w /opt/workspace ${project} ./gradlew --stacktrace --info clean assembleDebug")
         }       
 
         stage("Archive")   {
