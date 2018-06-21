@@ -21,7 +21,7 @@ node {
             def workspace = pwd()
             sh("docker run --rm  -u `id -u` -w ${workspace} ${project} ls -la")
             sh("docker run --rm  -u `id -u` -w ${workspace} ${project} pwd")
-            sh("docker run --rm  -u `id -u` -w ${workspace} ${project} ./gradlew --stacktrace --info clean test")
+            sh("docker run --rm  -u `id -u` -w ${workspace} ${project} cd ${workspace} && ./gradlew --stacktrace --info clean test")
         } 
 
         stage('Build application') {
