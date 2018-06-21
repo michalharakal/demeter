@@ -11,7 +11,7 @@ pipeline {
         sh 'docker build -t demeter .'
       }
     }  
-    stage('gradle test') {
+    stage('Gradle test') {
       agent {
         docker {
           image 'demeter'
@@ -19,6 +19,17 @@ pipeline {
       }
       steps {
         sh './gradlew --stacktrace --info clean test'
+      }
+    }
+
+    stage('Gradle build') {
+      agent {
+        docker {
+          image 'demeter'
+        }
+      }
+      steps {
+        sh './gradlew --stacktrace --info clean assembleDebug'
       }
     }
 
