@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent any
   environment {
         DEMETER_UI_APP_HOCKEYAPP_API_TOKEN = credentials('demeter_ui-app-hockeyapp-api-token')
   }
@@ -38,7 +38,7 @@ pipeline {
     stage('Upload Apps to Hockeyapp') {
             steps {
                 step([$class: 'HockeyappRecorder', applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
-                  //dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
+                  dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
                   filePath: 'mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk', 
                   mandatory: false, 
                   notifyTeam: false, 
