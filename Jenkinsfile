@@ -30,6 +30,7 @@ pipeline {
       }
       steps {
         sh './gradlew --stacktrace --info clean assembleDebug'
+        archiveArtifacts 'mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk'    
       }
     }
 
