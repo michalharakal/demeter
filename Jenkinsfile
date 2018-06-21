@@ -36,7 +36,6 @@ pipeline {
     // https://github.com/gini/gini-vision-lib-android/blob/master/Jenkinsfile
     stage('Upload Apps to Hockeyapp') {
             steps {
-                sh 'echo ${DEMETER_UI_APP_HOCKEYAPP_API_TOKEN}' 
                 step([$class: 'HockeyappRecorder', 
                   applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
                   //dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
