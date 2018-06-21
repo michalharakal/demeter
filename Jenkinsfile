@@ -15,6 +15,8 @@ node {
         stage('Build Image') {
             // Build our docker Image
             sh("docker build -t ${project} .")
+            sh("ls -la")
+            sh("pwd")
         }
      
 
