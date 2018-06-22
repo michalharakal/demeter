@@ -2,6 +2,7 @@ pipeline {
   agent any
   environment {
         DEMETER_UI_APP_HOCKEYAPP_API_TOKEN = credentials('demeter_ui-app-hockeyapp-api-token')
+        HockeyAppID = "7cacbee9945c4c9aa1ac59889858c44c"
   }
  
   stages {
@@ -34,15 +35,34 @@ pipeline {
       }
     }
 
+    	// sh 'curl -X POST --data-urlencode \'payload=${payload}\' ${HockeyAppURL}"   
+				sh """
+				    curl  \
+				    -F 'status=2' \
+				    -F 'notify=0' \
+				    -F 'notes=${WORKSPACE}/release.txt' \
+				    -F 'strategy=replace' \
+				    -F 'notes_type=0'\
+				    -F 'tags=development' \
+				    -F 'apk=${WORKSPACE}/*.apk' \
+				    -H 'X-HockeyAppToken:${HockeyAppToken}' \
+				    https://upload.hockeyapp.net/api/2/apps/${HockeyAppID}/app_versions/upload"""
+			}
+
     // https://github.com/gini/gini-vision-lib-android/blob/master/Jenkinsfile
     stage('Upload Apps to Hockeyapp') {
             steps {
-                step([$class: 'HockeyappRecorder', applications: [[apiToken: DEMETER_UI_APP_HOCKEYAPP_API_TOKEN, downloadAllowed: true, 
-                 // dsymPath: 'screenapiexample/build/outputs/mapping/release/mapping.txt', 
-                  filePath: 'mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk', 
-                  mandatory: false, 
-                  notifyTeam: false, 
-                  releaseNotesMethod: [$class: 'ChangelogReleaseNotes'], uploadMethod: [$class: 'AppCreation', publicPage: false]]], debugMode: false, failGracefully: false])
+                	// sh 'curl -X POST --data-urlencode \'payload=${payload}\' ${HockeyAppURL}"   
+				sh """
+				    curl  \
+				    -F 'status=2' \
+				    -F 'notify=0' \
+				    -F 'strategy=replace' \
+				    -F 'notes_type=0'\
+				    -F 'tags=development' \
+				    -F 'ipa=/mobile-ui/build/outputs/apk/debug/mobile-ui-debug.apk' \
+				    -H 'X-HockeyAppToken:${DEMETER_UI_APP_HOCKEYAPP_API_TOKEN}' \
+				    https://upload.hockeyapp.net/api/2/apps/${HockeyAppID}/app_versions/upload"""
             }
     }
   }
