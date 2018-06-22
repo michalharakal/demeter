@@ -35,20 +35,6 @@ pipeline {
       }
     }
 
-    	// sh 'curl -X POST --data-urlencode \'payload=${payload}\' ${HockeyAppURL}"   
-				sh """
-				    curl  \
-				    -F 'status=2' \
-				    -F 'notify=0' \
-				    -F 'notes=${WORKSPACE}/release.txt' \
-				    -F 'strategy=replace' \
-				    -F 'notes_type=0'\
-				    -F 'tags=development' \
-				    -F 'apk=${WORKSPACE}/*.apk' \
-				    -H 'X-HockeyAppToken:${HockeyAppToken}' \
-				    https://upload.hockeyapp.net/api/2/apps/${HockeyAppID}/app_versions/upload"""
-			}
-
     // https://github.com/gini/gini-vision-lib-android/blob/master/Jenkinsfile
     stage('Upload Apps to Hockeyapp') {
             steps {
