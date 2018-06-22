@@ -65,5 +65,5 @@ pipeline {
 				    https://upload.hockeyapp.net/api/2/apps/${HockeyAppID}/app_versions/upload"""
             }
     }
-  }
 }
+  
