@@ -3,10 +3,10 @@ ext {
     minSdkVersionAndroidThings = 26
     targetSdkVersion = 27
     compileSdkVersion = 27
-    buildToolsVersion = '26.0.2'
+    buildToolsVersion = '27.0.3'
     renderscriptTargetApi = 19
 
-    supportLibsVersion = '26.0.2'
+    supportLibsVersion = '27.1.1'
 
     okhttp3Version = '3.6.0'
     mockWebServerVersion = '3.8.0'
@@ -16,7 +16,7 @@ ext {
     swaggerAnnotationsVersion = '1.5.0'
     oltuVersion = '1.0.1'
 
-    greenEventBusVersion = "3.0.0";
+    greenEventBusVersion = "3.1.1"
 
 
     gsonVersion = '2.8.0'

@@ -1,31 +1,53 @@
 package com.fiwio.iot.demeter.configuration;
 
-import org.joda.time.DateTime;
+import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DemeterConfigurationProvider implements ConfigurationProvider {
-    private final Configuration configuration;
 
-    public DemeterConfigurationProvider(Configuration configuration) {
-        this.configuration = configuration;
-    }
+  private static final long FIVE_MINUTES_IN_SECS = 5 * 60;
+  private static final long THIRTY_MINUTES_IN_SECS = 30 * 60;
+  private static final long TWENTY_SECS = 20;
 
-    @Override
-    public long getValveOpeningDuration() {
-        return configuration.getConfiguration().getValve();
-    }
+  private final Configuration configuration;
+  private final Map<String, BranchValveParameters> branches = new HashMap<>();
 
-    @Override
-    public long getIrrigatingDuration() {
-        DateTime current = new DateTime();
-        if (current.getHourOfDay() < 12) {
-            return configuration.getConfiguration().getIrrigatingDurationMorning();
-        } else {
-            return configuration.getConfiguration().getIrrigatingDurationEvening();
-        }
-    }
+  public DemeterConfigurationProvider(Configuration configuration) {
+    this.configuration = configuration;
+    createGarden();
+    createFlowers();
+    createGreenhouse();
+  }
 
-    @Override
-    public long getBarrelFillingDuration() {
-        return configuration.getConfiguration().getFillingDuration();
-    }
+  private void createGarden() {
+    BranchValveParameters garden = new BranchValveParameters();
+    garden.setActionDurationSec(FIVE_MINUTES_IN_SECS);
+    garden.setFillingDurationSec(THIRTY_MINUTES_IN_SECS);
+    garden.setOpeningDurationSec(TWENTY_SECS);
+    branches.put(GardenFiniteStateMachine.BRANCH_GARDEN, garden);
+  }
+
+  private void createFlowers() {
+    BranchValveParameters garden = new BranchValveParameters();
+    garden.setActionDurationSec(FIVE_MINUTES_IN_SECS);
+    garden.setFillingDurationSec(THIRTY_MINUTES_IN_SECS);
+    garden.setOpeningDurationSec(TWENTY_SECS);
+    branches.put(GardenFiniteStateMachine.BRANCH_FLOWERS, garden);
+  }
+
+  private void createGreenhouse() {
+    BranchValveParameters garden = new BranchValveParameters();
+    garden.setActionDurationSec(FIVE_MINUTES_IN_SECS);
+    garden.setFillingDurationSec(THIRTY_MINUTES_IN_SECS);
+    garden.setOpeningDurationSec(TWENTY_SECS);
+    branches.put(GardenFiniteStateMachine.BRANCH_GREENHOUSE, garden);
+  }
+
+
+  @Override
+  public BranchValveParameters getBranchParameters(String branch) {
+    return branches.get(branch);
+  }
 }

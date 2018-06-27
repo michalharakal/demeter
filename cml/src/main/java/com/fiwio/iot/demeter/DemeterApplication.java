@@ -1,23 +1,22 @@
 package com.fiwio.iot.demeter;
 
-import android.app.AlarmManager;
 import android.app.Application;
-import android.content.Context;
-import android.content.RestrictionsManager;
+import android.util.Log;
 
 import com.evernote.android.job.JobManager;
 import com.fiwio.iot.demeter.configuration.Configuration;
 import com.fiwio.iot.demeter.configuration.ConfigurationProvider;
 import com.fiwio.iot.demeter.configuration.DemeterConfigurationProvider;
 import com.fiwio.iot.demeter.device.mock.MockDigitalPins;
-import com.fiwio.iot.demeter.device.model.DigitalIO;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.device.pifacedigital2.DemeterDigitalPins;
 import com.fiwio.iot.demeter.events.DemeterEventBus;
 import com.fiwio.iot.demeter.events.IEventBus;
+import com.fiwio.iot.demeter.fsm.BranchesInteractorProvider;
 import com.fiwio.iot.demeter.fsm.GardenFiniteStateMachine;
 import com.fiwio.iot.demeter.scheduler.ReminderEngine;
 import com.fiwio.iot.demeter.scheduler.ReminderJobCreator;
+import com.fiwio.iot.demeter.tracking.EventTracker;
 import com.google.android.things.device.TimeManager;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -26,73 +25,90 @@ import java.io.IOException;
 
 public class DemeterApplication extends Application {
 
-    private DigitalPins demeter;
-    private GardenFiniteStateMachine fsm;
-    private IEventBus eventBus;
-    private Configuration configuration;
-    private ConfigurationProvider configurationProvider;
-    private ReminderEngine reminderEngine;
+  private static final String LOG_TAG = DemeterApplication.class.getSimpleName();
+  private DigitalPins demeter;
+  private GardenFiniteStateMachine fsm;
+  private IEventBus eventBus;
+  private Configuration configuration;
+  private ConfigurationProvider configurationProvider;
+  private ReminderEngine reminderEngine;
+  private EventTracker evenTracker;
+  private BranchesInteractorProvider branchInteractorsProvider;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-        TimeManager tm =  TimeManager.getInstance();
-        tm.setTimeZone("Europe/Berlin");
+    evenTracker =
+        new EventTracker() {
+          @Override
+          public void track(String message) {
+            Log.d(LOG_TAG, message);
+          }
+        };
 
-        JodaTimeAndroid.init(this);
+    TimeManager tm = TimeManager.getInstance();
+    tm.setTimeZone("Europe/Berlin");
 
-        configuration = new Configuration(this);
-        configurationProvider = new DemeterConfigurationProvider(configuration);
+    JodaTimeAndroid.init(this);
 
-        demeter = createDeviceImageInstance();
-        fsm = createFlowersFsm();
-        eventBus = new DemeterEventBus();
+    configuration = new Configuration(this);
+    configurationProvider = new DemeterConfigurationProvider(configuration);
 
-        reminderEngine = new ReminderEngine(this, eventBus);
+    demeter = createDeviceImageInstance();
+    branchInteractorsProvider = new DemeterBranchesInteractorProvider(demeter);
 
-        JobManager.create(this).addJobCreator(new ReminderJobCreator(reminderEngine));
+    fsm = createFlowersFsm();
+    eventBus = new DemeterEventBus();
+
+    reminderEngine = new ReminderEngine(this, eventBus);
+
+    JobManager.create(this).addJobCreator(new ReminderJobCreator(reminderEngine));
+  }
+
+  private DigitalPins createDeviceImageInstance() {
+    /*if (BuildConfig.MOCK_MODE) {
+      return new MockDigitalPins();
+    } else {
+    */
+    try {
+      return new DemeterDigitalPins(fsm);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    // }
+    return null;
+  }
 
-    private DigitalPins createDeviceImageInstance() {
-        if (BuildConfig.MOCK_MODE) {
-            return new MockDigitalPins();
-        } else {
-            try {
-                return new DemeterDigitalPins(fsm);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
+  private GardenFiniteStateMachine createFlowersFsm() {
+    return new GardenFiniteStateMachine(evenTracker);
+  }
 
-    private GardenFiniteStateMachine createFlowersFsm() {
-        DigitalIO barrel_pump = demeter.getOutput("BCM23");
-        DigitalIO barrel_valve = demeter.getOutput("BCM24");
-        DigitalIO float_input = demeter.getInput("INP0");
+  public DigitalPins getDemeter() {
+    return demeter;
+  }
 
-        return new GardenFiniteStateMachine(barrel_pump, barrel_valve, float_input, configurationProvider);
-    }
+  public Configuration getConfiguration() {
+    return configuration;
+  }
 
-    public DigitalPins getDemeter() {
-        return demeter;
-    }
+  public GardenFiniteStateMachine getFsm() {
+    return fsm;
+  }
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
+  public IEventBus getEventBus() {
+    return eventBus;
+  }
 
+  public ReminderEngine getRemainderEngine() {
+    return reminderEngine;
+  }
 
-    public GardenFiniteStateMachine getFsm() {
-        return fsm;
-    }
+  public BranchesInteractorProvider getBranchesInteractorProvider() {
+    return branchInteractorsProvider;
+  }
 
-    public IEventBus getEventBus() {
-        return eventBus;
-    }
-
-    public ReminderEngine getRemainderEngine() {
-        return reminderEngine;
-    }
+  public ConfigurationProvider getConfigurationProvider() {
+    return configurationProvider;
+  }
 }

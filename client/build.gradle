@@ -53,7 +53,9 @@ android {
         abortOnError false
     }
 
-
+    configurations {
+        all*.exclude group: 'com.android.support', module: 'support-v13'
+    }
 }
 
 def googleServicesJson = 'google-services.json'
@@ -75,8 +77,8 @@ dependencies {
         exclude module: 'joda-time'
     }
 
-    implementation 'com.google.firebase:firebase-core:11.2.0'
-    implementation "com.google.firebase:firebase-crash:11.2.0"
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation "com.google.firebase:firebase-crash:16.0.1"
 
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp3Version"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"

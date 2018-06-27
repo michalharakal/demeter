@@ -286,18 +286,30 @@
     "StateMachine": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
+        "current_states": {
+          "description": "List of current states of all branches",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BranchState"
+          }
         },
         "commnads": {
-          "description": "List of all commnads (can be also commnad enable in current state)",
+          "description": "List of all avaliable commnads",
           "type": "array",
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "BranchState": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
         }
       }
     },

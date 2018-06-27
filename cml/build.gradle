@@ -57,7 +57,10 @@ android {
 }
 
 dependencies {
-    compileOnly 'com.google.android.things:androidthings:0.7-devpreview'
+    compileOnly 'com.google.android.things:androidthings:1.0'
+
+    compile 'com.google.firebase:firebase-core:16.0.1'
+
 
     compile project(path: ':pifacedigital2')
     compile (project(path: ':client-api')) {
@@ -67,10 +70,11 @@ dependencies {
 
 
     implementation "org.greenrobot:eventbus:$rootProject.ext.greenEventBusVersion"
+    annotationProcessor "org.greenrobot:eventbus:$rootProject.ext.greenEventBusVersion"
 
 
-    provided 'com.google.auto.value:auto-value:1.2'
-    annotationProcessor 'com.google.auto.value:auto-value:1.2'
+    provided 'com.google.auto.value:auto-value:1.5.2'
+    annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
 
     implementation 'org.nanohttpd:nanohttpd:2.2.0'
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
@@ -85,11 +89,11 @@ dependencies {
     }
 
 //    compile 'com.birbit:android-priority-jobqueue:2.0.1'
-    implementation "com.google.android.gms:play-services-gcm:10.0.0"
-    implementation group: 'com.evernote', name: 'android-job', version: '1.1.11'
+    implementation "com.google.android.gms:play-services-gcm:15.0.1"
+    implementation group: 'com.evernote', name: 'android-job', version: '1.2.6'
 
 
-    implementation 'org.slf4j:slf4j-api:1.7.21'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'com.github.tony19:logback-android-core:1.1.1-6'
     implementation('com.github.tony19:logback-android-classic:1.1.1-6') {
         // workaround issue #73
@@ -106,3 +110,5 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
 
 }
+
+apply plugin: 'com.google.gms.google-services'

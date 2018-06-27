@@ -16,107 +16,105 @@ import java.util.Set;
 
 public class ReminderEngine {
 
-    private static final String REMINDER_ID = "REMINDER_ID";
-    private static final String REMINDERS = "REMINDERS";
+  private static final String REMINDER_ID = "REMINDER_ID";
+  private static final String REMINDERS = "REMINDERS";
 
-    private final Context mContext;
+  private final Context mContext;
 
-    private final SharedPreferences mPreferences;
+  private final SharedPreferences mPreferences;
 
-    private final List<Reminder> mReminders;
+  private final List<Reminder> mReminders;
 
-    private int mReminderId;
+  private int mReminderId;
 
-    private final IEventBus mEventBus;
+  private final IEventBus mEventBus;
 
-    public ReminderEngine(Context context, IEventBus eventBus) {
-        mContext = context;
-        mEventBus = eventBus;
-        mPreferences = mContext.getSharedPreferences("reminders", Context.MODE_PRIVATE); // poor-man's storage
-        mReminderId = mPreferences.getInt(REMINDER_ID, 0);
+  public ReminderEngine(Context context, IEventBus eventBus) {
+    mContext = context;
+    mEventBus = eventBus;
+    mPreferences =
+        mContext.getSharedPreferences("reminders", Context.MODE_PRIVATE); // poor-man's storage
+    mReminderId = mPreferences.getInt(REMINDER_ID, 0);
 
-        mReminders = new ArrayList<>();
+    mReminders = new ArrayList<>();
 
-        Set<String> reminders = mPreferences.getStringSet(REMINDERS, null);
-        if (reminders != null) {
-            for (String value : reminders) {
-                mReminders.add(Reminder.fromString(value));
-            }
-        }
-        Collections.sort(mReminders);
+    Set<String> reminders = mPreferences.getStringSet(REMINDERS, null);
+    if (reminders != null) {
+      for (String value : reminders) {
+        mReminders.add(Reminder.fromString(value));
+      }
     }
+    Collections.sort(mReminders);
+  }
 
-    public List<Reminder> getReminders() {
-        return Collections.unmodifiableList(mReminders);
-    }
+  public List<Reminder> getReminders() {
+    return Collections.unmodifiableList(mReminders);
+  }
 
-    @Nullable
-    public Reminder getReminderById(int id) {
-        for (Reminder reminder : mReminders) {
-            if (reminder.getId() == id) {
-                return reminder;
-            }
-        }
-        return null;
-    }
-
-
-    public Reminder createNewReminder(long timestamp, String jobName) {
-        mReminderId++;
-
-        Reminder reminder = new Reminder(mReminderId, timestamp, jobName);
-        mReminders.add(reminder);
-        Collections.sort(mReminders);
-
-        int jobId = ReminderJob.schedule(reminder);
-        reminder.setJobId(jobId);
-
-        mPreferences.edit().putInt(REMINDER_ID, mReminderId).apply();
-        saveReminders();
-
-        int position = mReminders.indexOf(reminder);
+  @Nullable
+  public Reminder getReminderById(int id) {
+    for (Reminder reminder : mReminders) {
+      if (reminder.getId() == id) {
         return reminder;
+      }
     }
+    return null;
+  }
 
-    public void removeReminderById(int reminderId) {
-        for (int i = 0; i < mReminders.size(); i++) {
-            Reminder reminder = mReminders.get(i);
-            if (reminder != null) {
-                if (mReminders.get(i).getId() == reminderId) {
-                    mReminders.remove(i);
-                }
-                JobManager.instance().cancel(reminder.getJobId());
-                saveReminders();
-            }
+  public Reminder createNewReminder(long timestamp, String jobName, String branchName) {
+    mReminderId++;
+
+    Reminder reminder = new Reminder(mReminderId, timestamp, jobName, branchName);
+    mReminders.add(reminder);
+    Collections.sort(mReminders);
+
+    int jobId = ReminderJob.schedule(reminder);
+    reminder.setJobId(jobId);
+
+    mPreferences.edit().putInt(REMINDER_ID, mReminderId).apply();
+    saveReminders();
+
+    int position = mReminders.indexOf(reminder);
+    return reminder;
+  }
+
+  public void removeReminderById(int reminderId) {
+    for (int i = 0; i < mReminders.size(); i++) {
+      Reminder reminder = mReminders.get(i);
+      if (reminder != null) {
+        if (mReminders.get(i).getId() == reminderId) {
+          mReminders.remove(i);
         }
-    }
-
-
-    public void removeReminder(int position) {
-        removeReminder(position, true);
-    }
-
-    /*package*/ void removeReminder(int position, boolean cancelJob) {
-        Reminder reminder = mReminders.remove(position);
-
-        if (cancelJob) {
-            JobManager.instance().cancel(reminder.getJobId());
-        }
-
+        JobManager.instance().cancel(reminder.getJobId());
         saveReminders();
+      }
+    }
+  }
+
+  public void removeReminder(int position) {
+    removeReminder(position, true);
+  }
+
+  /*package*/ void removeReminder(int position, boolean cancelJob) {
+    Reminder reminder = mReminders.remove(position);
+
+    if (cancelJob) {
+      JobManager.instance().cancel(reminder.getJobId());
     }
 
-    public void triggerEvent(Reminder reminder) {
-        mEventBus.post(new FireFsmEvent("garden", reminder.getJobName()));
+    saveReminders();
+  }
+
+  public void triggerEvent(Reminder reminder) {
+    mEventBus.post(new FireFsmEvent(reminder.getBranchName(), reminder.getJobName()));
+  }
+
+  private void saveReminders() {
+    Set<String> reminders = new HashSet<>();
+    for (Reminder item : mReminders) {
+      reminders.add(item.toPersistableString());
     }
 
-    private void saveReminders() {
-        Set<String> reminders = new HashSet<>();
-        for (Reminder item : mReminders) {
-            reminders.add(item.toPersistableString());
-        }
-
-        mPreferences.edit().putStringSet(REMINDERS, reminders).apply();
-    }
-
+    mPreferences.edit().putStringSet(REMINDERS, reminders).apply();
+  }
 }

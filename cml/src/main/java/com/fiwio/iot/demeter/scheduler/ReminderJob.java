@@ -28,7 +28,6 @@ public class ReminderJob extends Job {
         return new JobRequest.Builder(TAG)
                 .setExact(time)
                 .setExtras(extras)
-                .setPersisted(true)
                 .setUpdateCurrent(false)
                 .build()
                 .schedule();

@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.fiwio.iot.demeter.DemeterApplication;
+import com.fiwio.iot.demeter.configuration.ConfigurationProvider;
 import com.fiwio.iot.demeter.device.model.DigitalPins;
 import com.fiwio.iot.demeter.events.FireFsmEvent;
 import com.fiwio.iot.demeter.events.IEventBus;
@@ -15,72 +16,69 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class FsmBackgroundService extends IntentService {
-    private static final String LOG_TAG = FsmBackgroundService.class.getSimpleName();
+  private static final String LOG_TAG = FsmBackgroundService.class.getSimpleName();
 
-    private Thread backgroundJob;
+  private Thread backgroundJob;
 
-    private Object LOCK = new Object();
+  private Object LOCK = new Object();
 
-    private DigitalPins demeter;
-    private IEventBus eventBus;
-    private GardenFiniteStateMachine fsm;
+  private DigitalPins demeter;
+  private IEventBus eventBus;
+  private GardenFiniteStateMachine fsm;
 
-    @Override
-    public IBinder onBind(final Intent intent) {
-        return null;
-    }
+  @Override
+  public IBinder onBind(final Intent intent) {
+    return null;
+  }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-        demeter = ((DemeterApplication) getApplication()).getDemeter();
+    demeter = ((DemeterApplication) getApplication()).getDemeter();
 
-        fsm = ((DemeterApplication) getApplication()).getFsm();
+    fsm = ((DemeterApplication) getApplication()).getFsm();
 
-        eventBus = ((DemeterApplication) getApplication()).getEventBus();
+    eventBus = ((DemeterApplication) getApplication()).getEventBus();
 
-        backgroundJob = FsmRunnable.getInstance(fsm);
+    BranchesInteractorProvider interactorsProvider =
+        ((DemeterApplication) getApplication()).getBranchesInteractorProvider();
+    ConfigurationProvider configurationProvider =
+        ((DemeterApplication) getApplication()).getConfigurationProvider();
+    backgroundJob = FsmRunnable.getInstance(fsm, configurationProvider, interactorsProvider);
 
-        backgroundJob.start();
+    backgroundJob.start();
 
-        EventBus.getDefault().register(this);
-        Log.d(LOG_TAG, "Eventbus registered");
+    EventBus.getDefault().register(this);
+    Log.d(LOG_TAG, "Eventbus registered");
+  }
 
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    eventBus.unregister(this);
+  }
 
-    }
+  @Subscribe(threadMode = ThreadMode.BACKGROUND)
+  public void onFireFsmEvent(FireFsmEvent event) {
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        eventBus.unregister(this);
-    }
+    fsm.trigger(event.fmsName, event.command);
+  }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onFireFsmEvent(FireFsmEvent event) {
-        fsm.trigger(event.command);
-    }
+  /**
+   * Creates an IntentService. Invoked by your subclass's constructor.
+   *
+   * @param name Used to name the worker thread, important only for debugging.
+   */
+  public FsmBackgroundService(String name) {
+    super(name);
+  }
 
+  /** Creates an IntentService. Required by AndroidManifest.xml */
+  public FsmBackgroundService() {
+    super(LOG_TAG);
+  }
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public FsmBackgroundService(String name) {
-        super(name);
-    }
-
-    /**
-     * Creates an IntentService.  Required by AndroidManifest.xml
-     */
-    public FsmBackgroundService() {
-        super(LOG_TAG);
-    }
-
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-
-    }
+  @Override
+  protected void onHandleIntent(Intent intent) {}
 }
