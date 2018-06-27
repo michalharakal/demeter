@@ -32,6 +32,11 @@ dependencies {
     compileOnly cacheDependencies.javaxAnnotation
 
     implementation project(':data')
+    implementation (project(path: ':pifacedigital2')) {
+        // Exclude joda-time from this dependency to remove the errors.
+        exclude module: 'joda-time'
+    }
+
 
     implementation cacheDependencies.kotlin
     implementation cacheDependencies.javaxInject

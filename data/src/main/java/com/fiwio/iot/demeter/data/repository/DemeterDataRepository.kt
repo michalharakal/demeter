@@ -19,6 +19,16 @@ class DemeterDataRepository @Inject constructor(private val demeterDataSourceFac
                                                 private val demeterMapper: DemeterMapper,
                                                 val actuatorMapper: ActuatorMapper)
     : DemeterRepository {
+    override fun switchActuator(actuator: Actuator): Single<Demeter> {
+        return demeterDataSourceFactory.retrieveRemoteDataStore()
+                .switchActuator(actuatorMapper.mapToEntity(actuator))
+                .doAfterSuccess {
+                    saveDemeterEntities(it).toSingle() { it }
+                    relay.accept(Change(DataChange.ACTUATOR))
+                }
+                .map { demeterMapper.mapFromEntity(it) }
+    }
+
     override fun getDemeterImage(): Single<Demeter> {
         return demeterDataSourceFactory.retrieveDataStore()
                 .getDemeterImage().map { demeterMapper.mapFromEntity(it) }
@@ -30,15 +40,6 @@ class DemeterDataRepository @Inject constructor(private val demeterDataSourceFac
         return relay
     }
 
-    override fun switchActuator(actuator: Actuator): Single<Demeter> {
-        return demeterDataSourceFactory.retrieveRemoteDataStore()
-                .switchActuator(actuatorMapper.mapToEntity(actuator))
-                .doAfterSuccess({
-                    saveDemeterEntities(it).toSingle() { it }
-                    relay.accept(Change(DataChange.ACTUATOR))
-                })
-                .map { demeterMapper.mapFromEntity(it) }
-    }
 
     private fun saveDemeterEntities(demeter: DemeterEntity): Completable {
         return demeterDataSourceFactory.retrieveCacheDataStore().saveDemeterImage(demeter)

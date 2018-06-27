@@ -1,7 +1,7 @@
 package com.fiwio.iot.demeter.presentation.feature.manual
 
 import com.fiwio.iot.demeter.domain.features.manual.GetDemeter
-import com.fiwio.iot.demeter.domain.features.manual.SetActuator
+import com.fiwio.iot.demeter.domain.features.manual.SwitchActuator
 import com.fiwio.iot.demeter.domain.model.Actuator
 import com.fiwio.iot.demeter.domain.model.Demeter
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class ActuatorsListPresenter @Inject constructor(
         val demeterRepository: DemeterRepository,
         val getDemeter: GetDemeter,
-        val setActuator: SetActuator,
+        val setActuator: SwitchActuator,
         val actuatorViewMapper: ActuatorViewMapper) :
         ActuatorsListContract.Presenter {
 
