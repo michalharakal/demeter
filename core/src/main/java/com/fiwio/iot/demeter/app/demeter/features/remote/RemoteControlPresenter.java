@@ -12,25 +12,12 @@ public class RemoteControlPresenter implements RemoteControlContract.Presenter {
     private final CmlRepository repository;
     private final EndpoitUrlProvider endpoitUrlProvider;
 
-    // Define the code block to be executed
-    private Runnable runnableCode = new Runnable() {
-        public static final long DELAY_TIME = 300;
-
-        @Override
-        public void run() {
-            getDemeter(false);
-            // Repeat this the same runnable code block again another 2 seconds
-            // handler.postDelayed(runnableCode, DELAY_TIME);
-        }
-    };
-
     public RemoteControlPresenter(CmlRepository repository, RemoteControlContract.View view,
                                   EndpoitUrlProvider endpoitUrlProvider) {
         this.repository = repository;
         this.view = view;
         this.endpoitUrlProvider = endpoitUrlProvider;
 
-//        handler = new Handler();
 
     }
 
