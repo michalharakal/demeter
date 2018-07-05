@@ -41,7 +41,7 @@ public class NdsDiscovery implements NsdManager.DiscoveryListener, MulticastDns 
         try {
             nsdManager.stopServiceDiscovery(this);
         } catch (IllegalArgumentException e) {
-            demerServiceFound.onServiceSearchFailed();
+           // demerServiceFound.onServiceSearchFailed();
         }
     }
 
