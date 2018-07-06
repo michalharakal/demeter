@@ -12,91 +12,86 @@ import com.fiwo.iot.demeter.api.model.Demeter;
 import com.fiwo.iot.demeter.api.model.Relay;
 import com.fiwo.iot.demeter.app.R;
 
+public class RemoteControlListAdapter
+    extends RecyclerView.Adapter<RemoteControlListAdapter.ViewHolder> {
+  private final OnItemClickListener listener;
+  private Demeter data;
+  private Context context;
 
-public class RemoteControlListAdapter extends RecyclerView.Adapter<RemoteControlListAdapter
-        .ViewHolder> {
-    private final OnItemClickListener listener;
-    private Demeter data;
-    private Context context;
+  public RemoteControlListAdapter(Context context, Demeter data, OnItemClickListener listener) {
+    this.data = data;
+    this.listener = listener;
+    this.context = context;
+  }
 
-    public RemoteControlListAdapter(Context context, Demeter data, OnItemClickListener listener) {
-        this.data = data;
-        this.listener = listener;
-        this.context = context;
+  private String getUserName(String internalName) {
+    if (internalName.equals("BCM23")) {
+      return "Napouštení";
+    }
+    if (internalName.equals("BCM26")) {
+      return "Sklenik";
+    }
+    if (internalName.equals("BCM25")) {
+      return "Kytky";
+    }
+    if (internalName.equals("BCM24")) {
+      return "Zahrada";
+    }
+    return internalName;
+  }
+
+  @Override
+  public RemoteControlListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home, null);
+    view.setLayoutParams(
+        new RecyclerView.LayoutParams(
+            RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+    return new RemoteControlListAdapter.ViewHolder(view);
+  }
+
+  @Override
+  public void onBindViewHolder(ViewHolder holder, int position) {
+    holder.click(data.getRelays().get(position), listener);
+    holder.name.setText(getUserName(data.getRelays().get(position).getName()));
+    holder.value.setText(data.getRelays().get(position).getValue());
+    holder.background.setBackgroundResource(
+        data.getRelays().get(position).getValue().equals("ON")
+            ? R.drawable.led_circle_green
+            : R.drawable.led_circle_grey);
+  }
+
+  @Override
+  public int getItemCount() {
+    if (data != null) {
+      return data.getRelays().size();
+    } else {
+      return 0;
+    }
+  }
+
+  public interface OnItemClickListener {
+    void onClick(Relay Item);
+  }
+
+  public class ViewHolder extends RecyclerView.ViewHolder {
+    TextView name, value;
+    ImageView background;
+
+    public ViewHolder(View itemView) {
+      super(itemView);
+      name = (TextView) itemView.findViewById(R.id.releay_name);
+      value = (TextView) itemView.findViewById(R.id.relay_value);
+      background = (ImageView) itemView.findViewById(R.id.led);
     }
 
-    private String getUserName(String internalName) {
-        if (internalName.equals("BCM23")) {
-            return "Napouštení";
-        }
-        if (internalName.equals("BCM24")) {
-            return "Sklenik";
-        }
-        if (internalName.equals("BCM25")) {
-            return "Kytky";
-        }
-        if (internalName.equals("BCM26")) {
-            return "Zahrada";
-        }
-        return internalName;
+    public void click(final Relay cityListData, final OnItemClickListener listener) {
+      itemView.setOnClickListener(
+          new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              listener.onClick(cityListData);
+            }
+          });
     }
-
-
-    @Override
-    public RemoteControlListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_home, null);
-        view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-        return new RemoteControlListAdapter.ViewHolder(view);
-    }
-
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.click(data.getRelays().get(position), listener);
-        holder.name.setText(getUserName(data.getRelays().get(position).getName()));
-        holder.value.setText(data.getRelays().get(position).getValue());
-        holder.background.setBackgroundResource(data.getRelays().get(position).getValue().equals
-                ("ON") ? R.drawable.led_circle_green : R.drawable.led_circle_grey);
-    }
-
-
-    @Override
-    public int getItemCount() {
-        if (data != null) {
-            return data.getRelays().size();
-        } else {
-            return 0;
-        }
-    }
-
-
-    public interface OnItemClickListener {
-        void onClick(Relay Item);
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, value;
-        ImageView background;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.releay_name);
-            value = (TextView) itemView.findViewById(R.id.relay_value);
-            background = (ImageView) itemView.findViewById(R.id.led);
-
-        }
-
-
-        public void click(final Relay cityListData, final OnItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onClick(cityListData);
-                }
-            });
-        }
-    }
-
-
+  }
 }
-
