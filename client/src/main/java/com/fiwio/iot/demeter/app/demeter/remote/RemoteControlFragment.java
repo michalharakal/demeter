@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.fiwio.iot.demeter.app.app.EndpoitUrlProvider;
 import com.fiwio.iot.demeter.app.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.app.demeter.features.remote.RemoteControlContract;
 import com.fiwio.iot.demeter.app.demeter.features.remote.RemoteControlPresenter;
@@ -65,6 +64,20 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
     runnableCode.run();
   }
 
+  @Override
+  public void onResume() {
+    super.onResume();
+    stopped = false;
+    runnableCode.run();
+  }
+
+  @Override
+  public void onPause() {
+    stopped = true;
+    super.onPause();
+  }
+
+  private static boolean stopped = false;
   // Define the code block to be executed
   private Runnable runnableCode =
       new Runnable() {
@@ -74,7 +87,9 @@ public class RemoteControlFragment extends Fragment implements RemoteControlCont
         public void run() {
           presenter.getDemeter(false);
           // Repeat this the same runnable code block again another 2 seconds
-          handler.postDelayed(runnableCode, DELAY_TIME);
+          if (!stopped) {
+            handler.postDelayed(runnableCode, DELAY_TIME);
+          }
         }
       };
 

@@ -9,13 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"/>
-
-    </android.support.design.widget.AppBarLayout>
+  </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -45,10 +39,24 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
 
                 <RadioButton
-                    android:id="@+id/rb_irrigate"
+                    android:id="@+id/rb_garden"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/irrigate"
+                    android:text="@string/garden"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+
+                <RadioButton
+                    android:id="@+id/rb_flowers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/flowers"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+
+                <RadioButton
+                    android:id="@+id/rb_greenhouse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/greenhouse"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
 
 

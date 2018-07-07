@@ -12,6 +12,9 @@
     <string name="irrigate">Irrigate garden</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
-    <string name="automatic_tasks">Automatické úkoly</string>
+    <string name="automatic_tasks">Tasks</string>
     <string name="new_task">New task</string>
+    <string name="garden">garden</string>
+    <string name="flowers">flowers</string>
+    <string name="greenhouse">greenhouse</string>
 </resources>

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -30,7 +29,11 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
     private TextView time;
     private Button pickTime;
     private FloatingActionButton fab;
-    private RadioButton rbIrrigate;
+
+    private RadioButton rbFill;
+    private RadioButton rbGarden;
+    private RadioButton rbFlowers;
+    private RadioButton rbGreenHouse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //
@@ -47,7 +50,10 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
         date = (TextView) findViewById(R.id.date_value);
         time = (TextView) findViewById(R.id.time_value);
 
-        rbIrrigate = (RadioButton) findViewById(R.id.rb_irrigate);
+        rbFill = (RadioButton) findViewById(R.id.rb_fill);
+        rbGarden = (RadioButton) findViewById(R.id.rb_garden);
+        rbFlowers = (RadioButton) findViewById(R.id.rb_flowers);
+        rbGreenHouse = (RadioButton) findViewById(R.id.rb_greenhouse);
 
 
         pickDate = (Button) findViewById(R.id.bt_pick_date);
@@ -80,7 +86,7 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.addTask(rbIrrigate.isChecked());
+                presenter.addTask(getFsNameFromRadioBUtton());
             }
         });
 
@@ -88,6 +94,24 @@ public class AddSchedulerTaskActivity extends AppCompatActivity implements AddSc
         presenter.onStart();
         setTitle(getString(R.string.new_task));
 
+    }
+
+    private String getFsNameFromRadioBUtton() {
+        if (rbFill.isChecked()) {
+            return "fill";
+        }
+        if (rbGarden.isChecked()) {
+            return "garden";
+        }
+
+        if (rbFlowers.isChecked()) {
+            return "flowers";
+        }
+        if (rbGreenHouse.isChecked()) {
+            return "greehouse";
+        }
+
+        return "garden";
     }
 
     private void inject() {

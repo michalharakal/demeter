@@ -13,7 +13,7 @@ public class AddSchedulerTaskContract {
     }
 
     public interface Presenter extends BasePresenter {
-        void addTask(boolean irrigate);
+        void addTask(String fsmName);
 
         void putDate(int year, int monthOfYear, int dayOfMonth);
 

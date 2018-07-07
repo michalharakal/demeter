@@ -28,10 +28,15 @@ public class AddSchedulerTaskPresenter implements AddSchedulerTaskContract.Prese
     }
 
     @Override
-    public void addTask(boolean irrigate) {
+    public void addTask(String fsmName) {
         Task task = new Task();
-        task.setFsm("garden");
-        task.setCommand(irrigate ? "irrigate" : "fill");
+         if ("fill".equals(fsmName)) {
+            task.setFsm("garden");
+            task.setCommand("fill");
+        } else {
+            task.setFsm(fsmName);
+            task.setCommand("irrigate");
+        }
         task.setTime(dateTime);
         repository.addTask(task, new SchedulerRepository.GetSchedulerCallback() {
             @Override
