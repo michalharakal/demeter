@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.fiwio.iot.demeter.app.demeter.di.ApplicationComponent;
 import com.fiwio.iot.demeter.app.demeter.di.ApplicationModule;
@@ -35,6 +36,7 @@ public class DemeterApplication extends Application implements Application
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         initAppComponent();
         JodaTimeAndroid.init(this);
     }
