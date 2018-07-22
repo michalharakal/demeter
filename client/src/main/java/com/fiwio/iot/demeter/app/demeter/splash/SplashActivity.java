@@ -13,7 +13,6 @@ import com.fiwio.iot.demeter.app.demeter.discovery.MulticastDns;
 import com.fiwio.iot.demeter.app.demeter.main.MainActivity;
 import com.fiwio.iot.demeter.app.demeter.splash.di.SplashModule;
 import com.fiwo.iot.demeter.app.R;
-import com.google.firebase.crash.FirebaseCrash;
 
 import javax.inject.Inject;
 
@@ -34,8 +33,6 @@ public class SplashActivity extends AppCompatActivity implements DemerServiceFou
 
         setContentView(R.layout.activity_splash);
         inject();
-
-        FirebaseCrash.log("Splash Activity created");
     }
 
     private void inject() {
@@ -90,7 +87,7 @@ public class SplashActivity extends AppCompatActivity implements DemerServiceFou
 
     @Override
     public void onServiceSearchFailed() {
-        if (repeatCount >= 3)  {
+        if (repeatCount >= 3) {
             multicastDns.stopDiscovery();
             if (!started) {
                 started = true;

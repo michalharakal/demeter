@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.fiwio.iot.demeter.app.demeter.addtask.AddSchedulerTaskActivity;
 import com.fiwio.iot.demeter.app.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.app.demeter.features.scheduler.SchedulerContract;
@@ -121,7 +122,6 @@ public class SchedulerFragment extends Fragment implements SchedulerContract.Vie
     public void showAddTask() {
         Intent intent = new Intent(getContext(), AddSchedulerTaskActivity.class);
         startActivityForResult(intent, AddSchedulerTaskActivity.REQUEST_ADD_TASK);
-
     }
 
 

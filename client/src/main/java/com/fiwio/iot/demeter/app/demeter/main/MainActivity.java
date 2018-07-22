@@ -13,7 +13,6 @@ import com.fiwio.iot.demeter.app.demeter.app.DemeterApplication;
 import com.fiwio.iot.demeter.app.demeter.remote.RemoteControlFragment;
 import com.fiwio.iot.demeter.app.demeter.scheduler.SchedulerFragment;
 import com.fiwo.iot.demeter.app.R;
-import com.google.firebase.crash.FirebaseCrash;
 
 import javax.inject.Inject;
 
@@ -52,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) { //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FirebaseCrash.log("Main Activity created");
 
         inject();
 
