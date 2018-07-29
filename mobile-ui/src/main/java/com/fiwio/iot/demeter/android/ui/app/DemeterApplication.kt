@@ -1,8 +1,11 @@
 package com.fiwio.iot.demeter.android.ui.app
 
 import android.app.Application
+import android.content.Context
+import android.support.multidex.MultiDex
 import com.fiwio.iot.demeter.android.ui.injection.ApplicationComponent
 import com.fiwio.iot.demeter.android.ui.injection.DaggerApplicationComponent
+
 
 class DemeterApplication : Application() {
 
@@ -27,4 +30,8 @@ class DemeterApplication : Application() {
         }
     }
 
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 }

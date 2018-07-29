@@ -39,6 +39,12 @@ public class DemeterApplication extends Application {
         JobManager.create(this).addJobCreator(new ReminderJobCreator(reminderEngine));
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     private DigitalPins createDeviceImageInstance() {
         if (BuildConfig.MOCK_MODE) {
             return new MockDigitalPins();

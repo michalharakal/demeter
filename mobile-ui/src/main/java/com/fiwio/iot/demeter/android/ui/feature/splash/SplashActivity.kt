@@ -50,9 +50,9 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
         presenter.attachView(this)
 
-        manual_ip_button.setOnClickListener({
+        manual_ip_button.setOnClickListener {
             presenter.startWithUrl(manual_ip_edit.editableText.toString())
-        })
+        }
     }
 
     override fun enterUrlByHand() {

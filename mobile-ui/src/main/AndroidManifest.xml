@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fiwio.iot.demeter.android.ui">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".app.DemeterApplication"
         android:allowBackup="true"
