@@ -13,7 +13,5 @@ interface SplashContract {
         fun enterUrlByHand()
     }
 
-    interface Presenter : MvpPresenter<View> {
-    }
-
+    interface Presenter : MvpPresenter<View>
 }

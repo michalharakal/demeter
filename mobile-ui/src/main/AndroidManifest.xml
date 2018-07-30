@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fiwio.iot.demeter.android.ui">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".app.DemeterApplication"
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.fiwio.iot.demeter.android.ui.feature.splash.SplashActivity"
+            android:name=".feature.splash.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,9 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".feature.main.MainActivity">
+        <activity android:name=".feature.main.MainActivity" />
 
-        </activity>
+        <service
+            android:name=".feature.refresh.RefreshIntentService"
+            android:exported="false" />
     </application>
+
 </manifest>

@@ -50,7 +50,8 @@ class DataModule {
     @Singleton
     internal fun provideEventRepository(demeterDataSourceFactory: DemeterDataSourceFactory,
                                         demeterMapper: DemeterMapper,
+                                        demeterCache: DemeterCache,
                                         actuatorMapper: ActuatorMapper): DemeterRepository {
-        return DemeterDataRepository(demeterDataSourceFactory, demeterMapper, actuatorMapper)
+        return DemeterDataRepository(demeterDataSourceFactory, demeterMapper, demeterCache, actuatorMapper)
     }
 }

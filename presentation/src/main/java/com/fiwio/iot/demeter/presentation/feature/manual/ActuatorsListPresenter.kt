@@ -9,8 +9,11 @@ import com.fiwio.iot.demeter.presentation.model.ActuatorState
 import com.fiwio.iot.demeter.presentation.model.ActuatorView
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import mu.KotlinLogging
 import org.buffer.android.boilerplate.presentation.mapper.ActuatorViewMapper
 import javax.inject.Inject
+
+private val logger = KotlinLogging.logger {}
 
 class ActuatorsListPresenter @Inject constructor(
         val demeterRepository: DemeterRepository,
@@ -38,7 +41,7 @@ class ActuatorsListPresenter @Inject constructor(
     }
 
     private fun subscribeForChanges() {
-        demeterRepository.getDemeterImage()
+        demeterRepository.getEventChanges()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe { _ ->
                     getDemeter.execute(DemeterSubscriber())
@@ -46,14 +49,17 @@ class ActuatorsListPresenter @Inject constructor(
     }
 
     private fun handleDemeterEventSuccess(t: Demeter) {
-        view?.setData(t.actuators.map { it ->
-            actuatorViewMapper.mapToView(it)
-        })
+        view?.setData(t.actuators
+                //.filter { actuator -> actuator.name.equals("BCM23")  }
+                .map { it ->
+                    actuatorViewMapper.mapToView(it)
+                })
     }
 
     inner class DemeterSubscriber : DisposableSingleObserver<Demeter>() {
 
         override fun onSuccess(t: Demeter) {
+            logger.debug { "receives a new demeter image" }
             handleDemeterEventSuccess(t)
         }
 

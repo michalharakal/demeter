@@ -1,7 +1,6 @@
 package com.fiwio.iot.demeter.android.cache
 
 import com.fiwio.iot.demeter.android.cache.persistance.DemeterCacheSerializer
-import com.fiwio.iot.demeter.data.model.ActuatorEntity
 import com.fiwio.iot.demeter.data.model.DemeterEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import io.reactivex.Completable
@@ -13,6 +12,9 @@ private val logger = KotlinLogging.logger {}
 
 class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: DemeterCacheSerializer,
                                            val preferencesHelper: PreferencesHelper) : DemeterCache {
+    override fun invalidate() {
+        demeter = DemeterEntity(emptyList(), emptyList())
+    }
 
     var demeter: DemeterEntity = DemeterEntity(emptyList(), emptyList())
 
@@ -25,7 +27,7 @@ class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: Demet
         }
     }
 
-    // 10 sec hour cache
+    // 10 sec cache
     private val EXPIRATION_TIME = (10 * 1000).toLong()
 
 

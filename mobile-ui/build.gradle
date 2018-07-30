@@ -68,7 +68,7 @@ dependencies {
     implementation mobileUiDependencies.dagger
     implementation mobileUiDependencies.daggerSupport
     implementation mobileUiDependencies.kotlinLogging
-//    implementation mobileUiDependencies.slf4jAndroid
+    //implementation mobileUiDependencies.slf4jAndroid
     implementation mobileUiDependencies.retrofitConverter
     implementation mobileUiDependencies.retrofitAdapter
     implementation mobileUiDependencies.jodaTime

@@ -17,13 +17,19 @@ import javax.inject.Inject
 
 class DemeterDataRepository @Inject constructor(private val demeterDataSourceFactory: DemeterDataSourceFactory,
                                                 private val demeterMapper: DemeterMapper,
+                                                private  val demetrCache: DemeterCache,
                                                 val actuatorMapper: ActuatorMapper)
     : DemeterRepository {
+    override fun refresh() {
+        relay.accept(Change(DataChange.ACTUATOR))
+    }
+
     override fun switchActuator(actuator: Actuator): Single<Demeter> {
         return demeterDataSourceFactory.retrieveRemoteDataStore()
                 .switchActuator(actuatorMapper.mapToEntity(actuator))
                 .doAfterSuccess {
-                    saveDemeterEntities(it).toSingle() { it }
+                    demetrCache.invalidate()
+                  //  saveDemeterEntities(it).toSingle { it }
                     relay.accept(Change(DataChange.ACTUATOR))
                 }
                 .map { demeterMapper.mapFromEntity(it) }
@@ -31,7 +37,11 @@ class DemeterDataRepository @Inject constructor(private val demeterDataSourceFac
 
     override fun getDemeterImage(): Single<Demeter> {
         return demeterDataSourceFactory.retrieveDataStore()
-                .getDemeterImage().map { demeterMapper.mapFromEntity(it) }
+                .getDemeterImage()
+                .map {
+                    demeterMapper.mapFromEntity(it)
+                }
+
     }
 
     private var relay: PublishRelay<Change> = PublishRelay.create<Change>()

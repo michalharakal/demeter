@@ -19,7 +19,6 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-
     override fun setData(data: List<ActuatorView>) {
         val adapter = ActuatorsListAdapter(this)
 
@@ -34,8 +33,8 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     private var columnCount = 2
 
     init {
-        var component = context.getComponent<MainComponent>()
-        component.actuatorsListComponent().inject(this)
+        var component = context.getComponent<MainComponent>().actuatorsListComponent()
+        component.inject(this)
 
         LayoutInflater.from(context).inflate(R.layout.view_actuators, this, true)
 
