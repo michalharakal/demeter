@@ -51,7 +51,8 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
         presenter.attachView(this)
 
         manual_ip_button.setOnClickListener {
-            navigateToMainWithUrl(manual_ip_edit.editableText.toString())
+            val text = manual_ip_edit.editableText.toString()
+            navigateToMainWithUrl(text)
         }
     }
 

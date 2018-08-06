@@ -10,6 +10,8 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':domain')
+
     def presentationDependencies = rootProject.ext.cacheDependencies
     def presentationTestDependencies = rootProject.ext.cacheTestDependencies
 
@@ -26,5 +28,4 @@ dependencies {
     testImplementation presentationTestDependencies.assertj
     testImplementation presentationTestDependencies.robolectric
 
-    compile project(':domain')
 }

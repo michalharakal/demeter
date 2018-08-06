@@ -1,10 +1,10 @@
 package com.fiwio.iot.demeter.domain.repository
 
 import com.fiwio.iot.demeter.domain.model.DemeterSearchDnsInfo
-import io.reactivex.Single
+import io.reactivex.Observable
 
 
 interface DemeterFinder {
-    fun findDemeterUrl(): Single<DemeterSearchDnsInfo>
+    fun findDemeterUrl(): Observable<DemeterSearchDnsInfo>
 }
 

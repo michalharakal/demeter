@@ -8,9 +8,9 @@ class AppResourcesActuatorNameMapper(val context: Context) : ActuatorNameMapper 
     override fun getUserNameFor(name: String): String {
         return when (name) {
             "BCM23" -> context.getString(R.string.filling)
-            "BCM24" -> context.getString(R.string.greenhouse)
+            "BCM24" -> context.getString(R.string.garden)
             "BCM25" -> context.getString(R.string.flowers)
-            "BCM26" -> context.getString(R.string.garden)
+            "BCM26" -> context.getString(R.string.greenhouse)
             else -> name
         }
     }

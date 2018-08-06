@@ -55,6 +55,8 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
         component.inject(this)
 
         endpointUrlProvider.url = intent.getStringExtra("url")
+
+        showView(R.id.navigation_manual)
     }
 
     override fun getSystemService(name: String?): Any {

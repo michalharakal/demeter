@@ -42,10 +42,10 @@ class RefreshIntentService : IntentService("RefreshIntentService") {
     override fun onCreate() {
         super.onCreate()
 
-        startTread()
-
         component = getAppComponent().plus(RefreshServiceModule())
         component.inject(this)
+
+        startTread()
     }
 
     private fun startTread() {

@@ -35,7 +35,7 @@
             android:id="@+id/manual_ip_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="http://192.168.3.54:8080"
+            android:text="http://192.168.1.110:8080"
              />
 
         <Button
