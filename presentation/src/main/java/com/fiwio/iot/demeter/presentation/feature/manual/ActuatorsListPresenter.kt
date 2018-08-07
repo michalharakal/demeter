@@ -53,6 +53,8 @@ class ActuatorsListPresenter @Inject constructor(
                 //.filter { actuator -> actuator.name.equals("BCM23")  }
                 .map { it ->
                     actuatorViewMapper.mapToView(it)
+                }.filter { it ->
+                    !it.name.equals("BCM27")
                 })
     }
 

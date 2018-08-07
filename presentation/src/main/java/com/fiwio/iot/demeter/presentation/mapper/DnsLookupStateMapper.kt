@@ -19,6 +19,10 @@ open class DnsLookupStateMapper @Inject constructor() : Mapper<DnsLookupState, D
      * Map a [DnsLookupState] instance to a [DnsLookupState] instance
      */
     override fun mapToView(type: DemeterSearchDnsInfo): DnsLookupState {
-        return DnsLookupState(type.dnsSearchResult == DnsSearchResult.FOUND, type.url)
+        return DnsLookupState(type.dnsSearchResult == DnsSearchResult.FOUND, normalizeUrl(type.url))
+    }
+
+    private fun normalizeUrl(url: String): String {
+        return url.replace("8090", "8080")
     }
 }

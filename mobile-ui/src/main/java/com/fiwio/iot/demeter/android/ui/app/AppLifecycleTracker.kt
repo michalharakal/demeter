@@ -25,7 +25,7 @@ class AppLifecycleTracker : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityStarted(activity: Activity?) {
         if (numStarted == 0) {
-            RefreshIntentService.startRefresh(activity!!.application)
+
 
         }
         numStarted++

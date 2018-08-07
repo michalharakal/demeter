@@ -12,6 +12,7 @@ import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainModule
 import com.fiwio.iot.demeter.android.ui.feature.manual.ManualControlView
+import com.fiwio.iot.demeter.android.ui.feature.refresh.RefreshIntentService
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -57,6 +58,16 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
         endpointUrlProvider.url = intent.getStringExtra("url")
 
         showView(R.id.navigation_manual)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        RefreshIntentService.startRefresh(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        RefreshIntentService.stopRefresh(this)
     }
 
     override fun getSystemService(name: String?): Any {

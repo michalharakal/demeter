@@ -4,13 +4,13 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.HandlerThread
 import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceComponent
 import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceModule
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
-import javax.inject.Inject
-import android.os.HandlerThread
 import mu.KotlinLogging
+import javax.inject.Inject
 
 
 private const val ACTION_START_REFRESH = "com.fiwio.iot.demeter.android.ui.feature.refresh.action.START_REFRESH"
@@ -20,7 +20,7 @@ private val logger = KotlinLogging.logger {}
 
 class RefreshIntentService : IntentService("RefreshIntentService") {
 
-    lateinit var handler :Handler
+    lateinit var handler: Handler
 
     lateinit var component: RefreshServiceComponent
 
@@ -39,15 +39,6 @@ class RefreshIntentService : IntentService("RefreshIntentService") {
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-
-        component = getAppComponent().plus(RefreshServiceModule())
-        component.inject(this)
-
-        startTread()
-    }
-
     private fun startTread() {
         val thread = HandlerThread("RefreshHandlerThread")
         thread.start()
@@ -57,12 +48,25 @@ class RefreshIntentService : IntentService("RefreshIntentService") {
     override fun onHandleIntent(intent: Intent?) {
         when (intent?.action) {
             ACTION_START_REFRESH -> {
+                createRefreshThread()
                 handleActionStartRefresh()
             }
             ACTION_STOP_REFRESH -> {
                 handleActionStopRefresh()
             }
         }
+    }
+
+    private var firstStart: Boolean = true
+
+    private fun createRefreshThread() {
+        if (firstStart) {
+            component = getAppComponent().plus(RefreshServiceModule())
+            component.inject(this)
+            firstStart = false;
+        }
+
+        startTread()
     }
 
     override fun getSystemService(name: String?): Any {
