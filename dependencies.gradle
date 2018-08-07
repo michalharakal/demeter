@@ -18,7 +18,7 @@ ext {
     androidCompileSdkVersion = 27
 
     //Libraries
-    kotlinVersion = '1.2.40'
+    kotlinVersion = '1.2.51'
     butterKnifeVersion = '7.0.1'
     rxJavaVersion = '2.1.3'
     rxKotlinVersion = '2.1.0'
@@ -31,6 +31,8 @@ ext {
     swaggerAnnotationsVersion = '1.5.0'
     oltuVersion = '1.0.1'
     jodaTimeVersion = '2.9.9'
+    retrofitJodaTimeSerializerVersion = '1.6.0'
+    androidJodaTimeVersion = '2.9.9.2'
     retrofitVersion = '2.3.0'
     roomVersion = '1.0.0-alpha6'
     timberVersion = '4.5.1'
@@ -39,6 +41,9 @@ ext {
     glassfishAnnotationVersion = '10.0-b28'
     kotlinLoggingVersion = '1.5.3'
     slf4jAndroidVersion = '1.7.25'
+    greenEventBusVersion = '3.0.0'
+    easyFlowVersion = '1.3.1'
+    anko_version = '0.10.5'
 
     //Testing
     robolectricVersion = '3.4.2'
@@ -54,20 +59,25 @@ ext {
     androidSupportRulesVersion = '1.0.1'
     dexmakerMockitoversion = '2.2.0'
     meanBeanVersion = '2.0.3'
+    logbackVersion = '1.2.3'
 
     domainDependencies = [
             javaxAnnotation: "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
             javaxInject    : "javax.inject:javax.inject:${javaxInjectVersion}",
             rxKotlin       : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
             kotlin         : "org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}",
-            jodaTime       : "joda-time:joda-time:${jodaTimeVersion}"
+            jodaTime       : "joda-time:joda-time:${jodaTimeVersion}",
+            easyFlow       : "au.com.datasymphony:EasyFlow:${easyFlowVersion}"
+
     ]
 
     domainTestDependencies = [
             junit   : "junit:junit:${jUnitVersion}",
             mockito : "com.nhaarman:mockito-kotlin:${mockitoKotlinVersion}",
             assertj : "org.assertj:assertj-core:${assertJVersion}",
-            meanBean: "org.meanbean:meanbean:${meanBeanVersion}"
+            meanBean: "org.meanbean:meanbean:${meanBeanVersion}",
+            logback : "ch.qos.logback:logback-classic:${logbackVersion}"
+
     ]
 
     presentationDependencies = [
@@ -78,6 +88,7 @@ ext {
             gson              : "com.google.code.gson:gson:${gsonVersion}",
             rxKotlin          : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
             kotlin            : "org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}",
+            kotlinLogging     : "io.github.microutils:kotlin-logging:${kotlinLoggingVersion}",
             rxAndroid         : "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
             javaxAnnotation   : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
             javaxInject       : "javax.inject:javax.inject:${javaxInjectVersion}",
@@ -193,11 +204,9 @@ ext {
             javaxInject       : "javax.inject:javax.inject:${javaxInjectVersion}",
             androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
             okHttp            : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
-            okHttpLogger      : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
-            retrofitConverter : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
-            retrofitAdapter   : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
             jodaTime          : "joda-time:joda-time:${jodaTimeVersion}"
+
     ]
 
     remoteTestDependencies = [
@@ -234,7 +243,19 @@ ext {
             timber             : "com.jakewharton.timber:timber:${timberVersion}",
             daggerSupport      : "com.google.dagger:dagger-android-support:${daggerVersion}",
             daggerProcessor    : "com.google.dagger:dagger-android-processor:${daggerVersion}",
-            glassfishAnnotation: "org.glassfish:javax.annotation:${glassfishAnnotationVersion}"
+            glassfishAnnotation: "org.glassfish:javax.annotation:${glassfishAnnotationVersion}",
+            retrofit           : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitScalars    : "com.squareup.retrofit2:converter-scalars:${retrofitVersion}",
+            retrofitConverter  : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitAdapter    : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+            jodaTime           : "joda-time:joda-time:${jodaTimeVersion}",
+            jodaTimeRetrofit   : "com.fatboyindustrial.gson-jodatime-serialisers:gson-jodatime-serialisers:${retrofitJodaTimeSerializerVersion}",
+            okHttpLogger       : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
+            ankoSdk            : "org.jetbrains.anko:anko-sdk25:${anko_version}",
+            ankoAppCompat:      "org.jetbrains.anko:anko-appcompat-v7:${anko_version}"
+
+
+
     ]
 
     mobileUiTestDependencies = [
@@ -252,4 +273,37 @@ ext {
             androidRules   : "com.android.support.test:runner:${androidSupportRunnerVersion}"
     ]
 
+    cmlDependencies = [
+            rxKotlin           : "io.reactivex.rxjava2:rxkotlin:${rxKotlinVersion}",
+            rxAndroid          : "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+            kotlinLogging      : "io.github.microutils:kotlin-logging:${kotlinLoggingVersion}",
+            slf4jAndroid       : "org.slf4j:slf4j-android:${slf4jAndroidVersion}",
+            kotlin             : "org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}",
+            javaxAnnotation    : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            javaxInject        : "javax.inject:javax.inject:${javaxInjectVersion}",
+            androidAnnotations : "com.android.support:support-annotations:${supportLibraryVersion}",
+            androidSupportV4   : "com.android.support:support-v4:${supportLibraryVersion}",
+            androidSupportV13  : "com.android.support:support-v13:${supportLibraryVersion}",
+            glassfishAnnotation: "org.glassfish:javax.annotation:${glassfishAnnotationVersion}",
+            greenEventBus      : "org.greenrobot:eventbus:${greenEventBusVersion}",
+            jodaTimeAndroid    : "net.danlew:android.joda:${androidJodaTimeVersion}",
+            dagger             : "com.google.dagger:dagger:${daggerVersion}",
+            daggerSupport      : "com.google.dagger:dagger-android-support:${daggerVersion}",
+            daggerProcessor    : "com.google.dagger:dagger-android-processor:${daggerVersion}"
+    ]
+
+    cmlTestDependencies = [
+            junit          : "junit:junit:${jUnitVersion}",
+            kotlinJUnit    : "org.jetbrains.kotlin:kotlin-test-junit:${kotlin_version}",
+            assertj        : "org.assertj:assertj-core:${assertJVersion}",
+            mockito        : "com.nhaarman:mockito-kotlin:${mockitoKotlinVersion}",
+            supportRunner  : "com.android.support.test:runner:${androidSupportRunnerVersion}",
+            supportRules   : "com.android.support.test:rules:${androidSupportRulesVersion}",
+            mockitoAndroid : "org.mockito:mockito-android:${mockitoAndroidVersion}",
+            espressoCore   : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            espressoIntents: "com.android.support.test.espresso:espresso-intents:${espressoVersion}",
+            espressoContrib: "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
+            androidRunner  : "com.android.support.test:runner:${androidSupportRunnerVersion}",
+            androidRules   : "com.android.support.test:runner:${androidSupportRunnerVersion}"
+    ]
 }

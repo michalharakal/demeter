@@ -50,9 +50,10 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
         presenter.attachView(this)
 
-        manual_ip_button.setOnClickListener({
-            presenter.startWithUrl(manual_ip_edit.editableText.toString())
-        })
+        manual_ip_button.setOnClickListener {
+            val text = manual_ip_edit.editableText.toString()
+            navigateToMainWithUrl(text)
+        }
     }
 
     override fun enterUrlByHand() {
@@ -76,9 +77,9 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
     }
 
     override fun getSystemService(name: String?): Any {
-        when (name) {
-            "component" -> return component
-            else -> return super.getSystemService(name)
+        return when (name) {
+            "component" -> component
+            else -> super.getSystemService(name)
         }
     }
 }

@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
 
 
     @Inject
-    lateinit var endpointUrlProvider: EndpointUrlProvider
+    internal lateinit var endpointUrlProvider: EndpointUrlProvider
 
 
     override fun showAutomatic() {
@@ -51,15 +51,18 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
 
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        component = getAppComponent().mainComponent(MainModule(this))
+        component = getAppComponent().plus(MainModule(this))
+        component.inject(this)
 
         endpointUrlProvider.url = intent.getStringExtra("url")
+
+        showView(R.id.navigation_manual)
     }
 
     override fun getSystemService(name: String?): Any {
-        when (name) {
-            "component" -> return component
-            else -> return super.getSystemService(name)
+        return when (name) {
+            "component" -> component
+            else -> super.getSystemService(name)
         }
     }
 

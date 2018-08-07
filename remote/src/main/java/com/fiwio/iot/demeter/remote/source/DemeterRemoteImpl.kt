@@ -19,11 +19,10 @@ import javax.inject.Inject
  * operations in which data store implementation layers can carry out.
  */
 class DemeterRemoteImpl @Inject constructor(private val demeterApi: DefaultApi,
-
                                             private val entityMapper: DemeterEntityMapper) :
         DemeterRemote {
     override fun switchActuator(actuatorEntity: ActuatorEntity): Single<DemeterEntity> {
-        return Single.create({ s ->
+        return Single.create { s ->
 
             // create list with one actuator
             val postOutputs = DigitalOutputs()
@@ -47,14 +46,14 @@ class DemeterRemoteImpl @Inject constructor(private val demeterApi: DefaultApi,
             } else {
                 s.onError(Throwable())
             }
-        })
+        }
 
     }
 
     override fun getDemeterImage(): Single<DemeterEntity> {
-        return Single.create({ s ->
+        return Single.create { s ->
             getDemeterImageCall(s)
-        })
+        }
     }
 
     private fun getDemeterImageCall(s: SingleEmitter<DemeterEntity>) {

@@ -59,7 +59,7 @@ open class ApplicationModule {
     @Singleton
     @Provides
     fun provideEndpointUrlProvider(): EndpointUrlProvider {
-        return StringEndpointUrlProvider("http://192.168.1.34:8080/")
+        return StringEndpointUrlProvider("http://192.168.1.110:8080/")
     }
 
     @Singleton

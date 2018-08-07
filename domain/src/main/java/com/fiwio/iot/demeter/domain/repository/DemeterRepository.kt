@@ -10,4 +10,5 @@ interface DemeterRepository {
     fun getDemeterImage(): Single<Demeter>
     fun getEventChanges(): Observable<Change>
     fun switchActuator(actuator: Actuator): Single<Demeter>
+    fun refresh()
 }

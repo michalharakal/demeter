@@ -4,6 +4,8 @@ import android.app.Application
 import com.fiwio.iot.demeter.android.ui.app.DemeterApplication
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainModule
+import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceComponent
+import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceModule
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashComponent
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashModule
 import dagger.BindsInstance
@@ -15,8 +17,10 @@ import javax.inject.Singleton
 interface ApplicationComponent {
 
     fun inject(demeterApplication: DemeterApplication)
-    fun mainComponent(mainModule: MainModule): MainComponent
+
+    fun plus(mainModule: MainModule): MainComponent
     fun plus(splashModule: SplashModule): SplashComponent
+    fun plus(refreshServiceModule: RefreshServiceModule): RefreshServiceComponent
 
 
     @Component.Builder
