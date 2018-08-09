@@ -11,6 +11,7 @@ class AppResourcesActuatorNameMapper(val context: Context) : ActuatorNameMapper 
             "BCM24" -> context.getString(R.string.garden)
             "BCM25" -> context.getString(R.string.flowers)
             "BCM26" -> context.getString(R.string.greenhouse)
+            "BCM27" -> context.getString(R.string.swimmer)
             else -> name
         }
     }

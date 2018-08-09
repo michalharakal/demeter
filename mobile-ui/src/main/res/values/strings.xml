@@ -12,5 +12,6 @@
     <string name="default_notification_channel_id" translatable="false">demeter</string>
     <string name="msg_subscribed">subscribed</string>
     <string name="msg_subscribe_failed">subscribe failed</string>
+    <string name="swimmer">Swimmer</string>
 
 </resources>
