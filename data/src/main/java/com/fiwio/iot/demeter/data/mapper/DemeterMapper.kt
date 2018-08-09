@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Map a [DemeterEntity] to and from a [Demeter] instance when data is moving between
  * this later and the Domain layer
  */
-open class DemeterMapper @Inject constructor(val actuatorMapper: ActuatorMapper) : Mapper<DemeterEntity, Demeter> {
+class DemeterMapper @Inject constructor(val actuatorMapper: ActuatorMapper) : Mapper<DemeterEntity, Demeter> {
 
     /**
      * Map a [DemeterEntity] instance to a [Demeter] instance

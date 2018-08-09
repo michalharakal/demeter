@@ -8,11 +8,13 @@ import com.fiwio.iot.demeter.android.networking.datasource.DiscoveryDemeterFinde
 import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.app.StringEndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.app.UiThread
+import com.fiwio.iot.demeter.android.ui.feature.schedules.DemeterScheduleStringsProvider
 import com.fiwio.iot.demeter.data.executor.JobExecutor
 import com.fiwio.iot.demeter.domain.connectivity.ConnectivityState
 import com.fiwio.iot.demeter.domain.executor.PostExecutionThread
 import com.fiwio.iot.demeter.domain.executor.ThreadExecutor
 import com.fiwio.iot.demeter.domain.repository.DemeterFinder
+import com.fiwio.iot.demeter.presentation.mapper.ScheduleStringsProvider
 import com.fiwo.iot.demeter.api.DefaultApi
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -101,6 +103,13 @@ open class ApplicationModule {
                 .build()
 
         return restAdapter.create(DefaultApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideScheduleStringsProvider(): ScheduleStringsProvider {
+        return DemeterScheduleStringsProvider()
+
     }
 }
 

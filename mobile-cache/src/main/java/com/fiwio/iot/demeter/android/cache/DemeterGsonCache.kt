@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter.android.cache
 
 import com.fiwio.iot.demeter.android.cache.persistance.DemeterCacheSerializer
 import com.fiwio.iot.demeter.data.model.DemeterEntity
+import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -12,11 +13,9 @@ private val logger = KotlinLogging.logger {}
 
 class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: DemeterCacheSerializer,
                                            val preferencesHelper: PreferencesHelper) : DemeterCache {
-    override fun invalidate() {
-        demeter = DemeterEntity(emptyList(), emptyList())
-    }
 
     var demeter: DemeterEntity = DemeterEntity(emptyList(), emptyList())
+    var scheduledActions: ScheduledActionsEntity = ScheduledActionsEntity(emptyList())
 
     init {
         if (preferencesHelper.lastCacheTime > 0) {
@@ -46,6 +45,10 @@ class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: Demet
         return currentTime - lastUpdateTime > EXPIRATION_TIME
     }
 
+    override fun invalidate() {
+        demeter = DemeterEntity(emptyList(), emptyList())
+    }
+
     override fun saveDemeterImage(demeter: DemeterEntity): Completable {
         this.demeter = demeter
         demeterCacheGsonSerializer.writeDemeter(demeter)
@@ -55,6 +58,18 @@ class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: Demet
 
     override fun getDemeterImage(): Single<DemeterEntity> {
         return Single.just(demeterCacheGsonSerializer.readDemeter())
+    }
+
+    override fun getScheduledActions(): Single<ScheduledActionsEntity> {
+        return Single.just(demeterCacheGsonSerializer.readScheduledActions())
+
+    }
+
+    override fun saveScheduledActions(scheduledActions: ScheduledActionsEntity): Completable {
+        this.scheduledActions = scheduledActions
+        demeterCacheGsonSerializer.writeScheduledActions(scheduledActions)
+        return Completable.complete()
+
     }
 }
 

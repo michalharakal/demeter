@@ -3,8 +3,10 @@ package com.fiwio.iot.demeter.remote.source
 import com.fiwio.iot.demeter.data.model.ActuatorEntity
 import com.fiwio.iot.demeter.data.model.DemeterEntity
 import com.fiwio.iot.demeter.data.model.OnOffEntity
+import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterRemote
 import com.fiwio.iot.demeter.remote.mapper.DemeterEntityMapper
+import com.fiwio.iot.demeter.remote.mapper.SchedulesEntityMapper
 import com.fiwo.iot.demeter.api.DefaultApi
 import com.fiwo.iot.demeter.api.model.DigitalOutputs
 import com.fiwo.iot.demeter.api.model.Relay
@@ -19,8 +21,32 @@ import javax.inject.Inject
  * operations in which data store implementation layers can carry out.
  */
 class DemeterRemoteImpl @Inject constructor(private val demeterApi: DefaultApi,
-                                            private val entityMapper: DemeterEntityMapper) :
+                                            private val entityMapper: DemeterEntityMapper,
+                                            private val schedulesEntityMapper: SchedulesEntityMapper) :
         DemeterRemote {
+    override fun getScheduledActions(): Single<ScheduledActionsEntity> {
+        return Single.create { s ->
+            getScheduledActionsCall(s)
+        }
+    }
+
+    private fun getScheduledActionsCall(s: SingleEmitter<ScheduledActionsEntity>) {
+        val call = demeterApi.scheduleGet()
+        val response = call.execute()
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                val eventsList = response.body()
+                if (eventsList != null) {
+                    s.onSuccess(
+                            schedulesEntityMapper.mapFromRemote(eventsList)
+                    )
+                }
+            }
+        } else {
+            s.onError(Throwable())
+        }
+    }
+
     override fun switchActuator(actuatorEntity: ActuatorEntity): Single<DemeterEntity> {
         return Single.create { s ->
 

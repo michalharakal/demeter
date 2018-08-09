@@ -8,23 +8,24 @@ import android.widget.FrameLayout
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.ext.getComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
-import com.fiwio.iot.demeter.presentation.feature.manual.ActuatorsListContract
-import com.fiwio.iot.demeter.presentation.model.ActuatorView
+import com.fiwio.iot.demeter.presentation.feature.schedule.ScheduleContract
 import com.fiwio.iot.demeter.presentation.model.ScheduledActionModel
+import com.fiwio.iot.demeter.presentation.model.ScheduledActionsModel
 import kotlinx.android.synthetic.main.view_actuators.view.*
 import javax.inject.Inject
 
-class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
-        FrameLayout(context, attrs, defStyle), ActuatorsListContract.View, ActuatorsListAdapter.OnItemClickListener {
-    override fun onClick(actuator: ActuatorView) {
-        presenter.switchRelay(actuator)
+class ScheduledActionsView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+        FrameLayout(context, attrs, defStyle), ScheduleContract.View, ScheduledActionsListAdapter.OnItemClickListener {
+
+    override fun onClick(actuator: ScheduledActionModel) {
+        // NTD ?
     }
 
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    override fun setData(data: List<ActuatorView>) {
-        val adapter = ActuatorsListAdapter(this)
+    override fun setData(data: ScheduledActionsModel) {
+        val adapter = ScheduledActionsListAdapter(this)
 
         adapter.data = data
         list!!.adapter = adapter
@@ -32,12 +33,12 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     }
 
     @Inject
-    lateinit var presenter: ActuatorsListContract.Presenter
+    lateinit var presenter: ScheduleContract.Presenter
 
     private var columnCount = 2
 
     init {
-        var component = context.getComponent<MainComponent>().actuatorsListComponent()
+        var component = context.getComponent<MainComponent>().scheduledComponent()
         component.inject(this)
 
         LayoutInflater.from(context).inflate(R.layout.view_actuators, this, true)
@@ -51,7 +52,8 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
         presenter.attachView(this)
     }
 
-        override fun showLoading(pullToRefresh: Boolean) {
+
+    override fun showLoading(pullToRefresh: Boolean) {
 
     }
 

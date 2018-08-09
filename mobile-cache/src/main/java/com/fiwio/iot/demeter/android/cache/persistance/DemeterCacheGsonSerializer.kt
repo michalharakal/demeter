@@ -1,18 +1,48 @@
 package com.fiwio.iot.demeter.android.cache.persistance
 
 import com.fiwio.iot.demeter.data.model.DemeterEntity
+import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.google.gson.Gson
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
+import java.io.*
 
 class DemeterCacheGsonSerializer(private val baseFolder: String, val gson: Gson) : DemeterCacheSerializer {
+    override fun readScheduledActions(): ScheduledActionsEntity {
+        synchronized(lock) {
+            val sd = File(getSchedulesFullName())
+            if (sd.exists()) {
+                val inputStream = FileInputStream(sd)
+                val reader = InputStreamReader(inputStream)
+                return gson.fromJson(reader, ScheduledActionsEntity::class.java)
+            } else {
+                return ScheduledActionsEntity(emptyList())
+            }
+        }
+    }
 
-    private fun getActuatorsFullName() = baseFolder + "/actuators.json"
-    private fun getSensorsFullName() = baseFolder + "/sensors.json"
+    override fun writeScheduledActions(actions: ScheduledActionsEntity) {
+        writeData(getDemeterFullName(), actions)
+    }
 
+    private fun getDemeterFullName() = baseFolder + "/demeter.json"
+    private fun getSchedulesFullName() = baseFolder + "/schedules.json"
+
+    private val lock: Any = Any()
 
     override fun readDemeter(): DemeterEntity {
+
+        synchronized(lock) {
+            val sd = File(getDemeterFullName())
+            if (sd.exists()) {
+                val inputStream = FileInputStream(sd)
+                val reader = InputStreamReader(inputStream)
+                return gson.fromJson(reader, DemeterEntity::class.java)
+            } else {
+                return createDefaultSchedule()
+            }
+        }
+    }
+
+    private fun createDefaultSchedule(): DemeterEntity {
         val sample = """
             {
     "sensors": [
@@ -41,32 +71,20 @@ class DemeterCacheGsonSerializer(private val baseFolder: String, val gson: Gson)
         {
             "name": "BCM27",
             "isOn": "OFF"
-        },
-        {
-            "name": "BCM28",
-            "isOn": "OFF"
-        },
-        {
-            "name": "BCM29",
-            "isOn": "OFF"
-        },
-        {
-            "name": "BCM30",
-            "isOn": "OFF"
         }
     ]
 }
             """
         return gson.fromJson(sample, DemeterEntity::class.java)
-
     }
+
 
     override fun writeDemeter(demeter: DemeterEntity) {
-        writeList(getActuatorsFullName(), demeter.actuators)
-        writeList(getSensorsFullName(), demeter.sensors)
+        writeData(getDemeterFullName(), demeter)
     }
 
-    fun writeList(fileName: String, events: List<Any>) {
+
+    fun writeData(fileName: String, events: Any) {
         val sd = File(fileName)
         sd.createNewFile()
 
@@ -82,4 +100,6 @@ class DemeterCacheGsonSerializer(private val baseFolder: String, val gson: Gson)
 interface DemeterCacheSerializer {
     fun readDemeter(): DemeterEntity
     fun writeDemeter(demeter: DemeterEntity)
+    fun readScheduledActions(): ScheduledActionsEntity
+    fun writeScheduledActions(actions: ScheduledActionsEntity)
 }

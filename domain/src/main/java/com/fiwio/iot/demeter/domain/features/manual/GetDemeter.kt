@@ -8,12 +8,9 @@ import com.fiwio.iot.demeter.domain.repository.DemeterRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-/**
- * Use case used for retreiving a [Demeter] instances from the [DemeterRepository]
- */
-open class GetDemeter @Inject constructor(val demeterRepository: DemeterRepository,
-                                          threadExecutor: ThreadExecutor,
-                                          postExecutionThread: PostExecutionThread) :
+class GetDemeter @Inject constructor(val demeterRepository: DemeterRepository,
+                                     threadExecutor: ThreadExecutor,
+                                     postExecutionThread: PostExecutionThread) :
         SingleUseCase<Demeter, Void?>(threadExecutor, postExecutionThread) {
     public override fun buildUseCaseObservable(params: Void?): Single<Demeter> {
         return demeterRepository.getDemeterImage()

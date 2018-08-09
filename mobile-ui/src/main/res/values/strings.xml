@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Demeter</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard">Automatic</string>
     <string name="manual_control">Manual</string>
     <string name="filling">Filling</string>
     <string name="greenhouse">Greenhouse</string>

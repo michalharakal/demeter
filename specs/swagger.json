@@ -313,12 +313,11 @@
     "ScheduledEvent": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "integer"
+        "name": {
+          "type": "string"
         },
         "time": {
-          "type": "string",
-          "format": "date-time"
+          "$ref": "#/definitions/DayTime"
         },
         "command": {
           "type": "string"

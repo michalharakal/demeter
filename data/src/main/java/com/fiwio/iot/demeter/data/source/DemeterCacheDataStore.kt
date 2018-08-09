@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter.data.source
 
 import com.fiwio.iot.demeter.data.model.ActuatorEntity
 import com.fiwio.iot.demeter.data.model.DemeterEntity
+import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import com.fiwio.iot.demeter.data.repository.DemeterDataStore
 import io.reactivex.Completable
@@ -14,6 +15,10 @@ import javax.inject.Inject
  */
 open class DemeterCacheDataStore @Inject constructor(private val demeterCache: DemeterCache) :
         DemeterDataStore {
+    override fun getScheduledActions(): Single<ScheduledActionsEntity> {
+        return demeterCache.getScheduledActions()
+    }
+
     override fun switchActuator(actuatorEntity: ActuatorEntity): Single<DemeterEntity> {
         throw UnsupportedOperationException()
     }

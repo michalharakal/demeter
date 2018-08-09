@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.NonNull
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -14,11 +13,12 @@ import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainModule
-import com.fiwio.iot.demeter.android.ui.feature.manual.ManualControlView
 import com.fiwio.iot.demeter.android.ui.feature.refresh.RefreshIntentService
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import android.widget.Toast
+import com.fiwio.iot.demeter.android.ui.feature.manual.ManualControlView
+import com.fiwio.iot.demeter.android.ui.feature.manual.ScheduledActionsView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
     private fun showView(viewId: Int): Boolean {
         val view: View? = when (viewId) {
             R.id.navigation_manual -> ManualControlView(this)
+            R.id.navigation_automatic -> ScheduledActionsView(this)
             else -> null
         }
         if (view != null) {
