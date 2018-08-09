@@ -76,8 +76,8 @@ dependencies {
         exclude group: 'joda-time', module: 'joda-time'
     }
 
-    implementation mobileUiDependencies.ankoSdk
-    implementation mobileUiDependencies.ankoAppCompat
+    implementation mobileUiDependencies.firebaseCore
+    implementation mobileUiDependencies.firebaseMessaging
 
     testImplementation mobileUiTestDependencies.kotlinJUnit
 
@@ -115,4 +115,4 @@ dependencies {
     kaptAndroidTest mobileUiDependencies.daggerCompiler
 }
 
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

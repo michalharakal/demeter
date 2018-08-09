@@ -9,4 +9,8 @@
     <string name="garden">Garden</string>
     <string name="looking_for_demeter">looking for CML</string>
     <string name="connect_to_cml">connect to cml</string>
+    <string name="default_notification_channel_id" translatable="false">demeter</string>
+    <string name="msg_subscribed">subscribed</string>
+    <string name="msg_subscribe_failed">subscribe failed</string>
+
 </resources>
