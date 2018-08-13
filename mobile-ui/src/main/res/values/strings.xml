@@ -10,8 +10,10 @@
     <string name="looking_for_demeter">looking for CML</string>
     <string name="connect_to_cml">connect to cml</string>
     <string name="default_notification_channel_id" translatable="false">demeter</string>
-    <string name="msg_subscribed">subscribed</string>
-    <string name="msg_subscribe_failed">subscribe failed</string>
+    <string name="msg_subscribed" translatable="false">subscribed</string>
+    <string name="msg_subscribe_failed" translatable="false">subscribe failed</string>
     <string name="swimmer">Swimmer</string>
+    <string name="channel_name" translatable="false">cml</string>
+    <string name="channel_description" translatable="false">cml</string>
 
 </resources>

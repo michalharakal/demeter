@@ -57,7 +57,7 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
         start.setOnClickListener {
             val text = manual_ip_edit.editableText.toString()
-            navigateToMainWithUrl("http://192.168.3.54:8080")
+            navigateToMainWithUrl("http://192.168.1.110:8080")
         }
     }
 

@@ -2,6 +2,7 @@ package com.fiwio.iot.demeter.android.ui.injection
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.fatboyindustrial.gsonjodatime.Converters
 import com.fiwio.iot.demeter.android.networking.aspects.connectivity.AndroidConnectivityState
 import com.fiwio.iot.demeter.android.networking.datasource.DiscoveryDemeterFinder
@@ -13,6 +14,8 @@ import com.fiwio.iot.demeter.data.executor.JobExecutor
 import com.fiwio.iot.demeter.domain.connectivity.ConnectivityState
 import com.fiwio.iot.demeter.domain.executor.PostExecutionThread
 import com.fiwio.iot.demeter.domain.executor.ThreadExecutor
+import com.fiwio.iot.demeter.domain.features.schedule.TimeProvider
+import com.fiwio.iot.demeter.domain.model.DayTime
 import com.fiwio.iot.demeter.domain.repository.DemeterFinder
 import com.fiwio.iot.demeter.presentation.mapper.ScheduleStringsProvider
 import com.fiwo.iot.demeter.api.DefaultApi
@@ -25,6 +28,7 @@ import mu.KotlinLogging
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.joda.time.LocalTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -77,7 +81,11 @@ open class ApplicationModule {
         val cacheSize = 10 * 1024 * 1024L // 10 MB
         val cache = Cache(application.getCacheDir(), cacheSize)
 
-        val interceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { it -> logger.info { it } })
+        val interceptor = HttpLoggingInterceptor(
+                HttpLoggingInterceptor.Logger { it ->
+                    Log.d("ApplicationModule", it)
+                    logger.info { it }
+                })
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
                 .addInterceptor(interceptor)
@@ -110,6 +118,17 @@ open class ApplicationModule {
     fun provideScheduleStringsProvider(): ScheduleStringsProvider {
         return DemeterScheduleStringsProvider()
 
+    }
+
+    @Provides
+    @Singleton
+    fun provideTimeProvider(): TimeProvider {
+        return object : TimeProvider {
+            override fun getCurrentTime(): DayTime {
+                val date = LocalTime()
+                return DayTime(date.hourOfDay, date.minuteOfHour, date.secondOfMinute)
+            }
+        }
     }
 }
 

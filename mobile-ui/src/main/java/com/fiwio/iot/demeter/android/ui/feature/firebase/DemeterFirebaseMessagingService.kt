@@ -8,11 +8,15 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.util.Base64
 import android.util.Log
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.feature.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import android.support.v4.app.NotificationManagerCompat
+import java.util.*
+
 
 internal class DemeterFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -41,7 +45,7 @@ internal class DemeterFirebaseMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.size > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
 
-            handleNow()
+            handleNow(remoteMessage.data)
 
         }
 
@@ -74,12 +78,27 @@ internal class DemeterFirebaseMessagingService : FirebaseMessagingService() {
     // [END on_new_token]
 
 
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
-    private fun handleNow() {
+    private var counter: Int = 0
+
+    private fun handleNow(data: MutableMap<String, String>) {
         Log.d(TAG, "Short lived task is done.")
+        var title = String(Base64.decode(data["title"], Base64.DEFAULT))
+        Log.d(TAG, title)
+        var message = String(Base64.decode(data["message"], Base64.DEFAULT))
+        Log.d(TAG, message)
+        if ((message.startsWith("PIN"))||(message.startsWith("ACTION"))) {
+            var mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, "cml")
+                    .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            val notificationManager = NotificationManagerCompat.from(this)
+
+// notificationId is a unique int for each notification that you must define
+            notificationManager.notify(counter++, mBuilder.build())
+        }
     }
+
 
     /**
      * Persist token to third-party servers.

@@ -1,11 +1,26 @@
 package com.fiwio.iot.demeter.android.cache.persistance
 
 import com.fiwio.iot.demeter.data.model.DemeterEntity
+import com.fiwio.iot.demeter.data.model.FsmListEnitities
 import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.google.gson.Gson
 import java.io.*
 
 class DemeterCacheGsonSerializer(private val baseFolder: String, val gson: Gson) : DemeterCacheSerializer {
+
+    override fun readFsmStatus(): FsmListEnitities {
+        synchronized(lock) {
+            val sd = File(getFsmFullName())
+            if (sd.exists()) {
+                val inputStream = FileInputStream(sd)
+                val reader = InputStreamReader(inputStream)
+                return gson.fromJson(reader, FsmListEnitities::class.java)
+            } else {
+                return FsmListEnitities(emptyList())
+            }
+        }
+    }
+
     override fun readScheduledActions(): ScheduledActionsEntity {
         synchronized(lock) {
             val sd = File(getSchedulesFullName())
@@ -25,6 +40,7 @@ class DemeterCacheGsonSerializer(private val baseFolder: String, val gson: Gson)
 
     private fun getDemeterFullName() = baseFolder + "/demeter.json"
     private fun getSchedulesFullName() = baseFolder + "/schedules.json"
+    private fun getFsmFullName() = baseFolder + "/fsm.json"
 
     private val lock: Any = Any()
 
@@ -102,4 +118,5 @@ interface DemeterCacheSerializer {
     fun writeDemeter(demeter: DemeterEntity)
     fun readScheduledActions(): ScheduledActionsEntity
     fun writeScheduledActions(actions: ScheduledActionsEntity)
+    fun readFsmStatus(): FsmListEnitities
 }

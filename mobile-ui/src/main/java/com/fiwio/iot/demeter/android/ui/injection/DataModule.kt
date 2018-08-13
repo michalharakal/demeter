@@ -7,6 +7,7 @@ import com.fiwio.iot.demeter.android.cache.PreferencesHelper
 import com.fiwio.iot.demeter.android.cache.persistance.DemeterCacheGsonSerializer
 import com.fiwio.iot.demeter.android.ui.app.AppResourcesActuatorNameMapper
 import com.fiwio.iot.demeter.data.mapper.ActuatorMapper
+import com.fiwio.iot.demeter.data.mapper.FsmMapper
 import com.fiwio.iot.demeter.data.mapper.ScheduledActionMapper
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import com.fiwio.iot.demeter.data.repository.DemeterDataRepository
@@ -15,6 +16,7 @@ import com.fiwio.iot.demeter.data.source.DemeterDataSourceFactory
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
 import com.fiwio.iot.demeter.presentation.mapper.ActuatorNameMapper
 import com.fiwio.iot.demeter.remote.mapper.DemeterEntityMapper
+import com.fiwio.iot.demeter.remote.mapper.FsmEntityMapper
 import com.fiwio.iot.demeter.remote.mapper.SchedulesEntityMapper
 import com.fiwio.iot.demeter.remote.source.DemeterRemoteImpl
 import com.fiwo.iot.demeter.api.DefaultApi
@@ -44,8 +46,10 @@ class DataModule {
 
     @Provides
     @Singleton
-    internal fun provideEventRemote(service: DefaultApi, entityMapper: DemeterEntityMapper, schedulesEntityMapper: SchedulesEntityMapper): DemeterRemote {
-        return DemeterRemoteImpl(service, entityMapper, schedulesEntityMapper)
+    internal fun provideEventRemote(service: DefaultApi, entityMapper: DemeterEntityMapper,
+                                    schedulesEntityMapper: SchedulesEntityMapper,
+                                    fsmEntityMapper: FsmEntityMapper): DemeterRemote {
+        return DemeterRemoteImpl(service, entityMapper, schedulesEntityMapper, fsmEntityMapper)
     }
 
     @Provides
@@ -54,7 +58,9 @@ class DataModule {
                                         demeterMapper: DemeterMapper,
                                         demeterCache: DemeterCache,
                                         schedulesMapper: ScheduledActionMapper,
+                                        fsmMapper: FsmMapper,
                                         actuatorMapper: ActuatorMapper): DemeterRepository {
-        return DemeterDataRepository(demeterDataSourceFactory, demeterMapper, schedulesMapper, demeterCache, actuatorMapper)
+        return DemeterDataRepository(demeterDataSourceFactory, demeterMapper, schedulesMapper,
+                demeterCache, fsmMapper, actuatorMapper)
     }
 }

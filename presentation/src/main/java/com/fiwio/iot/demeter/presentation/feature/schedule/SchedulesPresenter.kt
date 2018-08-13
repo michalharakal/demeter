@@ -1,10 +1,11 @@
 package com.fiwio.iot.demeter.presentation.feature.schedule
 
-import com.fiwio.iot.demeter.domain.features.schedule.GetSchedule
-import com.fiwio.iot.demeter.domain.model.ScheduledActions
+import com.fiwio.iot.demeter.domain.features.schedule.GetScheduleWithFsm
+import com.fiwio.iot.demeter.domain.model.ScheduledActionsWithState
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
 import com.fiwio.iot.demeter.presentation.mapper.ScheduledActionMapper
-import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
 import javax.inject.Inject
@@ -12,9 +13,9 @@ import javax.inject.Inject
 private val logger = KotlinLogging.logger {}
 
 class SchedulesPresenter @Inject constructor(
-        val demeterRepository: DemeterRepository,
-        val getSchedule: GetSchedule,
-        val scheduledActionMapper: ScheduledActionMapper) :
+        val getScheduleWithFsm: GetScheduleWithFsm,
+        val scheduledActionMapper: ScheduledActionMapper,
+        val demeterRepository: DemeterRepository) :
         ScheduleContract.Presenter {
 
     var view: ScheduleContract.View? = null
@@ -25,25 +26,37 @@ class SchedulesPresenter @Inject constructor(
     }
 
     override fun detachView() {
-        getSchedule.dispose()
+        getScheduleWithFsm.dispose()
     }
 
     override fun destroy() {
     }
 
 
+    private lateinit var events: Disposable
+
     private fun subscribeForChanges() {
-        getSchedule.execute(SechedulesSubscriber())
+        events = demeterRepository.getEventChanges()
+                .subscribeOn(Schedulers.newThread())
+                .subscribe { _ ->
+                    getScheduleWithFsm.execute(SchedulesSubscriber())
+                }
     }
 
-    inner class SechedulesSubscriber : DisposableSingleObserver<ScheduledActions>() {
-        override fun onSuccess(t: ScheduledActions) {
+
+    inner class SchedulesSubscriber : DisposableObserver<ScheduledActionsWithState>() {
+        override fun onComplete() {
+        }
+
+        override fun onNext(t: ScheduledActionsWithState) {
             view?.setData(scheduledActionMapper.mapToView(t))
         }
 
-        override fun onError(exception: Throwable) {
-            view?.showError(exception, false)
+        override fun onError(e: Throwable) {
+            view?.showError(e, false)
         }
+
     }
+
 }
 

@@ -50,7 +50,7 @@
         }
       }
     },
-    "/statemachines": {
+    "/fsm": {
       "get": {
         "description": "Get state machines list",
         "responses": {
@@ -62,7 +62,7 @@
         }
       }
     },
-    "/statemachines/{id}": {
+    "/fsm/{id}": {
       "get": {
         "description": "Get information about a state machine",
         "responses": {
@@ -218,6 +218,12 @@
     "Demeter": {
       "type": "object",
       "properties": {
+        "versions": {
+          "$ref": "#/definitions/Versions"
+        },
+        "network": {
+          "$ref": "#/definitions/Network"
+        },
         "relays": {
           "type": "array",
           "items": {
@@ -267,29 +273,29 @@
     },
     "StateMachines": {
       "description": "List of all state machines",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/StateMachine"
+      "properties": {
+        "branches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StateMachine"
+          }
+        },
+        "commnads": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "StateMachine": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
+        "branch": {
           "type": "string"
         },
         "state": {
           "type": "string"
-        },
-        "commnads": {
-          "description": "List of all commnads (can be also commnad enable in current state)",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -390,6 +396,37 @@
         },
         "irrigatingDurationEvening": {
           "type": "integer"
+        }
+      }
+    },
+    "Versions": {
+      "type": "object",
+      "properties": {
+        "hw": {
+          "type": "string"
+        },
+        "sw": {
+          "type": "string"
+        },
+        "sha1": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        }
+      }
+    },
+    "Network": {
+      "type": "object",
+      "properties": {
+        "mac": {
+          "type": "string"
+        },
+        "ipv4": {
+          "type": "string"
+        },
+        "ipv6": {
+          "type": "string"
         }
       }
     },

@@ -1,6 +1,7 @@
 package com.fiwio.iot.demeter.data.repository
 
 import com.fiwio.iot.demeter.data.mapper.ActuatorMapper
+import com.fiwio.iot.demeter.data.mapper.FsmMapper
 import com.fiwio.iot.demeter.data.mapper.ScheduledActionMapper
 import com.fiwio.iot.demeter.data.model.DemeterEntity
 import com.fiwio.iot.demeter.data.source.DemeterDataSourceFactory
@@ -17,9 +18,18 @@ class DemeterDataRepository @Inject constructor(private val demeterDataSourceFac
                                                 private val demeterMapper: DemeterMapper,
                                                 private val schedulesMapper: ScheduledActionMapper,
                                                 private val demetrCache: DemeterCache,
+                                                private val fsmMapper: FsmMapper,
                                                 val actuatorMapper: ActuatorMapper)
     : DemeterRepository {
-    override fun getSchedules(): Single<ScheduledActions> {
+    override fun getFsm(): Observable<FsmList> {
+        return demeterDataSourceFactory.retrieveDataStore()
+                .getFsm()
+                .map {
+                    fsmMapper.mapFromEntity(it)
+                }
+    }
+
+    override fun getSchedules(): Observable<ScheduledActions> {
         return demeterDataSourceFactory.retrieveDataStore()
                 .getScheduledActions()
                 .map {

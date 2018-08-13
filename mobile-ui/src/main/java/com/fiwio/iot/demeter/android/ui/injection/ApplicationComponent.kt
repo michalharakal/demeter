@@ -4,6 +4,8 @@ import android.app.Application
 import com.fiwio.iot.demeter.android.ui.app.DemeterApplication
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainModule
+import com.fiwio.iot.demeter.android.ui.feature.main.di.OfflineModule
+import com.fiwio.iot.demeter.android.ui.feature.offline.di.OfflineComponent
 import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceComponent
 import com.fiwio.iot.demeter.android.ui.feature.refresh.di.RefreshServiceModule
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashComponent
@@ -19,6 +21,7 @@ interface ApplicationComponent {
     fun inject(demeterApplication: DemeterApplication)
 
     fun plus(mainModule: MainModule): MainComponent
+    fun plus(offlineModule: OfflineModule): OfflineComponent
     fun plus(splashModule: SplashModule): SplashComponent
     fun plus(refreshServiceModule: RefreshServiceModule): RefreshServiceComponent
 

@@ -2,9 +2,11 @@ package com.fiwio.iot.demeter.android.cache
 
 import com.fiwio.iot.demeter.android.cache.persistance.DemeterCacheSerializer
 import com.fiwio.iot.demeter.data.model.DemeterEntity
+import com.fiwio.iot.demeter.data.model.FsmListEnitities
 import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import mu.KotlinLogging
 import javax.inject.Inject
@@ -60,10 +62,15 @@ class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: Demet
         return Single.just(demeterCacheGsonSerializer.readDemeter())
     }
 
-    override fun getScheduledActions(): Single<ScheduledActionsEntity> {
-        return Single.just(demeterCacheGsonSerializer.readScheduledActions())
+    override fun getScheduledActions(): Observable<ScheduledActionsEntity> {
+        return Observable.fromCallable { demeterCacheGsonSerializer.readScheduledActions() }
+    }
+
+    override fun getFsm(): Observable<FsmListEnitities> {
+        return Observable.fromCallable { demeterCacheGsonSerializer.readFsmStatus() }
 
     }
+
 
     override fun saveScheduledActions(scheduledActions: ScheduledActionsEntity): Completable {
         this.scheduledActions = scheduledActions

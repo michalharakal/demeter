@@ -24,7 +24,7 @@ abstract class ObservableUseCase<T, in Params> constructor(
     /**
      * Builds a [Single] which will be used when the current [ObservableUseCase] is executed.
      */
-    protected abstract fun buildUseCaseObservable(params: Params? = null): Observable<DemeterSearchDnsInfo>
+    protected abstract fun buildUseCaseObservable(params: Params? = null): Observable<T>
 
     /**
      * Executes the current use case.

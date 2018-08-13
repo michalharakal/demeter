@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.presentation.model.ScheduledActionModel
@@ -23,9 +24,13 @@ internal class ScheduledActionsListAdapter(private val listener: OnItemClickList
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.click(data.actions.get(position), listener)
-        holder.name.text = data.actions.get(position).branch
-        holder.branch.text = data.actions.get(position).branch
+        holder.name.text = data.actions.get(position).name
+        holder.branch.text = data.actions.get(position).branch + ", " + data.actions.get(position).command
         holder.time.text = data.actions.get(position).dayTime
+        holder.background.setBackgroundResource(if (data.actions.get(position).isActiveNow)
+            R.drawable.led_circle_green
+        else
+            R.drawable.led_circle_grey)
     }
 
     override fun getItemCount(): Int {
@@ -41,11 +46,13 @@ internal class ScheduledActionsListAdapter(private val listener: OnItemClickList
         internal var name: TextView
         internal var branch: TextView
         internal var time: TextView
+        internal var background: ImageView
 
         init {
             name = itemView.findViewById(R.id.action_name) as TextView
             branch = itemView.findViewById(R.id.action_branch) as TextView
             time = itemView.findViewById(R.id.action_time) as TextView
+            background = itemView.findViewById(R.id.led) as ImageView
 
         }
 

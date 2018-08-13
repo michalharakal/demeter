@@ -7,6 +7,7 @@ import com.fiwio.iot.demeter.domain.model.Demeter
 import com.fiwio.iot.demeter.domain.repository.DemeterRepository
 import com.fiwio.iot.demeter.presentation.model.ActuatorState
 import com.fiwio.iot.demeter.presentation.model.ActuatorView
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import mu.KotlinLogging
@@ -31,6 +32,7 @@ class ActuatorsListPresenter @Inject constructor(
 
     override fun detachView() {
         getDemeter.dispose()
+        events.dispose()
     }
 
     override fun destroy() {
@@ -40,8 +42,10 @@ class ActuatorsListPresenter @Inject constructor(
         setActuator.execute(DemeterSubscriber(), Actuator(actuator.name, actuator.state != ActuatorState.ON))
     }
 
+    private lateinit var events: Disposable
+
     private fun subscribeForChanges() {
-        demeterRepository.getEventChanges()
+        events = demeterRepository.getEventChanges()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe { _ ->
                     getDemeter.execute(DemeterSubscriber())
@@ -53,9 +57,10 @@ class ActuatorsListPresenter @Inject constructor(
                 //.filter { actuator -> actuator.name.equals("BCM23")  }
                 .map { it ->
                     actuatorViewMapper.mapToView(it)
-                }.filter { it ->
-                    !it.name.equals("BCM27")
-                })
+                }
+                /*.filter { it ->
+                    //!it.name.equals("BCM27")
+                }*/)
     }
 
     inner class DemeterSubscriber : DisposableSingleObserver<Demeter>() {

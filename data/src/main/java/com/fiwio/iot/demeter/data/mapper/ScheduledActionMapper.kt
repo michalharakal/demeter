@@ -9,15 +9,11 @@ import javax.inject.Inject
 
 class ScheduledActionMapper @Inject constructor() : Mapper<ScheduledActionsEntity, ScheduledActions> {
     override fun mapFromEntity(type: ScheduledActionsEntity): ScheduledActions {
-        return ScheduledActions(type.actions.map {
-            mapFromEntity(it)
-        })
+        return ScheduledActions(type.actions.map { mapFromEntity(it) })
     }
 
     override fun mapToEntity(type: ScheduledActions): ScheduledActionsEntity {
-        return ScheduledActionsEntity(type.actions.map {
-            mapToEntity(it)
-        })
+        return ScheduledActionsEntity(type.actions.map { mapToEntity(it) })
     }
 
     fun mapFromEntity(type: ScheduledActionEntity): ScheduledAction {

@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.fiwio.iot.demeter.android.ui.feature.offline.OfflineActivity" />
+
         <activity android:name=".feature.main.MainActivity" />
 
         <service

@@ -1,15 +1,15 @@
 package com.fiwio.iot.demeter.remote.source
 
-import com.fiwio.iot.demeter.data.model.ActuatorEntity
-import com.fiwio.iot.demeter.data.model.DemeterEntity
-import com.fiwio.iot.demeter.data.model.OnOffEntity
-import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
+import com.fiwio.iot.demeter.data.model.*
 import com.fiwio.iot.demeter.data.repository.DemeterRemote
 import com.fiwio.iot.demeter.remote.mapper.DemeterEntityMapper
+import com.fiwio.iot.demeter.remote.mapper.FsmEntityMapper
 import com.fiwio.iot.demeter.remote.mapper.SchedulesEntityMapper
 import com.fiwo.iot.demeter.api.DefaultApi
 import com.fiwo.iot.demeter.api.model.DigitalOutputs
 import com.fiwo.iot.demeter.api.model.Relay
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import javax.inject.Inject
@@ -22,24 +22,51 @@ import javax.inject.Inject
  */
 class DemeterRemoteImpl @Inject constructor(private val demeterApi: DefaultApi,
                                             private val entityMapper: DemeterEntityMapper,
-                                            private val schedulesEntityMapper: SchedulesEntityMapper) :
+                                            private val schedulesEntityMapper: SchedulesEntityMapper,
+                                            private val fsmEntityMapper: FsmEntityMapper) :
         DemeterRemote {
-    override fun getScheduledActions(): Single<ScheduledActionsEntity> {
-        return Single.create { s ->
+
+    override fun getScheduledActions(): Observable<ScheduledActionsEntity> {
+        return Observable.create { s ->
             getScheduledActionsCall(s)
         }
     }
 
-    private fun getScheduledActionsCall(s: SingleEmitter<ScheduledActionsEntity>) {
+    override fun getFsm(): Observable<FsmListEnitities> {
+        return Observable.create { s ->
+            getFsmCall(s)
+        }
+    }
+
+    private fun getFsmCall(s: ObservableEmitter<FsmListEnitities>) {
+        val call = demeterApi.fsmGet()
+        val response = call.execute()
+        if (response.isSuccessful) {
+            if (response.body() != null) {
+                val eventsList = response.body()
+                if (eventsList != null) {
+                    s.onNext(
+                            fsmEntityMapper.mapFromRemote(eventsList)
+                    )
+                    s.onComplete()
+                }
+            }
+        } else {
+            s.onError(Throwable())
+        }
+    }
+
+    private fun getScheduledActionsCall(s: ObservableEmitter<ScheduledActionsEntity>) {
         val call = demeterApi.scheduleGet()
         val response = call.execute()
         if (response.isSuccessful) {
             if (response.body() != null) {
                 val eventsList = response.body()
                 if (eventsList != null) {
-                    s.onSuccess(
+                    s.onNext(
                             schedulesEntityMapper.mapFromRemote(eventsList)
                     )
+                    s.onComplete()
                 }
             }
         } else {

@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.ext.getComponent
-import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
+import com.fiwio.iot.demeter.android.ui.feature.main.di.OfflineComponent
 import com.fiwio.iot.demeter.presentation.feature.manual.ActuatorsListContract
 import com.fiwio.iot.demeter.presentation.model.ActuatorView
-import com.fiwio.iot.demeter.presentation.model.ScheduledActionModel
 import kotlinx.android.synthetic.main.view_actuators.view.*
 import javax.inject.Inject
 
@@ -37,7 +36,7 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     private var columnCount = 2
 
     init {
-        var component = context.getComponent<MainComponent>().actuatorsListComponent()
+        var component = context.getComponent<OfflineComponent>().actuatorsListComponent()
         component.inject(this)
 
         LayoutInflater.from(context).inflate(R.layout.view_actuators, this, true)
