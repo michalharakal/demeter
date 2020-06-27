@@ -24,11 +24,15 @@ class RxNdsDiscovery(val context: Context) : HandleDemeterServiceSearch {
         return relay
     }
 
+    private var processed: Boolean = false
+
     override fun onServiceFound(ip: String) {
+        processed = true
         relay.accept(DemeterSearchDnsInfo(DnsSearchResult.FOUND, ip))
     }
 
     override fun onServiceSearchFailed() {
+        processed = true
         relay.accept(DemeterSearchDnsInfo(DnsSearchResult.NOT_FOUND))
     }
 
@@ -36,8 +40,10 @@ class RxNdsDiscovery(val context: Context) : HandleDemeterServiceSearch {
     private fun startWatchDog() {
         Thread(Runnable {
             try {
-                Thread.sleep(3.toLong())
-                onServiceSearchFailed()
+                Thread.sleep(3000.toLong())
+                if (!processed) {
+                    onServiceSearchFailed()
+                }
             } catch (e: Exception) {
             }
         }).start()

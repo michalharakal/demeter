@@ -13,12 +13,10 @@ import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.AutomaticNavigator
-import com.fiwio.iot.demeter.android.ui.feature.main.MainActivity
 import com.fiwio.iot.demeter.android.ui.feature.main.di.OfflineModule
-import com.fiwio.iot.demeter.android.ui.feature.manual.ManualControlView
 import com.fiwio.iot.demeter.android.ui.feature.manual.ScheduledActionsView
+import com.fiwio.iot.demeter.android.ui.feature.messages.MessagesView
 import com.fiwio.iot.demeter.android.ui.feature.offline.di.OfflineComponent
-import com.fiwio.iot.demeter.android.ui.feature.refresh.RefreshIntentService
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
@@ -48,8 +46,8 @@ class OfflineActivity : AppCompatActivity(), AutomaticNavigator, OfflineNavigato
 
     private fun showView(viewId: Int): Boolean {
         val view: View? = when (viewId) {
-            R.id.navigation_manual -> ManualControlView(this)
             R.id.navigation_automatic -> ScheduledActionsView(this)
+            R.id.navigation_messages -> MessagesView(this)
             else -> null
         }
         if (view != null) {
@@ -69,8 +67,6 @@ class OfflineActivity : AppCompatActivity(), AutomaticNavigator, OfflineNavigato
         component = getAppComponent().plus(OfflineModule(this))
         component.inject(this)
 
-        endpointUrlProvider.url = intent.getStringExtra("url")
-
         showView(R.id.navigation_manual)
 
         FirebaseMessaging.getInstance().subscribeToTopic("events")
@@ -87,15 +83,6 @@ class OfflineActivity : AppCompatActivity(), AutomaticNavigator, OfflineNavigato
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        RefreshIntentService.startRefresh(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        RefreshIntentService.stopRefresh(this)
-    }
 
     override fun getSystemService(name: String?): Any {
         return when (name) {
@@ -106,10 +93,8 @@ class OfflineActivity : AppCompatActivity(), AutomaticNavigator, OfflineNavigato
 
     companion object {
         @JvmStatic
-        fun navigate(activity: Activity, url: String) {
-            val intent = Intent(activity, MainActivity::class.java)
-            intent.putExtra("url", url)
-
+        fun navigate(activity: Activity) {
+            val intent = Intent(activity, OfflineActivity::class.java)
             activity.startActivity(intent)
         }
     }

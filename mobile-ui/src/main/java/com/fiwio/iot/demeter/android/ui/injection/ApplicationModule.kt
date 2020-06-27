@@ -65,7 +65,7 @@ open class ApplicationModule {
     @Singleton
     @Provides
     fun provideEndpointUrlProvider(): EndpointUrlProvider {
-        return StringEndpointUrlProvider("http://192.168.1.110:8080/")
+        return StringEndpointUrlProvider("https://demeter.fiw.io/rest/")
     }
 
     @Singleton
@@ -100,6 +100,7 @@ open class ApplicationModule {
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         return Converters.registerDateTime(gsonBuilder).create()
     }
+
 
     @Provides
     @Singleton

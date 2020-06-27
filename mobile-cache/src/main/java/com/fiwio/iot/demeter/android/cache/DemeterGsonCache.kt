@@ -5,9 +5,6 @@ import com.fiwio.iot.demeter.data.model.DemeterEntity
 import com.fiwio.iot.demeter.data.model.FsmListEnitities
 import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
 import mu.KotlinLogging
 import javax.inject.Inject
 
@@ -15,6 +12,11 @@ private val logger = KotlinLogging.logger {}
 
 class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: DemeterCacheSerializer,
                                            val preferencesHelper: PreferencesHelper) : DemeterCache {
+
+    override fun saveFsmEntities(fsmListEnitities: FsmListEnitities) {
+
+    }
+
 
     var demeter: DemeterEntity = DemeterEntity(emptyList(), emptyList())
     var scheduledActions: ScheduledActionsEntity = ScheduledActionsEntity(emptyList())
@@ -51,32 +53,27 @@ class DemeterGsonCache @Inject constructor(val demeterCacheGsonSerializer: Demet
         demeter = DemeterEntity(emptyList(), emptyList())
     }
 
-    override fun saveDemeterImage(demeter: DemeterEntity): Completable {
+    override fun saveDemeterImage(demeter: DemeterEntity) {
         this.demeter = demeter
         demeterCacheGsonSerializer.writeDemeter(demeter)
         preferencesHelper.lastCacheTime = System.currentTimeMillis()
-        return Completable.complete()
     }
 
-    override fun getDemeterImage(): Single<DemeterEntity> {
-        return Single.just(demeterCacheGsonSerializer.readDemeter())
+    override fun getDemeterImage(): DemeterEntity {
+        return demeterCacheGsonSerializer.readDemeter()
     }
 
-    override fun getScheduledActions(): Observable<ScheduledActionsEntity> {
-        return Observable.fromCallable { demeterCacheGsonSerializer.readScheduledActions() }
+    override fun getScheduledActionsEntities(): ScheduledActionsEntity {
+        return demeterCacheGsonSerializer.readScheduledActions()
     }
 
-    override fun getFsm(): Observable<FsmListEnitities> {
-        return Observable.fromCallable { demeterCacheGsonSerializer.readFsmStatus() }
-
+    override fun getFsm(): FsmListEnitities {
+        return demeterCacheGsonSerializer.readFsmStatus()
     }
 
-
-    override fun saveScheduledActions(scheduledActions: ScheduledActionsEntity): Completable {
+    override fun saveScheduledActions(scheduledActions: ScheduledActionsEntity) {
         this.scheduledActions = scheduledActions
         demeterCacheGsonSerializer.writeScheduledActions(scheduledActions)
-        return Completable.complete()
-
     }
 }
 

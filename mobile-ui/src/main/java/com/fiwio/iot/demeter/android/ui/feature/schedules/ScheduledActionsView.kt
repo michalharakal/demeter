@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.ext.getComponent
-import com.fiwio.iot.demeter.android.ui.feature.main.di.OfflineComponent
+import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
+import com.fiwio.iot.demeter.android.ui.feature.offline.di.OfflineComponent
 import com.fiwio.iot.demeter.presentation.feature.schedule.ScheduleContract
 import com.fiwio.iot.demeter.presentation.model.ScheduledActionModel
 import com.fiwio.iot.demeter.presentation.model.ScheduledActionsModel
@@ -38,7 +39,7 @@ class ScheduledActionsView(context: Context, attrs: AttributeSet? = null, defSty
     private var columnCount = 2
 
     init {
-        var component = context.getComponent<OfflineComponent>().scheduledComponent()
+        var component = context.getComponent<MainComponent>().scheduledComponent()
         component.inject(this)
 
         LayoutInflater.from(context).inflate(R.layout.view_actuators, this, true)

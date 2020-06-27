@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter.remote.mapper
+package com.fiwio.iot.demeter.remote.firebase.remote.firebase.mapper
 
 import com.fiwio.iot.demeter.data.model.FsmEntity
 import com.fiwio.iot.demeter.data.model.FsmListEnitities

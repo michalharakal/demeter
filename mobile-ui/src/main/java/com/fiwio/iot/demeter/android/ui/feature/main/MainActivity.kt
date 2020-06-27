@@ -3,6 +3,8 @@ package com.fiwio.iot.demeter.android.ui.feature.main
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.support.annotation.NonNull
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -13,22 +15,45 @@ import com.fiwio.iot.demeter.android.ui.app.EndpointUrlProvider
 import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.di.MainModule
-import com.fiwio.iot.demeter.android.ui.feature.refresh.RefreshIntentService
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 import android.widget.Toast
 import com.fiwio.iot.demeter.android.ui.feature.manual.ManualControlView
 import com.fiwio.iot.demeter.android.ui.feature.manual.ScheduledActionsView
+import com.fiwio.iot.demeter.domain.repository.DemeterRepository
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
+import mu.KotlinLogging
 
+private val logger = KotlinLogging.logger {}
 
 class MainActivity : AppCompatActivity(), AutomaticNavigator {
 
 
     @Inject
     internal lateinit var endpointUrlProvider: EndpointUrlProvider
+
+    @Inject
+    lateinit var demeterRepository: DemeterRepository
+
+    lateinit var handler: Handler
+
+    private val runnableCode = object : Runnable {
+        override fun run() {
+
+            logger.debug { "Refreshing demeter status" }
+
+            try {
+                demeterRepository.refresh()
+            } catch (e:Exception) {
+
+            }
+            // Repeat this the same runnable code block again another 2 seconds
+            // 'this' is referencing the Runnable object
+            handler.postDelayed(this, 1000)
+        }
+    }
 
 
     override fun showAutomatic() {
@@ -80,16 +105,21 @@ class MainActivity : AppCompatActivity(), AutomaticNavigator {
                     }
                 })
 
+
+
+        val handlerThread = HandlerThread("MyHandlerThread")
+        handlerThread.start()
+        handler = Handler(handlerThread.looper)
+        handler.post(runnableCode)
     }
 
     override fun onResume() {
         super.onResume()
-        RefreshIntentService.startRefresh(this)
     }
 
     override fun onPause() {
         super.onPause()
-        RefreshIntentService.stopRefresh(this)
+        handler.removeCallbacks(runnableCode)
     }
 
     override fun getSystemService(name: String?): Any {

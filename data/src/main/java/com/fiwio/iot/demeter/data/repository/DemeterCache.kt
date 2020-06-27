@@ -8,13 +8,17 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface DemeterCache {
-    fun getDemeterImage(): Single<DemeterEntity>
     fun isCached(): Boolean
     fun isExpired(): Boolean
-    fun saveDemeterImage(demeter: DemeterEntity): Completable
     fun setLastCacheTime(lastCache: Long)
     fun invalidate()
-    fun getScheduledActions(): Observable<ScheduledActionsEntity>
-    fun saveScheduledActions(scheduledActions: ScheduledActionsEntity): Completable
-    fun getFsm(): Observable<FsmListEnitities>
+
+    fun getDemeterImage(): DemeterEntity
+    fun saveDemeterImage(demeter: DemeterEntity)
+
+    fun getScheduledActionsEntities(): ScheduledActionsEntity
+    fun saveScheduledActions(scheduledActions: ScheduledActionsEntity)
+
+    fun getFsm(): FsmListEnitities
+    fun saveFsmEntities(fsmListEnitities: FsmListEnitities)
 }

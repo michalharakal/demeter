@@ -9,6 +9,7 @@ import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.ext.getAppComponent
 import com.fiwio.iot.demeter.android.ui.feature.main.MainActivity
 import com.fiwio.iot.demeter.android.ui.feature.main.MainNavigator
+import com.fiwio.iot.demeter.android.ui.feature.offline.OfflineActivity
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashComponent
 import com.fiwio.iot.demeter.android.ui.feature.splash.di.SplashModule
 import com.fiwio.iot.demeter.presentation.feature.splash.SplashContract
@@ -18,6 +19,15 @@ import javax.inject.Inject
 
 
 class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
+    override fun startOffline() {
+        // navigateToRemote()
+        navigateToMainWithUrl("http://192.168.3.54:8080")
+
+    }
+
+    override fun navigateToRemote() {
+        OfflineActivity.navigate(this)
+    }
 
     override fun showContent() {
         loading_container.visibility = View.VISIBLE
@@ -57,7 +67,7 @@ class SplashActivity : AppCompatActivity(), SplashContract.View, MainNavigator {
 
         start.setOnClickListener {
             val text = manual_ip_edit.editableText.toString()
-            navigateToMainWithUrl("http://192.168.1.110:8080")
+            navigateToMainWithUrl("https://demeter.fiw.io/rest")
         }
     }
 

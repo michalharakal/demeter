@@ -2,16 +2,17 @@ package com.fiwio.iot.demeter.data.source
 
 import com.fiwio.iot.demeter.data.model.MessageEntity
 import com.fiwio.iot.demeter.data.model.MessagesEntities
+import com.fiwio.iot.demeter.data.repository.MessageDataStore
+import com.fiwio.iot.demeter.data.repository.MessagesCache
+import javax.inject.Inject
 
-class MessagesCacheDataStore {
+class MessagesCacheDataStore @Inject constructor(private val messagesCache: MessagesCache) : MessageDataStore {
 
-    private var messages: MessagesEntities = MessagesEntities(emptyList())
-
-    fun getMessages(): MessagesEntities {
-        return messages
+    override fun getMessages(): MessagesEntities {
+        return messagesCache.getMessages()
     }
 
-    fun addMessage(message: MessageEntity) {
-        messages = MessagesEntities(messages.messages.plus(message))
+    override fun addMessage(message: MessageEntity) {
+        return messagesCache.addMessage(message)
     }
 }

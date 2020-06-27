@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter.remote.mapper
+package com.fiwio.iot.demeter.remote.firebase.remote.firebase.mapper
 
 /**
  * Interface for model mappers. It provides helper methods that facilitate

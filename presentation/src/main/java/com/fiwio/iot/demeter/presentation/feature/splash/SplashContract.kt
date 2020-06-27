@@ -11,6 +11,7 @@ interface SplashContract {
 
     interface View : MvpLceView<DnsLookupState> {
         fun enterUrlByHand()
+        fun startOffline()
     }
 
     interface Presenter : MvpPresenter<View>

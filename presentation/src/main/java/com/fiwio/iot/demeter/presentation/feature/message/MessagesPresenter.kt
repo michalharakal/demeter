@@ -27,9 +27,6 @@ class MessagesPresenter @Inject constructor(val getMessages: GetMessages, val me
     override fun destroy() {
     }
 
-
-    private lateinit var events: Disposable
-
     private fun subscribeForChanges() {
 
         getMessages.execute(MessagesSubscriber())

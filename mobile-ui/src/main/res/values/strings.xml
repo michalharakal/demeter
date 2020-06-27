@@ -15,5 +15,6 @@
     <string name="swimmer">Swimmer</string>
     <string name="channel_name" translatable="false">cml</string>
     <string name="channel_description" translatable="false">cml</string>
+    <string name="title_messages">Messages</string>
 
 </resources>

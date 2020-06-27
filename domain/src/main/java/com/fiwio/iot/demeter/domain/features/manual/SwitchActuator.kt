@@ -15,6 +15,6 @@ open class SwitchActuator @Inject constructor(val demeterRepository: DemeterRepo
         SingleUseCase<Demeter, Actuator>(threadExecutor, postExecutionThread) {
 
     public override fun buildUseCaseObservable(params: Actuator?): Single<Demeter> {
-        return demeterRepository.switchActuator(params as Actuator)
+        return Single.create { demeterRepository.switchActuator(params!!) }
     }
 }

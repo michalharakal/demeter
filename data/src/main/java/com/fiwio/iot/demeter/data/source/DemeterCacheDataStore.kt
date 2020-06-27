@@ -6,9 +6,6 @@ import com.fiwio.iot.demeter.data.model.FsmListEnitities
 import com.fiwio.iot.demeter.data.model.ScheduledActionsEntity
 import com.fiwio.iot.demeter.data.repository.DemeterCache
 import com.fiwio.iot.demeter.data.repository.DemeterDataStore
-import io.reactivex.Completable
-import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
 
 /**
@@ -17,23 +14,31 @@ import javax.inject.Inject
  */
 open class DemeterCacheDataStore @Inject constructor(private val demeterCache: DemeterCache) :
         DemeterDataStore {
-    override fun getFsm(): Observable<FsmListEnitities> {
+    override fun saveScheduledActions(scheduledActions: ScheduledActionsEntity) {
+        demeterCache.saveScheduledActions(scheduledActions)
+    }
+
+    override fun saveFsmEntities(fsmListEnitities: FsmListEnitities) {
+        demeterCache.saveFsmEntities(fsmListEnitities)
+    }
+
+    override fun getFsm(): FsmListEnitities {
         return demeterCache.getFsm()
     }
 
-    override fun getScheduledActions(): Observable<ScheduledActionsEntity> {
-        return demeterCache.getScheduledActions()
+    override fun getScheduledActions(): ScheduledActionsEntity {
+        return demeterCache.getScheduledActionsEntities()
     }
 
-    override fun switchActuator(actuatorEntity: ActuatorEntity): Single<DemeterEntity> {
+    override fun switchActuator(actuatorEntity: ActuatorEntity): DemeterEntity {
         throw UnsupportedOperationException()
     }
 
-    override fun saveDemeterImage(demeter: DemeterEntity): Completable {
+    override fun saveDemeterImage(demeter: DemeterEntity) {
         return demeterCache.saveDemeterImage(demeter)
     }
 
-    override fun getDemeterImage(): Single<DemeterEntity> {
+    override fun getDemeterImage(): DemeterEntity {
         return demeterCache.getDemeterImage()
     }
 }

@@ -1,4 +1,4 @@
-package com.fiwio.iot.demeter.remote.mapper
+package com.fiwio.iot.demeter.remote.firebase.remote.firebase.mapper
 
 class ImmutableList<T>(private val inner:List<T>) : List<T> by inner
 class ImmutableMap<K, V>(private val inner: Map<K, V>) : Map<K, V> by inner

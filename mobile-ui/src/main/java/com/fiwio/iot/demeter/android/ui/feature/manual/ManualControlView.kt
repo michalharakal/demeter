@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.fiwio.iot.demeter.android.ui.R
 import com.fiwio.iot.demeter.android.ui.ext.getComponent
-import com.fiwio.iot.demeter.android.ui.feature.main.di.OfflineComponent
+import com.fiwio.iot.demeter.android.ui.feature.main.di.MainComponent
 import com.fiwio.iot.demeter.presentation.feature.manual.ActuatorsListContract
 import com.fiwio.iot.demeter.presentation.model.ActuatorView
 import kotlinx.android.synthetic.main.view_actuators.view.*
@@ -33,10 +33,8 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
     @Inject
     lateinit var presenter: ActuatorsListContract.Presenter
 
-    private var columnCount = 2
-
     init {
-        var component = context.getComponent<OfflineComponent>().actuatorsListComponent()
+        var component = context.getComponent<MainComponent>().actuatorsListComponent()
         component.inject(this)
 
         LayoutInflater.from(context).inflate(R.layout.view_actuators, this, true)
@@ -50,7 +48,12 @@ class ManualControlView(context: Context, attrs: AttributeSet? = null, defStyle:
         presenter.attachView(this)
     }
 
-        override fun showLoading(pullToRefresh: Boolean) {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter.detachView()
+    }
+
+    override fun showLoading(pullToRefresh: Boolean) {
 
     }
 

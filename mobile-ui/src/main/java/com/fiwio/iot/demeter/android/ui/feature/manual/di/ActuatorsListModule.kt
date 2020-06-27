@@ -14,10 +14,9 @@ class ActuatorsListModule {
 
     @Provides
     internal fun provideActuatorsListPresenter(
-            repository: DemeterRepository,
             getDemeter: GetDemeter,
             setActuator: SwitchActuator,
             actuatorViewMapper: ActuatorViewMapper): ActuatorsListContract.Presenter {
-        return ActuatorsListPresenter(repository, getDemeter, setActuator, actuatorViewMapper)
+        return ActuatorsListPresenter(getDemeter, setActuator, actuatorViewMapper)
     }
 }
